@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "tag": "botania:floating_flowers"
+    },
+    {
+      "item": "masterfulbotany:petrunia"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "masterfulbotany:petrunia_floating"
+  }
+}

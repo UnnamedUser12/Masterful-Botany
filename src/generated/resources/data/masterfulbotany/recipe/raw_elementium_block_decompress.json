@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "masterfulbotany:raw_elementium_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "masterfulbotany:raw_elementium"
+  }
+}

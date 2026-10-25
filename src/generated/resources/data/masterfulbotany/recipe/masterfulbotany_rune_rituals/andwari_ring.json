@@ -1,0 +1,83 @@
+{
+  "type": "masterfulbotany:rune_ritual",
+  "center": {
+    "item": "botania:rune_mana"
+  },
+  "inputs": [
+    [
+      {
+        "item": "masterfulbotany:cursed_andwari_ring"
+      },
+      {
+        "item": "masterfulbotany:andwari_ring"
+      }
+    ],
+    {
+      "item": "botania:manaweave_cloth"
+    }
+  ],
+  "outputs": [
+    {
+      "count": 1,
+      "id": "masterfulbotany:andwari_ring"
+    }
+  ],
+  "runes": [
+    {
+      "rune": {
+        "item": "botania:rune_greed"
+      },
+      "x": -2,
+      "z": -2
+    },
+    {
+      "rune": {
+        "item": "botania:rune_greed"
+      },
+      "x": -2,
+      "z": 2
+    },
+    {
+      "rune": {
+        "item": "botania:rune_greed"
+      },
+      "x": 2,
+      "z": -2
+    },
+    {
+      "rune": {
+        "item": "botania:rune_greed"
+      },
+      "x": 2,
+      "z": 2
+    },
+    {
+      "rune": {
+        "item": "masterfulbotany:alfheim_rune"
+      },
+      "x": -3,
+      "z": 0
+    },
+    {
+      "rune": {
+        "item": "masterfulbotany:alfheim_rune"
+      },
+      "x": 3,
+      "z": 0
+    },
+    {
+      "rune": {
+        "item": "botania:rune_greed"
+      },
+      "x": 0,
+      "z": -3
+    },
+    {
+      "rune": {
+        "item": "botania:rune_greed"
+      },
+      "x": 0,
+      "z": 3
+    }
+  ]
+}

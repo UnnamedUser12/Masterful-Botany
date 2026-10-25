@@ -1,0 +1,25 @@
+{
+  "type": "botania:runic_altar",
+  "ingredients": [
+    {
+      "tag": "c:ingots/netherite"
+    },
+    {
+      "item": "botania:rune_air"
+    },
+    {
+      "item": "botania:rune_autumn"
+    },
+    {
+      "item": "botania:rune_pride"
+    },
+    {
+      "item": "botania:rainbow_rod"
+    }
+  ],
+  "mana": 16000,
+  "output": {
+    "count": 1,
+    "id": "masterfulbotany:asgard_rune"
+  }
+}

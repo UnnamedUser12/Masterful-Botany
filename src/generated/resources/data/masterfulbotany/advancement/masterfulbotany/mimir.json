@@ -1,0 +1,30 @@
+{
+  "parent": "masterfulbotany:masterfulbotany/root",
+  "criteria": {
+    "consume_item": {
+      "conditions": {
+        "item": {
+          "items": "masterfulbotany:gjallar_horn_full"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.masterfulbotany.masterfulbotany.mimir.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "masterfulbotany:gjallar_horn_full"
+    },
+    "title": {
+      "translate": "advancements.masterfulbotany.masterfulbotany.mimir.title"
+    }
+  },
+  "requirements": [
+    [
+      "consume_item"
+    ]
+  ]
+}

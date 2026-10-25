@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "masterfulbotany:item/alfsteel_pick_tipped"
+  }
+}

@@ -1,0 +1,344 @@
+{
+  "parent": "masterfulbotany:masterfulbotany/root",
+  "criteria": {
+    "inventory_changed": {
+      "conditions": {
+        "items": [
+          {
+            "items": "botania:rune_air"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "inventory_changed10": {
+      "conditions": {
+        "items": [
+          {
+            "items": "botania:rune_pride"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "inventory_changed11": {
+      "conditions": {
+        "items": [
+          {
+            "items": "botania:rune_sloth"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "inventory_changed12": {
+      "conditions": {
+        "items": [
+          {
+            "items": "botania:rune_spring"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "inventory_changed13": {
+      "conditions": {
+        "items": [
+          {
+            "items": "botania:rune_summer"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "inventory_changed14": {
+      "conditions": {
+        "items": [
+          {
+            "items": "botania:rune_water"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "inventory_changed15": {
+      "conditions": {
+        "items": [
+          {
+            "items": "botania:rune_winter"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "inventory_changed16": {
+      "conditions": {
+        "items": [
+          {
+            "items": "botania:rune_wrath"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "inventory_changed17": {
+      "conditions": {
+        "items": [
+          {
+            "items": "masterfulbotany:asgard_rune"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "inventory_changed18": {
+      "conditions": {
+        "items": [
+          {
+            "items": "masterfulbotany:vanaheim_rune"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "inventory_changed19": {
+      "conditions": {
+        "items": [
+          {
+            "items": "masterfulbotany:alfheim_rune"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "inventory_changed2": {
+      "conditions": {
+        "items": [
+          {
+            "items": "botania:rune_autumn"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "inventory_changed20": {
+      "conditions": {
+        "items": [
+          {
+            "items": "masterfulbotany:midgard_rune"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "inventory_changed21": {
+      "conditions": {
+        "items": [
+          {
+            "items": "masterfulbotany:joetunheim_rune"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "inventory_changed22": {
+      "conditions": {
+        "items": [
+          {
+            "items": "masterfulbotany:muspelheim_rune"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "inventory_changed23": {
+      "conditions": {
+        "items": [
+          {
+            "items": "masterfulbotany:niflheim_rune"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "inventory_changed24": {
+      "conditions": {
+        "items": [
+          {
+            "items": "masterfulbotany:nidavellir_rune"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "inventory_changed25": {
+      "conditions": {
+        "items": [
+          {
+            "items": "masterfulbotany:helheim_rune"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "inventory_changed3": {
+      "conditions": {
+        "items": [
+          {
+            "items": "botania:rune_earth"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "inventory_changed4": {
+      "conditions": {
+        "items": [
+          {
+            "items": "botania:rune_envy"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "inventory_changed5": {
+      "conditions": {
+        "items": [
+          {
+            "items": "botania:rune_fire"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "inventory_changed6": {
+      "conditions": {
+        "items": [
+          {
+            "items": "botania:rune_gluttony"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "inventory_changed7": {
+      "conditions": {
+        "items": [
+          {
+            "items": "botania:rune_greed"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "inventory_changed8": {
+      "conditions": {
+        "items": [
+          {
+            "items": "botania:rune_lust"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "inventory_changed9": {
+      "conditions": {
+        "items": [
+          {
+            "items": "botania:rune_mana"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.masterfulbotany.masterfulbotany.all_runes.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "masterfulbotany:joetunheim_rune"
+    },
+    "title": {
+      "translate": "advancements.masterfulbotany.masterfulbotany.all_runes.title"
+    }
+  },
+  "requirements": [
+    [
+      "inventory_changed"
+    ],
+    [
+      "inventory_changed2"
+    ],
+    [
+      "inventory_changed3"
+    ],
+    [
+      "inventory_changed4"
+    ],
+    [
+      "inventory_changed5"
+    ],
+    [
+      "inventory_changed6"
+    ],
+    [
+      "inventory_changed7"
+    ],
+    [
+      "inventory_changed8"
+    ],
+    [
+      "inventory_changed9"
+    ],
+    [
+      "inventory_changed10"
+    ],
+    [
+      "inventory_changed11"
+    ],
+    [
+      "inventory_changed12"
+    ],
+    [
+      "inventory_changed13"
+    ],
+    [
+      "inventory_changed14"
+    ],
+    [
+      "inventory_changed15"
+    ],
+    [
+      "inventory_changed16"
+    ],
+    [
+      "inventory_changed17"
+    ],
+    [
+      "inventory_changed18"
+    ],
+    [
+      "inventory_changed19"
+    ],
+    [
+      "inventory_changed20"
+    ],
+    [
+      "inventory_changed21"
+    ],
+    [
+      "inventory_changed22"
+    ],
+    [
+      "inventory_changed23"
+    ],
+    [
+      "inventory_changed24"
+    ],
+    [
+      "inventory_changed25"
+    ]
+  ]
+}

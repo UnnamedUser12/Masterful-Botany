@@ -1,0 +1,33 @@
+{
+  "category": "botania:masterful_botany",
+  "icon": "masterfulbotany:mjoellnir",
+  "name": "lexicon.entry.masterfulbotany.botania.masterful_botany.mjoellnir",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "lexicon.entry.masterfulbotany.botania.masterful_botany.mjoellnir.page0.text0"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "lexicon.entry.masterfulbotany.botania.masterful_botany.mjoellnir.page1.text0"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "lexicon.entry.masterfulbotany.botania.masterful_botany.mjoellnir.page2.text0"
+    },
+    {
+      "type": "patchouli:empty"
+    },
+    {
+      "type": "masterfulbotany:ritual_pattern",
+      "recipe": "masterfulbotany:masterfulbotany_rune_rituals/mjoellnir",
+      "title": "block.masterfulbotany.mjoellnir"
+    },
+    {
+      "type": "masterfulbotany:ritual_info",
+      "recipe": "masterfulbotany:masterfulbotany_rune_rituals/mjoellnir",
+      "text": "lexicon.entry.masterfulbotany.botania.masterful_botany.mjoellnir.page5.text0",
+      "title": ""
+    }
+  ]
+}

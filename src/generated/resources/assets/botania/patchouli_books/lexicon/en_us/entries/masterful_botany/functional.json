@@ -1,0 +1,39 @@
+{
+  "category": "botania:masterful_botany",
+  "icon": "masterfulbotany:hellebore",
+  "name": "lexicon.entry.masterfulbotany.botania.masterful_botany.functional",
+  "pages": [
+    {
+      "type": "botania:petal_apothecary",
+      "recipe": "masterfulbotany:aquapanthus_petal_apothecary"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "lexicon.entry.masterfulbotany.botania.masterful_botany.functional.page1.text0"
+    },
+    {
+      "type": "botania:petal_apothecary",
+      "recipe": "masterfulbotany:exoblaze_petal_apothecary"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "lexicon.entry.masterfulbotany.botania.masterful_botany.functional.page3.text0"
+    },
+    {
+      "type": "botania:petal_apothecary",
+      "recipe": "masterfulbotany:hellebore_petal_apothecary"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "lexicon.entry.masterfulbotany.botania.masterful_botany.functional.page5.text0"
+    },
+    {
+      "type": "botania:petal_apothecary",
+      "recipe": "masterfulbotany:petrunia_petal_apothecary"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "lexicon.entry.masterfulbotany.botania.masterful_botany.functional.page7.text0"
+    }
+  ]
+}

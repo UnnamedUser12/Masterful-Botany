@@ -1,0 +1,27 @@
+{
+  "category": "botania:alfheim",
+  "icon": "masterfulbotany:kvasir_mead",
+  "name": "lexicon.entry.masterfulbotany.botania.alfheim.kvasir",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "lexicon.entry.masterfulbotany.botania.alfheim.kvasir.page0.text0"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "masterfulbotany:kvasir_mead",
+      "text": "lexicon.entry.masterfulbotany.botania.alfheim.kvasir.page1.text0"
+    },
+    {
+      "type": "masterfulbotany:ritual_pattern",
+      "recipe": "masterfulbotany:masterfulbotany_rune_rituals/kvasir_blood",
+      "title": "item.masterfulbotany.kvasir_blood"
+    },
+    {
+      "type": "masterfulbotany:ritual_info",
+      "recipe": "masterfulbotany:masterfulbotany_rune_rituals/kvasir_blood",
+      "text": "lexicon.entry.masterfulbotany.botania.alfheim.kvasir.page3.text0",
+      "title": ""
+    }
+  ]
+}

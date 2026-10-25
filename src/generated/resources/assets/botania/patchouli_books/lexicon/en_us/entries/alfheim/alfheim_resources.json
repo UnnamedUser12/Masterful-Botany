@@ -1,0 +1,43 @@
+{
+  "category": "botania:alfheim",
+  "icon": "masterfulbotany:elementium_ore",
+  "name": "lexicon.entry.masterfulbotany.botania.alfheim.alfheim_resources",
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "masterfulbotany:dream_cherry",
+      "link_recipe": true,
+      "text": "lexicon.entry.masterfulbotany.botania.alfheim.alfheim_resources.page0.text0"
+    },
+    {
+      "type": "botania:elven_trade",
+      "recipes": [
+        "masterfulbotany:dreamwood_leaves_elven_trade"
+      ],
+      "text": "lexicon.entry.masterfulbotany.botania.alfheim.alfheim_resources.page1.text0"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "masterfulbotany:elementium_ore",
+      "link_recipe": true,
+      "text": "lexicon.entry.masterfulbotany.botania.alfheim.alfheim_resources.page2.text0"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "masterfulbotany:dragonstone_ore",
+      "link_recipe": true,
+      "text": "lexicon.entry.masterfulbotany.botania.alfheim.alfheim_resources.page3.text0"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "masterfulbotany:gold_ore",
+      "link_recipe": true,
+      "text": "lexicon.entry.masterfulbotany.botania.alfheim.alfheim_resources.page4.text0"
+    },
+    {
+      "type": "patchouli:entity",
+      "entity": "masterfulbotany:alf_pixie",
+      "text": "lexicon.entry.masterfulbotany.botania.alfheim.alfheim_resources.page5.text0"
+    }
+  ]
+}

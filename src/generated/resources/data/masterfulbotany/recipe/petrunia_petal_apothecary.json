@@ -1,0 +1,30 @@
+{
+  "type": "botania:petal_apothecary",
+  "ingredients": [
+    {
+      "tag": "botania:petals/red"
+    },
+    {
+      "tag": "botania:petals/red"
+    },
+    {
+      "tag": "botania:petals/orange"
+    },
+    {
+      "tag": "botania:petals/brown"
+    },
+    {
+      "item": "masterfulbotany:gjallar_horn_full"
+    },
+    {
+      "item": "botania:phantom_ink"
+    }
+  ],
+  "output": {
+    "count": 1,
+    "id": "masterfulbotany:petrunia"
+  },
+  "reagent": {
+    "tag": "botania:seed_apothecary_reagent"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "botania:block/shapes/three_high_bottom_top",
+  "textures": {
+    "bottom": "masterfulbotany:block/mana_infuser_bottom",
+    "top": "masterfulbotany:block/mana_infuser_top",
+    "side": "masterfulbotany:block/mana_infuser_bottom"
+  }
+}

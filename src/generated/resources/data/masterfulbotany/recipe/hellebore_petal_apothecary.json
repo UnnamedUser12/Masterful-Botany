@@ -1,0 +1,27 @@
+{
+  "type": "botania:petal_apothecary",
+  "ingredients": [
+    {
+      "tag": "botania:petals/red"
+    },
+    {
+      "tag": "botania:petals/red"
+    },
+    {
+      "tag": "botania:petals/purple"
+    },
+    {
+      "tag": "botania:petals/cyan"
+    },
+    {
+      "item": "botania:rune_fire"
+    }
+  ],
+  "output": {
+    "count": 1,
+    "id": "masterfulbotany:hellebore"
+  },
+  "reagent": {
+    "tag": "botania:seed_apothecary_reagent"
+  }
+}

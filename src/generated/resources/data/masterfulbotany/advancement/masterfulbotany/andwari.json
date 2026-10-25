@@ -1,0 +1,32 @@
+{
+  "parent": "masterfulbotany:masterfulbotany/alfheim",
+  "criteria": {
+    "inventory_changed": {
+      "conditions": {
+        "items": [
+          {
+            "items": "masterfulbotany:andwari_ring"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.masterfulbotany.masterfulbotany.andwari.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "masterfulbotany:andwari_ring"
+    },
+    "title": {
+      "translate": "advancements.masterfulbotany.masterfulbotany.andwari.title"
+    }
+  },
+  "requirements": [
+    [
+      "inventory_changed"
+    ]
+  ]
+}

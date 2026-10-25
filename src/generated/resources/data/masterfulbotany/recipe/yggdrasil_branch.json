@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "l": {
+      "tag": "botania:livingwood_logs"
+    },
+    "t": {
+      "tag": "botania:terrasteel_nuggets"
+    }
+  },
+  "pattern": [
+    "lll",
+    "ttt",
+    "lll"
+  ],
+  "result": {
+    "count": 1,
+    "id": "masterfulbotany:yggdrasil_branch"
+  }
+}

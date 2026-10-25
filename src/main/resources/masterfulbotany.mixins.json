@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "velrondevs.masterfulbotany.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "TerrasteelHelmItemMixin"
+  ],
+  "client": [
+    "RenderHelperMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

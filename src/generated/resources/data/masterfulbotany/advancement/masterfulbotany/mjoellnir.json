@@ -1,0 +1,32 @@
+{
+  "parent": "masterfulbotany:masterfulbotany/mimir",
+  "criteria": {
+    "inventory_changed": {
+      "conditions": {
+        "items": [
+          {
+            "items": "masterfulbotany:mjoellnir"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.masterfulbotany.masterfulbotany.mjoellnir.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "masterfulbotany:mjoellnir"
+    },
+    "title": {
+      "translate": "advancements.masterfulbotany.masterfulbotany.mjoellnir.title"
+    }
+  },
+  "requirements": [
+    [
+      "inventory_changed"
+    ]
+  ]
+}

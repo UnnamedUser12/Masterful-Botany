@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "masterfulbotany:block/mana_collector_bottom",
+    "side": "masterfulbotany:block/mana_collector_side",
+    "top": "masterfulbotany:block/mana_collector_top"
+  }
+}

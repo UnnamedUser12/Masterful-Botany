@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "d": {
+      "tag": "botania:mana_dusts"
+    },
+    "w": {
+      "tag": "c:gems/emerald"
+    }
+  },
+  "pattern": [
+    " w ",
+    "wdw"
+  ],
+  "result": {
+    "count": 1,
+    "id": "masterfulbotany:central_rune_holder"
+  }
+}

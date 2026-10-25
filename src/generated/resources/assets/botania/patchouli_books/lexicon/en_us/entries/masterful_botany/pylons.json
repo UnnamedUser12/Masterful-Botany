@@ -1,0 +1,16 @@
+{
+  "category": "botania:masterful_botany",
+  "icon": "masterfulbotany:alfsteel_pylon",
+  "name": "lexicon.entry.masterfulbotany.botania.masterful_botany.pylons",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "lexicon.entry.masterfulbotany.botania.masterful_botany.pylons.page0.text0"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "masterfulbotany:alfsteel_pylon",
+      "recipe2": "masterfulbotany:gaia_pylon"
+    }
+  ]
+}

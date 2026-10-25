@@ -1,0 +1,38 @@
+{
+  "category": "botania:alfheim",
+  "icon": "masterfulbotany:alf_pixie_spawn_egg",
+  "name": "lexicon.entry.masterfulbotany.botania.alfheim.alfheim_landscape",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "lexicon.entry.masterfulbotany.botania.alfheim.alfheim_landscape.page0.text0"
+    },
+    {
+      "type": "patchouli:image",
+      "border": true,
+      "images": [
+        "masterfulbotany:textures/image/alfheim_hills.png"
+      ],
+      "text": "lexicon.entry.masterfulbotany.botania.alfheim.alfheim_landscape.page1.text1",
+      "title": "lexicon.entry.masterfulbotany.botania.alfheim.alfheim_landscape.page1.text0"
+    },
+    {
+      "type": "patchouli:image",
+      "border": true,
+      "images": [
+        "masterfulbotany:textures/image/dreamwood_forest.png"
+      ],
+      "text": "lexicon.entry.masterfulbotany.botania.alfheim.alfheim_landscape.page2.text1",
+      "title": "lexicon.entry.masterfulbotany.botania.alfheim.alfheim_landscape.page2.text0"
+    },
+    {
+      "type": "patchouli:image",
+      "border": true,
+      "images": [
+        "masterfulbotany:textures/image/golden_fields.png"
+      ],
+      "text": "lexicon.entry.masterfulbotany.botania.alfheim.alfheim_landscape.page3.text1",
+      "title": "lexicon.entry.masterfulbotany.botania.alfheim.alfheim_landscape.page3.text0"
+    }
+  ]
+}

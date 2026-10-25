@@ -1,0 +1,17 @@
+{
+  "category": "botania:masterful_botany",
+  "icon": "masterfulbotany:fire_ring",
+  "name": "lexicon.entry.masterfulbotany.botania.masterful_botany.rings",
+  "pages": [
+    {
+      "type": "patchouli:crafting",
+      "recipe": "masterfulbotany:fire_ring",
+      "text": "lexicon.entry.masterfulbotany.botania.masterful_botany.rings.page0.text0"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "masterfulbotany:ice_ring",
+      "text": "lexicon.entry.masterfulbotany.botania.masterful_botany.rings.page1.text0"
+    }
+  ]
+}

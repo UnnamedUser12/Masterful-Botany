@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": {
+    "item": "masterfulbotany:alfsteel_ingot"
+  },
+  "base": {
+    "item": "botania:aura_ring_greater"
+  },
+  "result": {
+    "count": 1,
+    "id": "masterfulbotany:aura_ring_greatest"
+  },
+  "template": {
+    "item": "masterfulbotany:alfsteel_template"
+  }
+}

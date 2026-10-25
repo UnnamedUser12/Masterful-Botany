@@ -1,0 +1,28 @@
+{
+  "parent": "masterfulbotany:masterfulbotany/mimir",
+  "criteria": {
+    "changed_dimension": {
+      "conditions": {
+        "to": "masterfulbotany:alfheim"
+      },
+      "trigger": "minecraft:changed_dimension"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.masterfulbotany.masterfulbotany.alfheim.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "masterfulbotany:dream_cherry"
+    },
+    "title": {
+      "translate": "advancements.masterfulbotany.masterfulbotany.alfheim.title"
+    }
+  },
+  "requirements": [
+    [
+      "changed_dimension"
+    ]
+  ]
+}

@@ -1,0 +1,99 @@
+package velrondevs.masterfulbotany.common.item;
+
+import javax.annotation.Nonnull;
+import velrondevs.masterfulbotany.common.block.BlockMjoellnir;
+import velrondevs.masterfulbotany.common.entity.Mjoellnir;
+import velrondevs.masterfulbotany.config.MasterfulConfig;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.Level;
+
+public class ItemMjoellnir extends BlockItem {
+    
+    public ItemMjoellnir(Block blockIn, Properties properties) {
+        super(blockIn, properties);
+    }
+
+    @Nonnull
+    @Override
+    public InteractionResultHolder<ItemStack> use(@Nonnull Level level, @Nonnull Player player, @Nonnull InteractionHand hand) {
+        if (!player.isShiftKeyDown()) {
+            this.throwHammer(level, player, hand);
+            if (MasterfulConfig.mjoellnir.ranged_cooldown > 0) {
+                player.getCooldowns().addCooldown(this, MasterfulConfig.mjoellnir.ranged_cooldown);
+            }
+            return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide);
+        } else {
+            return super.use(level, player, hand);
+        }
+    }
+
+    @Nonnull
+    @Override
+    public InteractionResult useOn(@Nonnull UseOnContext context) {
+        // the hammer can only be placed with shift
+        if (context.getPlayer() != null && context.getPlayer().isShiftKeyDown()) {
+            return super.useOn(context);
+        } else {
+            return InteractionResult.PASS;
+        }
+    }
+
+    @Override
+    protected boolean placeBlock(BlockPlaceContext context, @Nonnull BlockState state) {
+        return BlockMjoellnir.placeInWorld(context.getItemInHand(), context.getLevel(), context.getClickedPos());
+    }
+
+    @Override
+    public void inventoryTick(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull Entity entity, int itemSlot, boolean isSelected) {
+        if (!level.isClientSide && entity instanceof Player player) {
+            if (!BlockMjoellnir.canHold(player)) {
+                BlockMjoellnir.putInWorld(stack.copy(), level, player.blockPosition());
+                stack.shrink(stack.getCount());
+                player.sendSystemMessage(Component.translatable("message.masterfulbotany.mjoellnir_heavy_drop").withStyle(ChatFormatting.GRAY));
+            }
+        }
+    }
+
+    private void throwHammer(Level level, Player player, InteractionHand hand) {
+        if (!level.isClientSide) {
+            ItemStack hammer = player.getItemInHand(hand).copy();
+            player.setItemInHand(hand, ItemStack.EMPTY);
+            Mjoellnir projectile = new Mjoellnir(level);
+            projectile.setPos(player.getX(), player.getEyeY(), player.getZ());
+            projectile.setStack(hammer);
+            projectile.setThrower(player);
+            projectile.setThrowPos(player.position());
+            projectile.setHotBarSlot(BlockMjoellnir.getHotbarSlot(player, hand));
+            projectile.setDeltaMovement(player.getLookAngle().multiply(1.2, 1.2, 1.2));
+            level.addFreshEntity(projectile);
+        }
+    }
+
+    @Override
+    public int getEntityLifespan(ItemStack itemStack, Level level) {
+        return Integer.MAX_VALUE;
+    }
+
+    @Override
+    public int getEnchantmentValue(ItemStack stack) {
+        return 1;
+    }
+
+    @Override
+    public boolean isEnchantable(@Nonnull ItemStack stack) {
+        return true;
+    }
+
+}

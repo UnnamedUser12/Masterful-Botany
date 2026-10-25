@@ -1,0 +1,30 @@
+{
+  "type": "botania:petal_apothecary",
+  "ingredients": [
+    {
+      "tag": "botania:petals/yellow"
+    },
+    {
+      "tag": "botania:petals/yellow"
+    },
+    {
+      "tag": "botania:petals/gray"
+    },
+    {
+      "tag": "botania:petals/light_gray"
+    },
+    {
+      "item": "botania:rune_fire"
+    },
+    {
+      "item": "minecraft:blaze_powder"
+    }
+  ],
+  "output": {
+    "count": 1,
+    "id": "masterfulbotany:exoblaze"
+  },
+  "reagent": {
+    "tag": "botania:seed_apothecary_reagent"
+  }
+}

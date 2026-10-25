@@ -1,0 +1,21 @@
+{
+  "type": "masterfulbotany:infuser",
+  "fromColor": 255,
+  "ingredients": [
+    {
+      "tag": "botania:manasteel_ingots"
+    },
+    {
+      "item": "botania:mana_pearl"
+    },
+    {
+      "tag": "botania:mana_diamond_gems"
+    }
+  ],
+  "mana": 500000,
+  "output": {
+    "count": 1,
+    "id": "botania:terrasteel_ingot"
+  },
+  "toColor": 65280
+}

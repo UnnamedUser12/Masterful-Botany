@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "masterfulbotany:item/cursed_andwari_ring"
+  }
+}

@@ -1,0 +1,70 @@
+modLoader = "javafml"
+loaderVersion = "${neoforge_loader_version_range}"
+license = "${license}"
+
+[[mods]]
+modId = "${mod_id}"
+version = "${version}"
+displayName = "${mod_name}"
+logoFile = "logo.png"
+authors = "${mod_author}"
+credits = "Derivative work of the original mod by noeppi_noeppi (contributor: MelanX). NeoForge 1.21.1 port for Botania Revived by UnnamedUser12."
+description = '''
+Dive deeper into the world of Botania.
+An addon for Botania Revived on Minecraft 1.21.1 / NeoForge.
+'''
+
+[[mixins]]
+config = "masterfulbotany.mixins.json"
+
+[[accessTransformers]]
+file = "META-INF/accesstransformer.cfg"
+
+[[dependencies.${mod_id}]]
+    modId = "neoforge"
+    type = "required"
+    versionRange = "[${neoforge_version},)"
+    ordering = "NONE"
+    side = "BOTH"
+
+[[dependencies.${mod_id}]]
+    modId = "minecraft"
+    type = "required"
+    versionRange = "${minecraft_version_range}"
+    ordering = "NONE"
+    side = "BOTH"
+
+[[dependencies.${mod_id}]]
+    modId = "libx"
+    type = "required"
+    versionRange = "[${libx_version},)"
+    ordering = "NONE"
+    side = "BOTH"
+
+[[dependencies.${mod_id}]]
+    modId = "botania"
+    type = "required"
+    versionRange = "[1.0.3,)"
+    ordering = "AFTER"
+    side = "BOTH"
+
+[[dependencies.${mod_id}]]
+    modId = "patchouli"
+    type = "required"
+    versionRange = "[${patchouli_version},)"
+    ordering = "NONE"
+    side = "BOTH"
+
+[[dependencies.${mod_id}]]
+    modId = "curios"
+    type = "required"
+    versionRange = "[${curios_version},)"
+    ordering = "NONE"
+    side = "BOTH"
+
+[[dependencies.${mod_id}]]
+    modId = "jei"
+    type = "optional"
+    versionRange = "[${jei_version},)"
+    ordering = "NONE"
+    side = "CLIENT"

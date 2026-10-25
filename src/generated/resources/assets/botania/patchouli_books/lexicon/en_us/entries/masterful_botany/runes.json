@@ -1,0 +1,56 @@
+{
+  "category": "botania:masterful_botany",
+  "icon": "masterfulbotany:niflheim_rune",
+  "name": "lexicon.entry.masterfulbotany.botania.masterful_botany.runes",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "lexicon.entry.masterfulbotany.botania.masterful_botany.runes.page0.text0"
+    },
+    {
+      "type": "botania:runic_altar",
+      "recipe": "masterfulbotany:midgard_rune_runic_altar",
+      "text": "lexicon.entry.masterfulbotany.botania.masterful_botany.runes.page1.text0"
+    },
+    {
+      "type": "botania:runic_altar",
+      "recipe": "masterfulbotany:alfheim_rune_runic_altar",
+      "text": "lexicon.entry.masterfulbotany.botania.masterful_botany.runes.page2.text0"
+    },
+    {
+      "type": "botania:runic_altar",
+      "recipe": "masterfulbotany:nidavellir_rune_runic_altar",
+      "text": "lexicon.entry.masterfulbotany.botania.masterful_botany.runes.page3.text0"
+    },
+    {
+      "type": "botania:runic_altar",
+      "recipe": "masterfulbotany:joetunheim_rune_runic_altar",
+      "text": "lexicon.entry.masterfulbotany.botania.masterful_botany.runes.page4.text0"
+    },
+    {
+      "type": "botania:runic_altar",
+      "recipe": "masterfulbotany:muspelheim_rune_runic_altar",
+      "text": "lexicon.entry.masterfulbotany.botania.masterful_botany.runes.page5.text0"
+    },
+    {
+      "type": "botania:runic_altar",
+      "recipe": "masterfulbotany:niflheim_rune_runic_altar",
+      "text": "lexicon.entry.masterfulbotany.botania.masterful_botany.runes.page6.text0"
+    },
+    {
+      "type": "botania:runic_altar",
+      "recipe": "masterfulbotany:asgard_rune_runic_altar",
+      "text": "lexicon.entry.masterfulbotany.botania.masterful_botany.runes.page7.text0"
+    },
+    {
+      "type": "botania:runic_altar",
+      "recipe": "masterfulbotany:vanaheim_rune_runic_altar",
+      "text": "lexicon.entry.masterfulbotany.botania.masterful_botany.runes.page8.text0"
+    },
+    {
+      "type": "botania:runic_altar",
+      "recipe": "masterfulbotany:helheim_rune_runic_altar",
+      "text": "lexicon.entry.masterfulbotany.botania.masterful_botany.runes.page9.text0"
+    }
+  ]
+}

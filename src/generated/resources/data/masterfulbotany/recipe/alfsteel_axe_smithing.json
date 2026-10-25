@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": {
+    "item": "masterfulbotany:alfsteel_ingot"
+  },
+  "base": {
+    "item": "botania:terra_axe"
+  },
+  "result": {
+    "count": 1,
+    "id": "masterfulbotany:alfsteel_axe"
+  },
+  "template": {
+    "item": "masterfulbotany:alfsteel_template"
+  }
+}

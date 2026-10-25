@@ -1,3 +1,4 @@
+
                                  Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
@@ -199,3 +200,12 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
+
+
+
+Parts of the Assets and code were copied from botania and the modified. See the
+Botania License (https://botaniamod.net/license.php). The credits for this go to
+Vazkii and the Botania authors. Everything that is in
+src/main/resources/assets/mythicbotany/textures is licensed under the botania license.
+
+    https://botaniamod.net/license.php

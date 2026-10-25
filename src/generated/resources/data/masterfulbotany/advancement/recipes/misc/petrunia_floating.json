@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "criterion0": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#botania:floating_flowers"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "criterion1": {
+      "conditions": {
+        "items": [
+          {
+            "items": "masterfulbotany:petrunia"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "masterfulbotany:petrunia_floating"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "criterion0",
+      "criterion1"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "masterfulbotany:petrunia_floating"
+    ]
+  }
+}

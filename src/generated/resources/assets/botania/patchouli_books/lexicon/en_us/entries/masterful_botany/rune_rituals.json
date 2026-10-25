@@ -1,0 +1,26 @@
+{
+  "category": "botania:masterful_botany",
+  "icon": "masterfulbotany:fimbultyr_tablet",
+  "name": "lexicon.entry.masterfulbotany.botania.masterful_botany.rune_rituals",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "lexicon.entry.masterfulbotany.botania.masterful_botany.rune_rituals.page0.text0"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "lexicon.entry.masterfulbotany.botania.masterful_botany.rune_rituals.page1.text0"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "masterfulbotany:rune_holder",
+      "recipe2": "masterfulbotany:central_rune_holder"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "masterfulbotany:fimbultyr_tablet",
+      "link_recipe": true,
+      "text": "lexicon.entry.masterfulbotany.botania.masterful_botany.rune_rituals.page3.text0"
+    }
+  ]
+}

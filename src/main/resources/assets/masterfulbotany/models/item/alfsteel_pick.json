@@ -1,0 +1,27 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "masterfulbotany:item/alfsteel_pick"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "masterfulbotany:active": 1.0
+      },
+      "model": "masterfulbotany:item/alfsteel_pick_active"
+    },
+    {
+      "predicate": {
+        "masterfulbotany:tipped": 1.0
+      },
+      "model": "masterfulbotany:item/alfsteel_pick_tipped"
+    },
+    {
+      "predicate": {
+        "masterfulbotany:tipped": 1.0,
+        "masterfulbotany:active": 1.0
+      },
+      "model": "masterfulbotany:item/alfsteel_pick_tipped_active"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:entity",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "minecraft:killed_by_player"
+            },
+            {
+              "condition": "minecraft:entity_properties",
+              "entity": "direct_attacker",
+              "predicate": {
+                "equipment": {
+                  "mainhand": {
+                    "items": "#masterfulbotany:elementium_weapons"
+                  }
+                }
+              }
+            },
+            {
+              "chance": 0.15,
+              "condition": "minecraft:random_chance"
+            }
+          ],
+          "name": "masterfulbotany:alfsteel_template"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "masterfulbotany:alfsteel_template"
+}

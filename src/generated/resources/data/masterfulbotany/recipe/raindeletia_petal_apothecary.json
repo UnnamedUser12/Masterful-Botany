@@ -1,0 +1,27 @@
+{
+  "type": "botania:petal_apothecary",
+  "ingredients": [
+    {
+      "tag": "botania:petals/light_blue"
+    },
+    {
+      "tag": "botania:petals/blue"
+    },
+    {
+      "tag": "botania:petals/magenta"
+    },
+    {
+      "tag": "botania:petals/white"
+    },
+    {
+      "item": "botania:rune_water"
+    }
+  ],
+  "output": {
+    "count": 1,
+    "id": "masterfulbotany:raindeletia"
+  },
+  "reagent": {
+    "tag": "botania:seed_apothecary_reagent"
+  }
+}

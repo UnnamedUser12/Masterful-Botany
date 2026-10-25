@@ -1,0 +1,39 @@
+{
+  "type": "botania:runic_altar",
+  "ingredients": [
+    {
+      "tag": "c:ingots/gold"
+    },
+    {
+      "item": "botania:rune_fire"
+    },
+    {
+      "item": "botania:rune_autumn"
+    },
+    {
+      "item": "botania:rune_envy"
+    },
+    [
+      {
+        "item": "minecraft:skeleton_skull"
+      },
+      {
+        "item": "minecraft:wither_skeleton_skull"
+      },
+      {
+        "item": "minecraft:creeper_head"
+      },
+      {
+        "item": "minecraft:dragon_head"
+      },
+      {
+        "item": "minecraft:zombie_head"
+      }
+    ]
+  ],
+  "mana": 16000,
+  "output": {
+    "count": 1,
+    "id": "masterfulbotany:helheim_rune"
+  }
+}

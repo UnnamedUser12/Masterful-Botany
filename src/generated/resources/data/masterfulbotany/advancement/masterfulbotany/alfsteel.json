@@ -1,0 +1,32 @@
+{
+  "parent": "masterfulbotany:masterfulbotany/root",
+  "criteria": {
+    "inventory_changed": {
+      "conditions": {
+        "items": [
+          {
+            "items": "masterfulbotany:alfsteel_ingot"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.masterfulbotany.masterfulbotany.alfsteel.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "masterfulbotany:alfsteel_ingot"
+    },
+    "title": {
+      "translate": "advancements.masterfulbotany.masterfulbotany.alfsteel.title"
+    }
+  },
+  "requirements": [
+    [
+      "inventory_changed"
+    ]
+  ]
+}

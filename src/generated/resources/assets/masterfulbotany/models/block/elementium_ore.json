@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "masterfulbotany:block/elementium_ore"
+  }
+}

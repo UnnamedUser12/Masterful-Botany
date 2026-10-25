@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/block",
+  "flower": {
+    "parent": "masterfulbotany:block/wither_aconite",
+    "render_type": "minecraft:cutout_mipped"
+  },
+  "loader": "botania:floating_flower",
+  "render_type": "minecraft:cutout_mipped"
+}

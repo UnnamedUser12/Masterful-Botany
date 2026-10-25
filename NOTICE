@@ -1,0 +1,23 @@
+Masterful Botany
+Copyright 2026 UnnamedUser12
+
+This product is a derivative work of the mod MythicBotany by noeppi_noeppi
+(contributor: MelanX), licensed under the Apache License, Version 2.0:
+https://github.com/noeppi-noeppi/MythicBotany
+
+The original work is Copyright noeppi_noeppi and its contributors.
+
+Changes made to the original work:
+ - Ported from Minecraft 1.20.1 / Forge to Minecraft 1.21.1 / NeoForge, targeting Botania Revived
+   (package velrondevs.botania) instead of Botania.
+ - Migrated to the 1.21 APIs (data components, codecs and stream codecs, the new recipe system,
+   block entity capabilities, payload networking, data driven enchantments, new datapack paths).
+ - Reorganized the project structure and ported the data generation to the LibX 1.21 datagen.
+ - Replaced the coremods by mixins, removed the optional compatibility code for mods that are not
+   available for 1.21.1.
+ - Renamed the mod to "Masterful Botany" (mod id "masterfulbotany", package "velrondevs.masterfulbotany")
+   because the Apache License 2.0 does not grant the right to use the name of the original product.
+
+This project is NOT affiliated with, endorsed by or supported by the original author(s).
+
+The full license text is in the LICENSE file.

@@ -1,0 +1,19 @@
+{
+  "category": "botania:masterful_botany",
+  "icon": "masterfulbotany:mana_ring_greatest",
+  "name": "lexicon.entry.masterfulbotany.botania.masterful_botany.manaband",
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "masterfulbotany:mana_ring_greatest",
+      "link_recipe": true,
+      "text": "lexicon.entry.masterfulbotany.botania.masterful_botany.manaband.page0.text0"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "masterfulbotany:aura_ring_greatest",
+      "link_recipe": true,
+      "text": "lexicon.entry.masterfulbotany.botania.masterful_botany.manaband.page1.text0"
+    }
+  ]
+}

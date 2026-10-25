@@ -1,0 +1,25 @@
+{
+  "type": "botania:runic_altar",
+  "ingredients": [
+    {
+      "tag": "botania:terrasteel_ingots"
+    },
+    {
+      "item": "botania:rune_earth"
+    },
+    {
+      "item": "botania:rune_spring"
+    },
+    {
+      "item": "botania:rune_pride"
+    },
+    {
+      "item": "botania:alfheim_portal"
+    }
+  ],
+  "mana": 16000,
+  "output": {
+    "count": 1,
+    "id": "masterfulbotany:vanaheim_rune"
+  }
+}

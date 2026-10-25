@@ -1,0 +1,33 @@
+{
+  "category": "botania:masterful_botany",
+  "icon": "masterfulbotany:gjallar_horn_full",
+  "name": "lexicon.entry.masterfulbotany.botania.masterful_botany.mimir",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "lexicon.entry.masterfulbotany.botania.masterful_botany.mimir.page0.text0"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "lexicon.entry.masterfulbotany.botania.masterful_botany.mimir.page1.text0"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "masterfulbotany:yggdrasil_branch",
+      "text": "lexicon.entry.masterfulbotany.botania.masterful_botany.mimir.page2.text0"
+    },
+    {
+      "type": "botania:mana_infusion",
+      "recipes": [
+        "masterfulbotany:gjallar_horn_empty_mana_infusion"
+      ],
+      "text": "lexicon.entry.masterfulbotany.botania.masterful_botany.mimir.page3.text0"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "masterfulbotany:gjallar_horn_full",
+      "link_recipe": true,
+      "text": "lexicon.entry.masterfulbotany.botania.masterful_botany.mimir.page4.text0"
+    }
+  ]
+}

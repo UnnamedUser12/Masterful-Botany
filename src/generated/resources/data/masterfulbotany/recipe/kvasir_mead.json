@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "masterfulbotany:kvasir_blood"
+    },
+    {
+      "item": "minecraft:honey_bottle"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "masterfulbotany:kvasir_mead"
+  }
+}

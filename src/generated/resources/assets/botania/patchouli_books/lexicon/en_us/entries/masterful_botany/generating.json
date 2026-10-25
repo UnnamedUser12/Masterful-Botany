@@ -1,0 +1,31 @@
+{
+  "category": "botania:masterful_botany",
+  "icon": "masterfulbotany:wither_aconite",
+  "name": "lexicon.entry.masterfulbotany.botania.masterful_botany.generating",
+  "pages": [
+    {
+      "type": "botania:petal_apothecary",
+      "recipe": "masterfulbotany:wither_aconite_petal_apothecary"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "lexicon.entry.masterfulbotany.botania.masterful_botany.generating.page1.text0"
+    },
+    {
+      "type": "botania:petal_apothecary",
+      "recipe": "masterfulbotany:raindeletia_petal_apothecary"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "lexicon.entry.masterfulbotany.botania.masterful_botany.generating.page3.text0"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "masterfulbotany:mana_collector"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "lexicon.entry.masterfulbotany.botania.masterful_botany.generating.page5.text0"
+    }
+  ]
+}

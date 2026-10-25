@@ -1,0 +1,49 @@
+package velrondevs.masterfulbotany.client.render.block_entity;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import velrondevs.masterfulbotany.common.block.block_entity.TileMjoellnir;
+import velrondevs.masterfulbotany.registry.ModBlocks;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.Level;
+import org.moddingx.libx.annotation.model.Model;
+
+public class RenderMjoellnir implements BlockEntityRenderer<TileMjoellnir> {
+
+    @Model("block/mjoellnir")
+    public static BakedModel model = null;
+
+    @Override
+    public void render(@Nonnull TileMjoellnir blockEntity, float partialTicks, @Nonnull PoseStack matrixStack, @Nonnull MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
+        renderHammer(blockEntity.getLevel(), blockEntity.getStack(), blockEntity.getBlockState(), matrixStack, buffer, combinedLight);
+    }
+    
+    public static void renderHammer(@Nullable Level level, @Nullable ItemStack stack, @Nullable BlockState state, PoseStack poseStack, MultiBufferSource buffer, int light) {
+        poseStack.pushPose();
+        if (stack != null && stack.getItem() == ModBlocks.mjoellnir.asItem()) {
+            poseStack.translate(0.5, 0.5, 0.5);
+            poseStack.mulPose(Axis.ZP.rotationDegrees(135));
+            Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.FIXED, light, OverlayTexture.NO_OVERLAY, poseStack, buffer, level,  0);
+        } else {
+            // Should not happen, just render it without the glint
+            PoseStack.Pose matrix = poseStack.last();
+            VertexConsumer vertex = buffer.getBuffer(RenderType.cutout());
+            //noinspection deprecation
+            Minecraft.getInstance().getBlockRenderer().getModelRenderer()
+                .renderModel(matrix, vertex, state == null ? ModBlocks.mjoellnir.defaultBlockState() : state,
+                        model, 1, 1, 1, light, OverlayTexture.NO_OVERLAY);
+        }
+        poseStack.popPose();
+    }
+}

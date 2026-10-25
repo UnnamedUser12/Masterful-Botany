@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 1197426680,
+    "separation": 6,
+    "spacing": 24
+  },
+  "structures": [
+    {
+      "structure": "masterfulbotany:elven_house",
+      "weight": 1
+    }
+  ]
+}

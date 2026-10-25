@@ -1,0 +1,36 @@
+{
+  "parent": "masterfulbotany:masterfulbotany/mjoellnir",
+  "criteria": {
+    "masterfulbotany_mjoellnir": {
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "masterfulbotany:alf_pixie"
+            }
+          }
+        ]
+      },
+      "trigger": "masterfulbotany:mjoellnir"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.masterfulbotany.masterfulbotany.kill_pixie.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "masterfulbotany:alf_pixie_spawn_egg"
+    },
+    "title": {
+      "translate": "advancements.masterfulbotany.masterfulbotany.kill_pixie.title"
+    }
+  },
+  "requirements": [
+    [
+      "masterfulbotany_mjoellnir"
+    ]
+  ]
+}

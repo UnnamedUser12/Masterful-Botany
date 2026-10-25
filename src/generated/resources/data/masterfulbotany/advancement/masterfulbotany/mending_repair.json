@@ -1,0 +1,36 @@
+{
+  "parent": "masterfulbotany:masterfulbotany/alfsteel",
+  "criteria": {
+    "masterfulbotany_alf_repair": {
+      "conditions": {
+        "item": {
+          "predicates": {
+            "minecraft:enchantments": [
+              {
+                "enchantments": "minecraft:mending"
+              }
+            ]
+          }
+        }
+      },
+      "trigger": "masterfulbotany:alf_repair"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.masterfulbotany.masterfulbotany.mending_repair.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "masterfulbotany:alfsteel_pylon"
+    },
+    "title": {
+      "translate": "advancements.masterfulbotany.masterfulbotany.mending_repair.title"
+    }
+  },
+  "requirements": [
+    [
+      "masterfulbotany_alf_repair"
+    ]
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "type": "masterfulbotany:alfheim",
+  "generator": {
+    "type": "libx:noise",
+    "biome_source": {
+      "type": "libx:layered",
+      "layers": "#masterfulbotany:alfheim"
+    },
+    "settings": "masterfulbotany:alfheim",
+    "surface_override": "masterfulbotany:alfheim_surface"
+  }
+}

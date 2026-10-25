@@ -1,0 +1,25 @@
+{
+  "type": "botania:runic_altar",
+  "ingredients": [
+    {
+      "tag": "c:ingots/copper"
+    },
+    {
+      "item": "botania:rune_earth"
+    },
+    {
+      "item": "botania:rune_winter"
+    },
+    {
+      "item": "botania:rune_sloth"
+    },
+    {
+      "item": "minecraft:iron_block"
+    }
+  ],
+  "mana": 16000,
+  "output": {
+    "count": 1,
+    "id": "masterfulbotany:nidavellir_rune"
+  }
+}

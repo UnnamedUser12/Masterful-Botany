@@ -1,0 +1,7 @@
+{
+  "parent": "botania:block/shapes/cross",
+  "render_type": "minecraft:cutout_mipped",
+  "textures": {
+    "cross": "masterfulbotany:block/wither_aconite"
+  }
+}
