@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.1
+- No gameplay changes. This version is built and uploaded automatically by GitHub Actions from the source repository.
+
 ## 1.0.0 
 - First release of Masterful Botany for NeoForge 1.21.1, built against Botania Revived 1.0.3. It is a derivative work of MythicBotany by noeppi_noeppi (https://github.com/noeppi-noeppi/MythicBotany, version 4.0 for 1.20.1 Forge); see NOTICE.
 - Ported to the 1.21 APIs: data components, codecs/stream codecs, new recipe system, block entity capabilities, payload networking, data driven enchantments and new datapack paths.
