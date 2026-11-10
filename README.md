@@ -1,7 +1,7 @@
 # Masterful Botany
 
 Masterful Botany is an addon for Botania that expands it while keeping its design principles. It targets
-**Minecraft 1.21.1 / NeoForge 21.1.x** and is built against **Botania Revived** (package `velrondevs.botania`, mod id `botania`).
+**Minecraft 26.1.2 / NeoForge 26.1.2.x** and is built against **Botania Revived** (package `velrondevs.botania`, mod id `botania`).
 
 This is a derivative work of an existing mod by **noeppi_noeppi** (contributor: MelanX). See [NOTICE](NOTICE) for the origin,
 the list of changes and the licensing information. It is not affiliated with or endorsed by the original author.
@@ -13,7 +13,7 @@ the list of changes and the licensing information. It is not affiliated with or 
 ## Requirements
 
 * NeoForge 21.1.240+ (Minecraft 1.21.1)
-* Botania Revived 1.0.3+
+* Botania Revived 2.0.0+
 * Patchouli, Curios (required by Botania Revived / this mod)
 * [LibX](https://github.com/ModdingX/LibX) `1.21.1-6.0.15`+
 * JEI (optional, recipe categories for the mana infuser and the rune rituals)

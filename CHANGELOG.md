@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.2
+- The mod now requires Botania Revived 2.0.0 or newer, and is built and tested against Botania Revived 26.1.2 (2.0.0).
+
 ## 1.0.1
 - Ported to Minecraft 26.1.2 / NeoForge 26.1.2.126, built against Botania Revived 26.1.2 (1.0.7) and LibX 26.1.2-7.0.6.
 - Updated to the LibX 7 API: registered items and blocks receive their `Properties` in the constructor, inventories use the new `ResourceHandler` transfer API and the datagen providers moved to `ModelProvider`.
