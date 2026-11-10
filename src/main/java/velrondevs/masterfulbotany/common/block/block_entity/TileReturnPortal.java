@@ -25,7 +25,7 @@ public class TileReturnPortal extends BlockEntityBase implements TickingBlock {
 
     @Override
     public void tick() {
-        if (this.level != null && !this.level.isClientSide) {
+        if (this.level != null && !this.level.isClientSide()) {
             if (!validPortal(this.level, this.worldPosition)) {
                 this.level.setBlockAndUpdate(this.worldPosition, Blocks.AIR.defaultBlockState());
                 return;
@@ -44,7 +44,6 @@ public class TileReturnPortal extends BlockEntityBase implements TickingBlock {
     }
 
     public static boolean validPortal(Level level, BlockPos pos) {
-        // Only allow return portals in alfheim.
         if (!Alfheim.DIMENSION.equals(level.dimension())) {
             return false;
         }

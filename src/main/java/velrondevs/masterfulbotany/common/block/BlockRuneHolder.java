@@ -10,20 +10,22 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.ScheduledTickAccess;
+import velrondevs.masterfulbotany.common.helper.StackHandlers;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.moddingx.libx.base.tile.BlockBE;
 import org.moddingx.libx.mod.ModX;
 import org.moddingx.libx.registration.SetupContext;
@@ -44,38 +46,37 @@ public class BlockRuneHolder<T extends TileRuneHolder> extends BlockBE<T> {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void setupClient(SetupContext ctx) {
         ctx.enqueue(() -> BlockEntityRenderers.register(this.getBlockEntityType(), mgr -> new RenderRuneHolder()));
     }
 
     @Nonnull
     @Override
-    protected ItemInteractionResult useItemOn(@Nonnull ItemStack handStack, @Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand, @Nonnull BlockHitResult hit) {
+    protected InteractionResult useItemOn(@Nonnull ItemStack handStack, @Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand, @Nonnull BlockHitResult hit) {
         TileRuneHolder tile = this.getBlockEntity(level, pos);
-        if (!tile.getInventory().getStackInSlot(0).isEmpty()) {
-            if (!level.isClientSide) {
+        if (!StackHandlers.get(tile.getInventory(), 0).isEmpty()) {
+            if (!level.isClientSide()) {
                 ItemStack held = player.getItemInHand(hand);
-                ItemStack stack = tile.getInventory().getStackInSlot(0);
+                ItemStack stack = StackHandlers.get(tile.getInventory(), 0);
                 if (held.isEmpty()) {
                     player.setItemInHand(hand, stack.copy());
                 } else if (ItemStack.isSameItemSameComponents(held, stack) && held.getCount() + stack.getCount() <= held.getMaxStackSize()) {
                     held.grow(stack.getCount());
                     player.setItemInHand(hand, held);
                 } else {
-                    player.getInventory().add(tile.getInventory().getStackInSlot(0).copy());
+                    player.getInventory().add(StackHandlers.get(tile.getInventory(), 0).copy());
                 }
-                tile.getInventory().setStackInSlot(0, ItemStack.EMPTY);
+                StackHandlers.set(tile.getInventory(), 0, ItemStack.EMPTY);
             }
-            return ItemInteractionResult.sidedSuccess(level.isClientSide);
-        } else if (tile.getInventory().isItemValid(0, player.getItemInHand(hand)) && player.getItemInHand(hand).getCount() >= 1) {
-            if (!level.isClientSide) {
+            return InteractionResult.SUCCESS;
+        } else if (!player.getItemInHand(hand).isEmpty() && tile.getInventory().isValid(0, ItemResource.of(player.getItemInHand(hand))) && player.getItemInHand(hand).getCount() >= 1) {
+            if (!level.isClientSide()) {
                 ItemStack held = player.getItemInHand(hand);
                 ItemStack stack = held.split(1);
-                tile.getInventory().setStackInSlot(0, stack);
+                StackHandlers.set(tile.getInventory(), 0, stack);
                 player.setItemInHand(hand, held);
             }
-            return ItemInteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.SUCCESS;
         } else {
             return super.useItemOn(handStack, state, level, pos, player, hand, hit);
         }
@@ -83,22 +84,19 @@ public class BlockRuneHolder<T extends TileRuneHolder> extends BlockBE<T> {
     
     @Nonnull
     @Override
-    @SuppressWarnings("deprecation")
-    public VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos, @Nonnull CollisionContext context) {
+    protected VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos, @Nonnull CollisionContext context) {
         return SHAPE;
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public boolean canSurvive(@Nonnull BlockState state, @Nonnull LevelReader level, @Nonnull BlockPos pos) {
+    protected boolean canSurvive(@Nonnull BlockState state, @Nonnull LevelReader level, @Nonnull BlockPos pos) {
         return canSupportCenter(level, pos.below(), Direction.UP);
     }
     
     @Nonnull
     @Override
-    @SuppressWarnings("deprecation")
-    public BlockState updateShape(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull LevelAccessor level, @Nonnull BlockPos currentPos, @Nonnull BlockPos facingPos) {
-        return facing == Direction.DOWN && !this.canSurvive(state, level, currentPos) ? Blocks.AIR.defaultBlockState() : super.updateShape(state, facing, facingState, level, currentPos, facingPos);
+    protected BlockState updateShape(@Nonnull BlockState state, @Nonnull LevelReader level, @Nonnull ScheduledTickAccess ticks, @Nonnull BlockPos pos, @Nonnull Direction direction, @Nonnull BlockPos neighborPos, @Nonnull BlockState neighborState, @Nonnull RandomSource random) {
+        return direction == Direction.DOWN && !this.canSurvive(state, level, pos) ? Blocks.AIR.defaultBlockState() : super.updateShape(state, level, ticks, pos, direction, neighborPos, neighborState, random);
     }
     
     @Nonnull

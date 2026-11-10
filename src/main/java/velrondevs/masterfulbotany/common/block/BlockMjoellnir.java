@@ -17,8 +17,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.InteractionHand;
@@ -34,8 +36,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.moddingx.libx.base.tile.BlockBE;
 import org.moddingx.libx.mod.ModX;
 import org.moddingx.libx.registration.Registerable;
@@ -55,8 +55,8 @@ public class BlockMjoellnir extends BlockBE<TileMjoellnir> implements Registerab
 
     public BlockMjoellnir(ModX mod, Properties properties, Item.Properties itemProperties) {
         super(mod, TileMjoellnir.class, properties, null);
-        this.item = new ItemMjoellnir(this, itemProperties);
-        this.entityType = EntityType.Builder.<Mjoellnir>of(Mjoellnir::new, MobCategory.MISC).sized(0.6f, 0.9f).clientTrackingRange(20).build(MasterfulBotany.getInstance().modid + "_mjoellnir");
+        this.item = new ItemMjoellnir(this, itemProperties.useBlockDescriptionPrefix());
+        this.entityType = EntityType.Builder.<Mjoellnir>of(Mjoellnir::new, MobCategory.MISC).sized(0.6f, 0.9f).clientTrackingRange(20).build(ResourceKey.create(Registries.ENTITY_TYPE, MasterfulBotany.getInstance().id("mjoellnir")));
     }
 
     public EntityType<Mjoellnir> getEntityType() {
@@ -71,16 +71,14 @@ public class BlockMjoellnir extends BlockBE<TileMjoellnir> implements Registerab
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void setupClient(SetupContext ctx) {
         ctx.enqueue(() -> BlockEntityRenderers.register(this.getBlockEntityType(), mgr -> new RenderMjoellnir()));
     }
 
     @Nonnull
     @Override
-    @SuppressWarnings("deprecation")
     protected InteractionResult useWithoutItem(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull BlockHitResult hit) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             if (canHold(player)) {
                 TileMjoellnir tile = this.getBlockEntity(level, pos);
                 if (putInInventory(player, tile.getStack().copy(), getHotbarSlot(player, InteractionHand.MAIN_HAND))) {
@@ -92,21 +90,19 @@ public class BlockMjoellnir extends BlockBE<TileMjoellnir> implements Registerab
                 player.sendSystemMessage(Component.translatable("message.masterfulbotany.mjoellnir_heavy_pick").withStyle(ChatFormatting.GRAY));
             }
         }
-        return InteractionResult.sidedSuccess(level.isClientSide);
+        return InteractionResult.SUCCESS;
     }
 
     @Nonnull
     @Override
-    @SuppressWarnings("deprecation")
-    public VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos, @Nonnull CollisionContext context) {
+    protected VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos, @Nonnull CollisionContext context) {
         return SHAPE;
     }
 
     @Nonnull
     @Override
-    @SuppressWarnings("deprecation")
-    public RenderShape getRenderShape(@Nonnull BlockState state) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
+    protected RenderShape getRenderShape(@Nonnull BlockState state) {
+        return RenderShape.INVISIBLE;
     }
     
     public static boolean placeInWorld(ItemStack stack, Level level, BlockPos pos) {
@@ -129,7 +125,7 @@ public class BlockMjoellnir extends BlockBE<TileMjoellnir> implements Registerab
                     });
                 }
                 ModBlocks.mjoellnir.getBlockEntity(level, pos).setStack(stack.copy());
-                if (!level.isClientSide) {
+                if (!level.isClientSide()) {
                     level.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.ANVIL_PLACE, SoundSource.BLOCKS, 1, 1);
                 }
                 return true;
@@ -167,9 +163,9 @@ public class BlockMjoellnir extends BlockBE<TileMjoellnir> implements Registerab
                 inserted = true;
             }
         } else if (hotbarSlot == 9) {
-            ItemStack current = player.getInventory().offhand.get(0);
+            ItemStack current = player.getItemBySlot(EquipmentSlot.OFFHAND);
             if (current.isEmpty()) {
-                player.getInventory().offhand.set(0, stack);
+                player.setItemSlot(EquipmentSlot.OFFHAND, stack);
                 inserted = true;
             }
         }
@@ -184,6 +180,6 @@ public class BlockMjoellnir extends BlockBE<TileMjoellnir> implements Registerab
     }
 
     public static int getHotbarSlot(Player player, InteractionHand hand) {
-        return hand == InteractionHand.MAIN_HAND ? player.getInventory().selected : 9;
+        return hand == InteractionHand.MAIN_HAND ? player.getInventory().getSelectedSlot() : 9;
     }
 }

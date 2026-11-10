@@ -1,16 +1,9 @@
 {
   "type": "minecraft:smithing_transform",
-  "addition": {
-    "item": "masterfulbotany:alfsteel_ingot"
-  },
-  "base": {
-    "item": "botania:terra_pick"
-  },
+  "addition": "masterfulbotany:alfsteel_ingot",
+  "base": "botania:terra_pick",
   "result": {
-    "count": 1,
     "id": "masterfulbotany:alfsteel_pick"
   },
-  "template": {
-    "item": "masterfulbotany:alfsteel_template"
-  }
+  "template": "masterfulbotany:alfsteel_template"
 }

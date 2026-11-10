@@ -95,7 +95,7 @@
   "message.masterfulbotany.ritual_less_mana": "你不能理解仪式的强大，但你一定要确保有足够的魔力。",
   "message.masterfulbotany.ritual_wrong_items": "仪式对您来说是十分熟悉的，您会感觉到，您有权执行这个仪式。 但是祭品似乎有些问题。",
   "message.masterfulbotany.ritual_no_trader": "这种仪式需要更加残酷地执行。你要牺牲一个游荡商人，否则您将无法继续进行。",
-  "message.masterfulbotany.mjoellnir_heavy_pick": "锤子的重量太大，无法举起。据说食用绮瞳的金苹果可以获得强大的力量。",
+  "message.masterfulbotany.mjoellnir_heavy_pick": "锤子的重量太大，无法举起。据说食用绮瞳的金苹果可以获得强大的力量。装备在 Curios 栏位中的雷神之戒也能让你拿起它。",
   "message.masterfulbotany.mjoellnir_heavy_drop":  "你感觉到你手臂的力量是如何减弱的。你再也拿不住那个沉重的锤子了。",
 
   "advancements.masterfulbotany.masterfulbotany.root.title": "神话植物学",

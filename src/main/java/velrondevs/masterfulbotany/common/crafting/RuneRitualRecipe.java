@@ -15,18 +15,22 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategories;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.Level;
 
 public class RuneRitualRecipe implements Recipe<StackListInput> {
 
-    private static final Map<ResourceLocation, SpecialRuneInput> specialInputs = new HashMap<>();
-    private static final Map<ResourceLocation, SpecialRuneOutput> specialOutputs = new HashMap<>();
+    private static final Map<Identifier, SpecialRuneInput> specialInputs = new HashMap<>();
+    private static final Map<Identifier, SpecialRuneOutput> specialOutputs = new HashMap<>();
 
     public static void registerSpecialInput(SpecialRuneInput action) {
         synchronized (specialInputs) {
@@ -51,13 +55,13 @@ public class RuneRitualRecipe implements Recipe<StackListInput> {
     private final int mana;
     private final int ticks;
     private final List<Ingredient> inputs;
-    private final List<ItemStack> outputs;
+    private final List<ItemStackTemplate> outputs;
     @Nullable
-    private final ResourceLocation specialInputId;
+    private final Identifier specialInputId;
     @Nullable
-    private final ResourceLocation specialOutputId;
+    private final Identifier specialOutputId;
 
-    public RuneRitualRecipe(Ingredient centerRune, List<RunePosition> runes, int mana, int ticks, List<Ingredient> inputs, List<ItemStack> outputs, @Nullable ResourceLocation specialInputId, @Nullable ResourceLocation specialOutputId) {
+    public RuneRitualRecipe(Ingredient centerRune, List<RunePosition> runes, int mana, int ticks, List<Ingredient> inputs, List<ItemStackTemplate> outputs, @Nullable Identifier specialInputId, @Nullable Identifier specialOutputId) {
         this.centerRune = centerRune;
         this.runes = ImmutableList.copyOf(runes);
         this.mana = mana;
@@ -70,14 +74,37 @@ public class RuneRitualRecipe implements Recipe<StackListInput> {
 
     @Nonnull
     @Override
-    public RecipeType<?> getType() {
+    public RecipeType<RuneRitualRecipe> getType() {
         return ModRecipes.runeRitual;
     }
 
     @Nonnull
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<RuneRitualRecipe> getSerializer() {
         return Serializer.INSTANCE;
+    }
+
+    @Override
+    public boolean showNotification() {
+        return false;
+    }
+
+    @Nonnull
+    @Override
+    public String group() {
+        return "";
+    }
+
+    @Nonnull
+    @Override
+    public PlacementInfo placementInfo() {
+        return PlacementInfo.NOT_PLACEABLE;
+    }
+
+    @Nonnull
+    @Override
+    public RecipeBookCategory recipeBookCategory() {
+        return RecipeBookCategories.CRAFTING_MISC;
     }
 
     @Override
@@ -88,34 +115,25 @@ public class RuneRitualRecipe implements Recipe<StackListInput> {
     @Nonnull
     public ItemStack getResultItem() {
         if (this.outputs.size() == 1) {
-            return this.outputs.get(0);
+            return this.outputs.get(0).create();
         }
         return ItemStack.EMPTY;
     }
 
     @Nonnull
-    @Override
     public ItemStack getResultItem(@Nonnull HolderLookup.Provider registries) {
         return this.getResultItem();
     }
 
     @Nonnull
     @Override
-    public ItemStack assemble(@Nonnull StackListInput container, @Nonnull HolderLookup.Provider registries) {
+    public ItemStack assemble(@Nonnull StackListInput container) {
         return this.getResultItem().copy();
     }
 
-    /**
-     * Special recipes are not shown in the recipe book (the recipe book has no category for custom recipe types).
-     */
     @Override
     public boolean isSpecial() {
         return true;
-    }
-
-    @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return false;
     }
 
     public Ingredient getCenterRune() {
@@ -139,7 +157,7 @@ public class RuneRitualRecipe implements Recipe<StackListInput> {
     }
 
     public List<ItemStack> getOutputs() {
-        return this.outputs;
+        return this.outputs.stream().map(ItemStackTemplate::create).toList();
     }
 
     @Nullable
@@ -248,9 +266,7 @@ public class RuneRitualRecipe implements Recipe<StackListInput> {
         }
     }
 
-    public static class Serializer implements RecipeSerializer<RuneRitualRecipe> {
-
-        public static final Serializer INSTANCE = new Serializer();
+    public static class Serializer {
 
         public static final MapCodec<RuneRitualRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                 Ingredient.CODEC.fieldOf("center").forGetter(RuneRitualRecipe::getCenterRune),
@@ -258,28 +274,18 @@ public class RuneRitualRecipe implements Recipe<StackListInput> {
                 Codec.INT.optionalFieldOf("mana", 0).forGetter(RuneRitualRecipe::getMana),
                 Codec.INT.optionalFieldOf("ticks", 200).forGetter(RuneRitualRecipe::getTicks),
                 Ingredient.CODEC.listOf().optionalFieldOf("inputs", List.of()).forGetter(RuneRitualRecipe::getInputs),
-                ItemStack.STRICT_CODEC.listOf().optionalFieldOf("outputs", List.of()).forGetter(RuneRitualRecipe::getOutputs),
-                ResourceLocation.CODEC.optionalFieldOf("special_input").forGetter(r -> Optional.ofNullable(r.specialInputId)),
-                ResourceLocation.CODEC.optionalFieldOf("special_output").forGetter(r -> Optional.ofNullable(r.specialOutputId))
+                ItemStackTemplate.CODEC.listOf().optionalFieldOf("outputs", List.of()).forGetter(recipe -> recipe.outputs),
+                Identifier.CODEC.optionalFieldOf("special_input").forGetter(r -> Optional.ofNullable(r.specialInputId)),
+                Identifier.CODEC.optionalFieldOf("special_output").forGetter(r -> Optional.ofNullable(r.specialOutputId))
         ).apply(instance, (center, runes, mana, ticks, inputs, outputs, specialInput, specialOutput) ->
                 new RuneRitualRecipe(center, runes, mana, ticks, inputs, outputs, specialInput.orElse(null), specialOutput.orElse(null))));
 
         public static final StreamCodec<RegistryFriendlyByteBuf, RuneRitualRecipe> STREAM_CODEC = StreamCodec.of(Serializer::toNetwork, Serializer::fromNetwork);
 
+        public static final RecipeSerializer<RuneRitualRecipe> INSTANCE = new RecipeSerializer<>(CODEC, STREAM_CODEC);
+
         private Serializer() {
 
-        }
-
-        @Nonnull
-        @Override
-        public MapCodec<RuneRitualRecipe> codec() {
-            return CODEC;
-        }
-
-        @Nonnull
-        @Override
-        public StreamCodec<RegistryFriendlyByteBuf, RuneRitualRecipe> streamCodec() {
-            return STREAM_CODEC;
         }
 
         private static RuneRitualRecipe fromNetwork(RegistryFriendlyByteBuf buffer) {
@@ -288,9 +294,9 @@ public class RuneRitualRecipe implements Recipe<StackListInput> {
             int mana = buffer.readVarInt();
             int ticks = buffer.readVarInt();
             List<Ingredient> inputs = Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()).decode(buffer);
-            List<ItemStack> outputs = ItemStack.STREAM_CODEC.apply(ByteBufCodecs.list()).decode(buffer);
-            ResourceLocation specialInputId = buffer.readOptional(net.minecraft.network.FriendlyByteBuf::readResourceLocation).orElse(null);
-            ResourceLocation specialOutputId = buffer.readOptional(net.minecraft.network.FriendlyByteBuf::readResourceLocation).orElse(null);
+            List<ItemStackTemplate> outputs = ItemStackTemplate.STREAM_CODEC.apply(ByteBufCodecs.list()).decode(buffer);
+            Identifier specialInputId = buffer.readOptional(net.minecraft.network.FriendlyByteBuf::readIdentifier).orElse(null);
+            Identifier specialOutputId = buffer.readOptional(net.minecraft.network.FriendlyByteBuf::readIdentifier).orElse(null);
             return new RuneRitualRecipe(centerRune, runes, mana, ticks, inputs, outputs, specialInputId, specialOutputId);
         }
 
@@ -300,9 +306,9 @@ public class RuneRitualRecipe implements Recipe<StackListInput> {
             buffer.writeVarInt(recipe.getMana());
             buffer.writeVarInt(recipe.getTicks());
             Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()).encode(buffer, recipe.getInputs());
-            ItemStack.STREAM_CODEC.apply(ByteBufCodecs.list()).encode(buffer, recipe.getOutputs());
-            buffer.writeOptional(Optional.ofNullable(recipe.specialInputId), net.minecraft.network.FriendlyByteBuf::writeResourceLocation);
-            buffer.writeOptional(Optional.ofNullable(recipe.specialOutputId), net.minecraft.network.FriendlyByteBuf::writeResourceLocation);
+            ItemStackTemplate.STREAM_CODEC.apply(ByteBufCodecs.list()).encode(buffer, recipe.outputs);
+            buffer.writeOptional(Optional.ofNullable(recipe.specialInputId), net.minecraft.network.FriendlyByteBuf::writeIdentifier);
+            buffer.writeOptional(Optional.ofNullable(recipe.specialOutputId), net.minecraft.network.FriendlyByteBuf::writeIdentifier);
         }
     }
 }

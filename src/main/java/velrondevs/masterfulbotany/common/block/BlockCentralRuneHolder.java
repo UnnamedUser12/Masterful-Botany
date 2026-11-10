@@ -10,7 +10,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.Level;
@@ -30,28 +31,28 @@ public class BlockCentralRuneHolder extends BlockRuneHolder<TileCentralRuneHolde
 
     @Nonnull
     @Override
-    protected ItemInteractionResult useItemOn(@Nonnull ItemStack handStack, @Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand, @Nonnull BlockHitResult hit) {
+    protected InteractionResult useItemOn(@Nonnull ItemStack handStack, @Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand, @Nonnull BlockHitResult hit) {
         if (handStack.getItem() instanceof WandOfTheForestItem) {
-            if (!level.isClientSide) {
-                if (!MasterfulPlayerData.getData(player).getBoolean("MimirKnowledge")) {
+            if (!level.isClientSide()) {
+                if (!MasterfulPlayerData.has(player, "MimirKnowledge")) {
                     player.sendSystemMessage(Component.translatable("message.masterfulbotany.mimir_unknown").withStyle(ChatFormatting.GRAY));
                 } else {
                     TileCentralRuneHolder tile = this.getBlockEntity(level, pos);
                     tile.tryStartRitual(player);
                 }
             }
-            return ItemInteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.SUCCESS;
         } else {
             return super.useItemOn(handStack, state, level, pos, player, hand, hit);
         }
     }
 
     @Override
-    public void onRemove(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
+    protected void affectNeighborsAfterRemoval(@Nonnull BlockState state, @Nonnull ServerLevel level, @Nonnull BlockPos pos, boolean movedByPiston) {
         BlockEntity te = level.getBlockEntity(pos);
         if (te instanceof TileCentralRuneHolder) {
             ((TileCentralRuneHolder) te).cancelRecipe();
         }
-        super.onRemove(state, level, pos, newState, isMoving);
+        super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
     }
 }

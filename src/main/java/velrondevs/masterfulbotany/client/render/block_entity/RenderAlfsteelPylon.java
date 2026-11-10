@@ -1,56 +1,48 @@
 package velrondevs.masterfulbotany.client.render.block_entity;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Axis;
 import java.util.Random;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import velrondevs.masterfulbotany.common.block.block_entity.TileAlfsteelPylon;
-import velrondevs.masterfulbotany.common.block.BlockAlfsteelPylon;
 import velrondevs.masterfulbotany.MasterfulBotany;
-import velrondevs.masterfulbotany.registry.ModBlocks;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.rendertype.OutputTarget;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import org.moddingx.libx.render.ClientTickHandler;
-import org.moddingx.libx.util.lazy.LazyValue;
 import velrondevs.botania.client.core.helper.CoreShaders;
 import velrondevs.botania.client.model.BotaniaModelLayers;
 import velrondevs.botania.client.model.NaturaPylonModel;
-import velrondevs.botania.client.model.PylonModel;
+import velrondevs.botania.client.render.block_entity.BotaniaBlockEntityRenderer;
+import velrondevs.botania.client.render.block_entity.TEISR;
 
-public class RenderAlfsteelPylon implements BlockEntityRenderer<TileAlfsteelPylon> {
+public class RenderAlfsteelPylon extends BotaniaBlockEntityRenderer<TileAlfsteelPylon> {
 
-    public static final ResourceLocation TEXTURE = MasterfulBotany.getInstance().resource("textures/model/pylon_alfsteel.png");
-    public static final RenderType TARGET = createRenderType(false);
-    public static final RenderType DIRECT_TARGET = createRenderType(true);
-    
+    public static final Identifier TEXTURE = MasterfulBotany.getInstance().id("textures/model/pylon_alfsteel.png");
+
+    private static RenderType target;
+    private static RenderType directTarget;
+    private static ItemDisplayContext forceTransform = ItemDisplayContext.NONE;
+
     private final NaturaPylonModel model;
-    private ItemDisplayContext forceTransform = ItemDisplayContext.NONE;
 
     public RenderAlfsteelPylon(BlockEntityRendererProvider.Context ctx) {
         this.model = new NaturaPylonModel(ctx.bakeLayer(BotaniaModelLayers.PYLON_NATURA));
     }
-    
-    public void render(@Nonnull TileAlfsteelPylon blockEntity, float partialTicks, @Nonnull PoseStack matrixStack, @Nonnull MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
-        this.doRender(blockEntity, partialTicks, matrixStack, buffer, combinedLight, combinedOverlay);
-    }
 
-    public void doRender(@Nullable TileAlfsteelPylon pylon, float pticks, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay) {
-        boolean direct = pylon == null && (this.forceTransform == ItemDisplayContext.GUI || this.forceTransform.firstPerson());
-        RenderType glow = direct ? DIRECT_TARGET : TARGET;
+    @Override
+    protected void render(@Nullable TileAlfsteelPylon pylon, float pticks, PoseStack poseStack, MultiBufferSource buffer, SubmitNodeCollector collector, int light, int overlay) {
+        boolean direct = pylon == null && (forceTransform == ItemDisplayContext.GUI || forceTransform.firstPerson());
+        RenderType glow = glowType(direct);
 
         poseStack.pushPose();
         float worldTime = (float) ClientTickHandler.ticksInGame() + pticks;
@@ -63,8 +55,7 @@ public class RenderAlfsteelPylon implements BlockEntityRenderer<TileAlfsteelPylo
             poseStack.mulPose(Axis.YP.rotationDegrees(worldTime * 1.5F));
         }
 
-        RenderType layer = RenderType.entityTranslucent(TEXTURE);
-        VertexConsumer vertex = buffer.getBuffer(layer);
+        VertexConsumer vertex = buffer.getBuffer(RenderTypes.entityTranslucent(TEXTURE));
         this.model.renderRing(poseStack, vertex, light, overlay);
         if (pylon != null) {
             poseStack.translate(0.0D, Math.sin((double) worldTime / 20.0D) / 20.0D - 0.025D, 0.0D);
@@ -87,38 +78,35 @@ public class RenderAlfsteelPylon implements BlockEntityRenderer<TileAlfsteelPylo
         poseStack.popPose();
     }
 
-    public static class ItemRenderer extends BlockEntityWithoutLevelRenderer {
+    public static class ItemRenderer extends TEISR {
 
-        private static final LazyValue<TileAlfsteelPylon> DUMMY = new LazyValue<>(() -> new TileAlfsteelPylon(ModBlocks.alfsteelPylon.getBlockEntityType(), BlockPos.ZERO, ModBlocks.alfsteelPylon.defaultBlockState()));
-
-        public ItemRenderer() {
-            super(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
+        public ItemRenderer(Block block) {
+            super(block);
         }
-        
+
         @Override
-        public void renderByItem(ItemStack stack, @Nonnull ItemDisplayContext context, @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource buffer, int light, int overlay) {
-            if (Block.byItem(stack.getItem()) instanceof BlockAlfsteelPylon) {
-                BlockEntityRenderer<TileAlfsteelPylon> renderer = this.blockEntityRenderDispatcher.getRenderer(DUMMY.get());
-                //noinspection ConstantConditions
-                ((RenderAlfsteelPylon) renderer).forceTransform = context;
-                ((RenderAlfsteelPylon) renderer).doRender(null, 0f, poseStack, buffer, light, overlay);
-            }
+        public void render(ItemStack stack, ItemDisplayContext context, PoseStack poseStack, SubmitNodeCollector collector, int light, int overlay) {
+            forceTransform = context;
+            super.render(stack, context, poseStack, collector, light, overlay);
         }
     }
-    
+
+    private static synchronized RenderType glowType(boolean direct) {
+        if (target == null) {
+            target = createRenderType(false);
+            directTarget = createRenderType(true);
+        }
+        return direct ? directTarget : target;
+    }
+
     private static RenderType createRenderType(boolean direct) {
-        RenderType.CompositeState.CompositeStateBuilder state = RenderType.CompositeState.builder()
-                .setShaderState(new RenderStateShard.ShaderStateShard(CoreShaders::pylon))
-                .setTextureState(new RenderStateShard.TextureStateShard(TEXTURE, false, false))
-                .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
-                .setCullState(RenderStateShard.NO_CULL)
-                .setLightmapState(RenderStateShard.LIGHTMAP)
-                .setOverlayState(RenderStateShard.OVERLAY);
-        if (!direct) state = state.setOutputState(RenderStateShard.ITEM_ENTITY_TARGET);
-        return RenderType.create(
-                "masterfulbotany_pylon" + (direct ? "_direct" : ""), DefaultVertexFormat.NEW_ENTITY,
-                VertexFormat.Mode.QUADS, 128, false, false,
-                state.createCompositeState(false)
-        );
+        RenderSetup.RenderSetupBuilder builder = RenderSetup.builder(CoreShaders.pylon())
+                .withTexture("Sampler0", TEXTURE)
+                .useLightmap()
+                .useOverlay();
+        if (!direct) {
+            builder = builder.setOutputTarget(OutputTarget.ITEM_ENTITY_TARGET);
+        }
+        return RenderType.create("masterfulbotany:pylon" + (direct ? "_direct" : ""), builder.createRenderSetup());
     }
 }

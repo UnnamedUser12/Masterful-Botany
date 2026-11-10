@@ -1,17 +1,15 @@
 {
-  "carvers": {
-    "air": [
-      "masterfulbotany:cave",
-      "masterfulbotany:canyon"
-    ]
+  "attributes": {
+    "minecraft:visual/water_fog_color": "#041633"
   },
+  "carvers": [
+    "masterfulbotany:cave",
+    "masterfulbotany:canyon"
+  ],
   "creature_spawn_probability": 0.2,
   "downfall": 0.4,
   "effects": {
-    "fog_color": 12638463,
-    "sky_color": 7907327,
-    "water_color": 4566514,
-    "water_fog_color": 267827
+    "water_color": "#45adf2"
   },
   "features": [
     [],

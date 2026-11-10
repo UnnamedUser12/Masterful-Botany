@@ -21,7 +21,7 @@ import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.monster.Endermite;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import velrondevs.botania.client.fx.SparkleParticleData;
@@ -43,8 +43,8 @@ public class AlfPixie extends PathfinderMob {
         this.goalSelector.addGoal(7, new LookAroundGoal(this));
         this.goalSelector.addGoal(12, new LookAtPlayerGoal(this, Player.class, 6.0F));
         this.targetSelector.addGoal(1, (new HurtByTargetGoal(this)).setAlertOthers());
-        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, EnderMan.class, 0, true, false, entity -> true));
-        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, Endermite.class, 0, true, false, entity -> true));
+        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, EnderMan.class, 0, true, false, (entity, serverLevel) -> true));
+        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, Endermite.class, 0, true, false, (entity, serverLevel) -> true));
         this.initExtraAI();
     }
 
@@ -58,12 +58,12 @@ public class AlfPixie extends PathfinderMob {
 
     public void aiStep() {
         super.aiStep();
-        if (!this.level().isClientSide && this.isAlive()) {
+        if (!this.level().isClientSide() && this.isAlive()) {
             if (this.tickCount % 10 == 0 && this.deathTime == 0) {
                 this.heal(1);
             }
         }
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             for (int i = 0; i < 4; i++) {
                 SparkleParticleData data = SparkleParticleData.sparkle(0.1F + (float) Math.random() * 0.25f, 1, 0.25f, 0.9f, 12);
                 this.level().addParticle(data, this.getX() + (Math.random() - 0.5) * 0.25,
@@ -97,7 +97,7 @@ public class AlfPixie extends PathfinderMob {
     }
 
     @Override
-    protected int calculateFallDamage(float distance, float damageMultiplier) {
+    protected int calculateFallDamage(double distance, float damageMultiplier) {
         return 0;
     }
 
@@ -109,7 +109,7 @@ public class AlfPixie extends PathfinderMob {
                 .build();
     }
 
-    public static boolean canSpawnAt(EntityType<AlfPixie> type, LevelAccessor level, MobSpawnType reason, BlockPos pos, RandomSource random) {
+    public static boolean canSpawnAt(EntityType<AlfPixie> type, ServerLevelAccessor level, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
         return level.getBlockState(pos).isAir();
     }
 

@@ -3,11 +3,8 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 0.7,
-  "ingredient": {
-    "item": "masterfulbotany:elementium_ore"
-  },
+  "ingredient": "masterfulbotany:elementium_ore",
   "result": {
-    "count": 1,
     "id": "botania:elementium_ingot"
   }
 }

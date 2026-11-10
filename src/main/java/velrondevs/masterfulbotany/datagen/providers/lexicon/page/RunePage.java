@@ -2,16 +2,16 @@ package velrondevs.masterfulbotany.datagen.providers.lexicon.page;
 
 import java.util.List;
 import javax.annotation.Nullable;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.moddingx.libx.datagen.provider.patchouli.content.RecipePage;
 
 public class RunePage extends RecipePage {
 
-    public RunePage(ResourceLocation recipe) {
+    public RunePage(Identifier recipe) {
         this(List.of(recipe), null);
     }
     
-    private RunePage(List<ResourceLocation> recipes, @Nullable String caption) {
+    private RunePage(List<Identifier> recipes, @Nullable String caption) {
         super("botania:runic_altar", recipes, caption);
     }
 

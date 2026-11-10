@@ -1,9 +1,10 @@
 {
   "parent": "minecraft:block/block",
   "flower": {
-    "parent": "masterfulbotany:block/hellebore",
-    "render_type": "minecraft:cutout_mipped"
+    "parent": "masterfulbotany:block/hellebore"
   },
   "loader": "botania:floating_flower",
-  "render_type": "minecraft:cutout_mipped"
+  "textures": {
+    "particle": "masterfulbotany:block/hellebore"
+  }
 }

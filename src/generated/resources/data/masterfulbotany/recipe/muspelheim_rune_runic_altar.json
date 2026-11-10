@@ -1,25 +1,14 @@
 {
   "type": "botania:runic_altar",
   "ingredients": [
-    {
-      "tag": "c:bricks/nether"
-    },
-    {
-      "item": "botania:rune_fire"
-    },
-    {
-      "item": "botania:rune_summer"
-    },
-    {
-      "item": "botania:rune_wrath"
-    },
-    {
-      "item": "minecraft:magma_block"
-    }
+    "#c:bricks/nether",
+    "botania:rune_fire",
+    "botania:rune_summer",
+    "botania:rune_wrath",
+    "minecraft:magma_block"
   ],
   "mana": 16000,
   "output": {
-    "count": 1,
     "id": "masterfulbotany:muspelheim_rune"
   }
 }

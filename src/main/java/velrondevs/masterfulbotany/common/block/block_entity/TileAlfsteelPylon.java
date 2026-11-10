@@ -32,8 +32,7 @@ public class TileAlfsteelPylon extends BlockEntityMana implements TickingBlock {
 
     @Override
     public void tick() {
-        //noinspection ConstantConditions
-        if (!this.level.isClientSide) {
+        if (!this.level.isClientSide()) {
             List<ItemEntity> items = this.getItems();
             if (items.size() == 1) {
                 ItemEntity item = items.get(0);
@@ -54,7 +53,7 @@ public class TileAlfsteelPylon extends BlockEntityMana implements TickingBlock {
                             MasterfulBotany.getNetwork().removeItemMagnetImmune(item);
                         }
                         this.setChanged();
-                        PacketDistributor.sendToPlayersTrackingChunk((net.minecraft.server.level.ServerLevel) this.level, new net.minecraft.world.level.ChunkPos(this.worldPosition), new PylonMessage(this.worldPosition));
+                        PacketDistributor.sendToPlayersTrackingChunk((net.minecraft.server.level.ServerLevel) this.level, net.minecraft.world.level.ChunkPos.containing(this.worldPosition), new PylonMessage(this.worldPosition));
                     }
                 }
             }
@@ -62,7 +61,6 @@ public class TileAlfsteelPylon extends BlockEntityMana implements TickingBlock {
     }
 
     private List<ItemEntity> getItems() {
-        //noinspection ConstantConditions
         return this.level.getEntitiesOfClass(ItemEntity.class, new AABB(Vec3.atLowerCornerOf(this.worldPosition.offset(0, 1, 0)), Vec3.atLowerCornerOf(this.worldPosition.offset(1, 2, 1))));
     }
 

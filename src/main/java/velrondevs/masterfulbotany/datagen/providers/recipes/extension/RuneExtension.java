@@ -4,10 +4,9 @@ import java.util.Arrays;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
-import org.moddingx.libx.datagen.provider.recipe.RecipeExtension;
 import velrondevs.botania.common.crafting.RunicAltarRecipe;
 
-public interface RuneExtension extends RecipeExtension {
+public interface RuneExtension extends MasterfulRecipeExtension {
 
     default void runeAltar(ItemLike output, int mana, ItemLike... inputs) {
         this.runeAltar(new ItemStack(output), mana, inputs);
@@ -22,6 +21,6 @@ public interface RuneExtension extends RecipeExtension {
     }
 
     default void runeAltar(ItemStack output, int mana, Ingredient... inputs) {
-        this.output().accept(this.provider().loc(output.getItem(), "runic_altar"), new RunicAltarRecipe(output, mana, inputs), null);
+        this.save(this.provider().id(output.getItem(), "runic_altar"), new RunicAltarRecipe(output, mana, inputs));
     }
 }

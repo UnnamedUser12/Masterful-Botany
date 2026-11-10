@@ -5,6 +5,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.data.worldgen.BiomeDefaultFeatures;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeGenerationSettings;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
@@ -45,12 +46,9 @@ public class AlfheimBiomes extends BiomeProviderBase {
             ).build();
 
     public final Holder<Biome> goldenFields = this.alfheimBiome(0.8f, 0.4f)
-            .effects(
-                    this.alfheimEffects()
-                            .waterColor(0x45adf2)
-                            .waterFogColor(0x41633)
-                            .fogColor(0xc0d8ff)
-            ).generation(
+            .effects(this.alfheimEffects().waterColor(0x45adf2))
+            .attributes(this.attributes().set(EnvironmentAttributes.WATER_FOG_COLOR, 0xFF041633))
+            .generation(
                     alfheimGen()
                             .addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, this.placements.wheatFields)
                             .addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, this.placements.extraGoldOre)
@@ -58,12 +56,9 @@ public class AlfheimBiomes extends BiomeProviderBase {
             ).build();
 
     public final Holder<Biome> alfheimLakes = this.alfheimBiome(0.9f, 1f)
-            .effects(
-                    this.alfheimEffects()
-                            .waterColor(0x45adf2)
-                            .waterFogColor(0x41633)
-                            .fogColor(0xc0d8ff)
-            ).generation(
+            .effects(this.alfheimEffects().waterColor(0x45adf2))
+            .attributes(this.attributes().set(EnvironmentAttributes.WATER_FOG_COLOR, 0xFF041633))
+            .generation(
                     alfheimGen()
                             .addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, this.placements.alfheimGrass)
                             .addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, this.placements.motifFlowers)
@@ -76,14 +71,13 @@ public class AlfheimBiomes extends BiomeProviderBase {
     public BiomeBuilder alfheimBiome(float temperature, float downfall) {
         return this.biome(temperature, downfall)
                 .effects(this.alfheimEffects())
+                .attributes(this.attributes().set(EnvironmentAttributes.WATER_FOG_COLOR, 0xFF041F33))
                 .mobSpawns(this.alfheimSpawns());
     }
 
     public BiomeSpecialEffects.Builder alfheimEffects() {
         return this.effects()
-                .waterColor(0x43d5ee)
-                .waterFogColor(0x041f33)
-                .fogColor(0xc0d8ff);
+                .waterColor(0x43d5ee);
     }
 
     public MobSpawnSettings.Builder alfheimSpawns() {
@@ -91,15 +85,15 @@ public class AlfheimBiomes extends BiomeProviderBase {
                 .creatureGenerationProbability(0.2f);
         BiomeDefaultFeatures.farmAnimals(builder);
         return builder
-                .addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(ModEntities.alfPixie, 5, 4, 10))
-                .addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(EntityType.WITCH, 2, 1, 2))
-                .addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(EntityType.ILLUSIONER, 1, 1, 1));
+                .addSpawn(MobCategory.CREATURE, 5, new MobSpawnSettings.SpawnerData(ModEntities.alfPixie, 4, 10))
+                .addSpawn(MobCategory.MONSTER, 2, new MobSpawnSettings.SpawnerData(EntityType.WITCH, 1, 2))
+                .addSpawn(MobCategory.MONSTER, 1, new MobSpawnSettings.SpawnerData(EntityType.ILLUSIONER, 1, 1));
     }
 
     public BiomeGenerationSettings.PlainBuilder alfheimGen() {
         return this.generation()
-                .addCarver(GenerationStep.Carving.AIR, this.features.cave)
-                .addCarver(GenerationStep.Carving.AIR, this.features.canyon)
+                .addCarver(this.features.cave)
+                .addCarver(this.features.canyon)
                 .addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, this.placements.metamorphicForestStone)
                 .addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, this.placements.metamorphicMountainStone)
                 .addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, this.placements.metamorphicFungalStone)

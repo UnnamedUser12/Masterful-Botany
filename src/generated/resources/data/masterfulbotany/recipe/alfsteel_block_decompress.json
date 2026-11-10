@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "masterfulbotany:alfsteel_block"
-    }
+    "masterfulbotany:alfsteel_block"
   ],
   "result": {
     "count": 9,

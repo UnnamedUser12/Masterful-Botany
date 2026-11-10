@@ -1,7 +1,7 @@
 package velrondevs.masterfulbotany.common.item.equipment;
 
 import java.util.function.Consumer;
-import java.util.List;
+
 import javax.annotation.Nonnull;
 import velrondevs.masterfulbotany.common.pylon.PylonRepairable;
 import velrondevs.masterfulbotany.config.MasterfulConfig;
@@ -13,8 +13,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.equipment.ArmorType;
+import org.jspecify.annotations.Nullable;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -24,13 +25,12 @@ import org.moddingx.libx.util.lazy.LazyValue;
 import velrondevs.botania.api.mana.ManaItemHandler;
 import velrondevs.botania.common.item.equipment.armor.terrasteel.TerrasteelArmorItem;
 import velrondevs.botania.common.item.equipment.tool.ToolCommons;
-import velrondevs.botania.common.lib.BotaniaTags;
 
 public class AlfsteelArmor extends TerrasteelArmorItem implements PylonRepairable {
 
     private static final LazyValue<ItemStack[]> armorSet = new LazyValue<>(() -> new ItemStack[]{new ItemStack(ModItems.alfsteelHelmet), new ItemStack(ModItems.alfsteelChestplate), new ItemStack(ModItems.alfsteelLeggings), new ItemStack(ModItems.alfsteelBoots)});
 
-    public AlfsteelArmor(ArmorItem.Type type, Properties props) {
+    public AlfsteelArmor(ArmorType type, Properties props) {
         super(type, props);
         NeoForge.EVENT_BUS.addListener(this::onJump);
     }
@@ -56,8 +56,8 @@ public class AlfsteelArmor extends TerrasteelArmorItem implements PylonRepairabl
     }
 
     @Override
-    public void inventoryTick(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull Entity entity, int slot, boolean selected) {
-        if (!level.isClientSide && entity instanceof Player player && player.getInventory().armor.contains(stack)) {
+    public void inventoryTick(@Nonnull ItemStack stack, @Nonnull ServerLevel level, @Nonnull Entity entity, @Nullable EquipmentSlot slot) {
+        if (entity instanceof Player player && player.getItemBySlot(this.getEquipmentSlot()) == stack) {
             if (stack.getDamageValue() > 0 && ManaItemHandler.instance().requestManaExact(stack, player, this.getManaPerDamage() * 2, true)) {
                 stack.setDamageValue(Math.max(0, stack.getDamageValue() - 2));
             }
@@ -80,14 +80,9 @@ public class AlfsteelArmor extends TerrasteelArmorItem implements PylonRepairabl
     }
 
     @Override
-    public void addArmorSetDescription(ItemStack stack, List<Component> list) {
+    public void addArmorSetDescription(ItemStack stack, Consumer<Component> list) {
         super.addArmorSetDescription(stack, list);
         CommonAlfsteelArmor.addArmorSetDescription(stack, list);
-    }
-
-    @Override
-    public boolean isValidRepairItem(@Nonnull ItemStack toRepair, @Nonnull ItemStack repair) {
-        return repair.getItem() == ModItems.alfsteelIngot || (!Ingredient.of(BotaniaTags.Items.INGOTS_TERRASTEEL).test(repair) && super.isValidRepairItem(toRepair, repair));
     }
 
     @Override
@@ -101,12 +96,10 @@ public class AlfsteelArmor extends TerrasteelArmorItem implements PylonRepairabl
         return stack;
     }
 
-    @Override
     public int getDefense() {
         return CommonAlfsteelArmor.getDefense(this.getType());
     }
 
-    @Override
     public float getToughness() {
         return CommonAlfsteelArmor.getToughness(this.getType());
     }

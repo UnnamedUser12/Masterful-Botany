@@ -113,7 +113,7 @@
   "message.masterfulbotany.ritual_less_mana": "Even tough you understand the ritual, you don't seem to be powerful enough. Be sure to have enough mana on you for this.",
   "message.masterfulbotany.ritual_wrong_items": "The ritual is known to you, and you feel, you have the power to perform it. However, something seems to be wrong with the ingredients.",
   "message.masterfulbotany.ritual_no_trader": "This ritual needs to be performed more cruel. You won't get this to work unless sacrificing a wandering trader.",
-  "message.masterfulbotany.mjoellnir_heavy_pick": "The hammer weighs way too much for you to lift it. However, it is told that the gods ate from the golden apples of Idun to gain their power.",
+  "message.masterfulbotany.mjoellnir_heavy_pick": "The hammer weighs way too much for you to lift it. However, it is told that the gods ate from the golden apples of Idun to gain their power. The Ring of Thor equipped in a Curios slot will also let you hold it.",
   "message.masterfulbotany.mjoellnir_heavy_drop": "You feel how the strength of your arms diminishes. There's no way you can hold that heavy hammer any longer.",
   "message.masterfulbotany.alfheim_not_loaded": "Alfheim Dimension has not been loaded. Please try restarting the game / server.",
 

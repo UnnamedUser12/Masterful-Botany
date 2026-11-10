@@ -5,6 +5,7 @@ import velrondevs.masterfulbotany.common.helper.HorizontalPos;
 import velrondevs.masterfulbotany.common.world.AlfheimWorldGen;
 import velrondevs.masterfulbotany.registry.ModBlocks;
 import net.minecraft.core.BlockPos;
+import java.util.Set;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -14,7 +15,7 @@ import velrondevs.botania.registry.BotaniaBlocks;
 public class AlfheimTeleporter {
 
     public static boolean teleportToAlfheim(ServerPlayer player, BlockPos sourcePos) {
-        ServerLevel target = player.server.getLevel(Alfheim.DIMENSION);
+        ServerLevel target = player.level().getServer().getLevel(Alfheim.DIMENSION);
         if (target != null) {
             BlockPos pos = findBlock(target, new HorizontalPos(sourcePos), ModBlocks.returnPortal);
             if (pos == null) {
@@ -29,7 +30,7 @@ public class AlfheimTeleporter {
                 target.setBlock(pos.offset(1, 0, 1), BotaniaBlocks.livingwood.defaultBlockState(), 3);
                 target.setBlock(pos, ModBlocks.returnPortal.defaultBlockState(), 3);
             }
-            player.teleportTo(target, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, player.getYRot(), player.getXRot());
+            player.teleportTo(target, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, Set.of(), player.getYRot(), player.getXRot(), true);
             player.setPortalCooldown();
             return true;
         } else {
@@ -39,21 +40,21 @@ public class AlfheimTeleporter {
     }
     
     public static void teleportToOverworld(ServerPlayer player, BlockPos sourcePos) {
-        ServerLevel target = player.server.overworld();
+        ServerLevel target = player.level().getServer().overworld();
         BlockPos pos = findBlock(target, new HorizontalPos(sourcePos), BotaniaBlocks.alfPortal);
         if (pos != null) {
             pos = pos.above();
         } else {
             pos = AlfheimWorldGen.highestFreeBlock(target, new HorizontalPos(sourcePos));
         }
-        player.teleportTo(target, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, player.getYRot(), player.getXRot());
+        player.teleportTo(target, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, Set.of(), player.getYRot(), player.getXRot(), true);
         player.setPortalCooldown();
     }
     
     @Nullable
     private static BlockPos findBlock(ServerLevel level, HorizontalPos sourcePos, Block block) {
-        BlockPos.MutableBlockPos mpos = new BlockPos.MutableBlockPos(sourcePos.x(), level.getMaxBuildHeight(), sourcePos.z());
-        while (mpos.getY() > level.getMinBuildHeight()) {
+        BlockPos.MutableBlockPos mpos = new BlockPos.MutableBlockPos(sourcePos.x(), level.getMaxY() + 1, sourcePos.z());
+        while (mpos.getY() > level.getMinY()) {
             mpos.move(Direction.DOWN);
             if (level.getBlockState(mpos).getBlock() == block) {
                 return mpos.immutable();

@@ -13,7 +13,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
+import velrondevs.masterfulbotany.common.helper.StackHandlers;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -23,14 +24,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.moddingx.libx.base.tile.BlockBE;
 import org.moddingx.libx.block.RotationShape;
 import org.moddingx.libx.mod.ModX;
-import org.moddingx.libx.registration.RegistrationContext;
+
 import org.moddingx.libx.registration.SetupContext;
-import org.moddingx.libx.registration.util.ClientExtensionInfo;
+
 import org.moddingx.libx.render.ItemStackRenderer;
 import velrondevs.botania.common.item.WandOfTheForestItem;
 
@@ -48,17 +47,9 @@ public class BlockYggdrasilBranch extends BlockBE<TileYggdrasilBranch> {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void setupClient(SetupContext ctx) {
         ctx.enqueue(() -> BlockEntityRenderers.register(this.getBlockEntityType(), mgr -> new RenderYggdrasilBranch()));
         ctx.enqueue(() -> ItemStackRenderer.addRenderBlock(this.getBlockEntityType(), false));
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void registerClientAdditional(RegistrationContext ctx, EntryCollector builder) {
-        super.registerClientAdditional(ctx, builder);
-        builder.register(null, new ClientExtensionInfo.Item(ItemStackRenderer.createProperties()));
     }
 
     @Override
@@ -74,27 +65,26 @@ public class BlockYggdrasilBranch extends BlockBE<TileYggdrasilBranch> {
 
     @Nonnull
     @Override
-    @SuppressWarnings("deprecation")
-    protected ItemInteractionResult useItemOn(@Nonnull ItemStack handStack, @Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand, @Nonnull BlockHitResult hit) {
+    protected InteractionResult useItemOn(@Nonnull ItemStack handStack, @Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand, @Nonnull BlockHitResult hit) {
         TileYggdrasilBranch tile = this.getBlockEntity(level, pos);
         if (handStack.getItem() instanceof WandOfTheForestItem) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-        } else if (!tile.getInventory().getStackInSlot(0).isEmpty()) {
-            if (!level.isClientSide) {
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
+        } else if (!StackHandlers.get(tile.getInventory(), 0).isEmpty()) {
+            if (!level.isClientSide()) {
                 if (player.getItemInHand(hand).isEmpty()) {
-                    player.setItemInHand(hand, tile.getInventory().getStackInSlot(0).copy());
+                    player.setItemInHand(hand, StackHandlers.get(tile.getInventory(), 0).copy());
                 } else {
-                    player.getInventory().add(tile.getInventory().getStackInSlot(0).copy());
+                    player.getInventory().add(StackHandlers.get(tile.getInventory(), 0).copy());
                 }
-                tile.getInventory().setStackInSlot(0, ItemStack.EMPTY);
+                StackHandlers.set(tile.getInventory(), 0, ItemStack.EMPTY);
             }
-            return ItemInteractionResult.CONSUME;
+            return InteractionResult.CONSUME;
         } else if (player.getItemInHand(hand).getItem() == ModItems.gjallarHornEmpty && player.getItemInHand(hand).getCount() == 1) {
-            if (!level.isClientSide) {
-                tile.getInventory().setStackInSlot(0, player.getItemInHand(hand).copy());
+            if (!level.isClientSide()) {
+                StackHandlers.set(tile.getInventory(), 0, player.getItemInHand(hand).copy());
                 player.setItemInHand(hand, ItemStack.EMPTY);
             }
-            return ItemInteractionResult.CONSUME;
+            return InteractionResult.CONSUME;
         } else {
             return super.useItemOn(handStack, state, level, pos, player, hand, hit);
         }
@@ -102,8 +92,7 @@ public class BlockYggdrasilBranch extends BlockBE<TileYggdrasilBranch> {
     
     @Nonnull
     @Override
-    @SuppressWarnings("deprecation")
-    public VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos, @Nonnull CollisionContext context) {
+    protected VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos, @Nonnull CollisionContext context) {
         return SHAPE.getShape(state.getValue(BlockStateProperties.HORIZONTAL_FACING));
     }
 }

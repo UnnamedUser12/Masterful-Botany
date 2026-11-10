@@ -5,6 +5,7 @@ import velrondevs.masterfulbotany.common.block.flower.BlockFloatingFunctionalFlo
 import velrondevs.masterfulbotany.common.crafting.MjoellnirRuneOutput;
 import velrondevs.masterfulbotany.common.crafting.WanderingTraderRuneInput;
 import velrondevs.masterfulbotany.datagen.providers.recipes.extension.ElvenTradeExtension;
+import velrondevs.masterfulbotany.datagen.providers.recipes.extension.MasterfulRecipeExtension;
 import velrondevs.masterfulbotany.datagen.providers.recipes.extension.InfuserExtension;
 import velrondevs.masterfulbotany.datagen.providers.recipes.extension.ManaInfusionExtension;
 import velrondevs.masterfulbotany.datagen.providers.recipes.extension.PetalExtension;
@@ -32,7 +33,7 @@ import velrondevs.botania.registry.BotaniaBlocks;
 import velrondevs.botania.registry.BotaniaItems;
 import velrondevs.botania.common.lib.BotaniaTags;
 
-public class RecipeProvider extends RecipeProviderBase implements CraftingExtension, CompressionExtension, SmeltingExtension, SmithingExtension, PetalExtension, ManaInfusionExtension, RuneExtension, ElvenTradeExtension, InfuserExtension, RuneRitualExtension {
+public class RecipeProvider extends RecipeProviderBase implements MasterfulRecipeExtension, CraftingExtension, CompressionExtension, SmeltingExtension, SmithingExtension, PetalExtension, ManaInfusionExtension, RuneExtension, ElvenTradeExtension, InfuserExtension, RuneRitualExtension {
 
     public RecipeProvider(DatagenContext ctx) {
         super(ctx);
@@ -67,7 +68,7 @@ public class RecipeProvider extends RecipeProviderBase implements CraftingExtens
         this.compress(ModItems.rawElementium, ModBlocks.rawElementiumBlock, true);
         this.blasting(ModBlocks.elementiumOre, BotaniaItems.elementium, 0.7f, 200);
         this.blasting(ModBlocks.dragonstoneOre, BotaniaItems.dragonstone, 0.7f, 200);
-        this.blasting(this.loc(BotaniaItems.elementium, "from_raw_ore"), ModItems.rawElementium, BotaniaItems.elementium, 0.7f, 200);
+        this.blasting(this.id(BotaniaItems.elementium, "from_raw_ore"), ModItems.rawElementium, BotaniaItems.elementium, 0.7f, 200);
 
         this.shaped(ModItems.alfsteelTemplate, 3, "gtg", "ele", "geg", 'g', Tags.Items.INGOTS_GOLD, 'e', BotaniaTags.Items.INGOTS_ELEMENTIUM, 'l', BotaniaItems.lensExplosive, 't', ModItems.alfsteelTemplate);
         this.smithing(ModItems.alfsteelTemplate, BotaniaItems.terraSword, ModItems.alfsteelIngot, ModItems.alfsteelSword);
@@ -89,17 +90,17 @@ public class RecipeProvider extends RecipeProviderBase implements CraftingExtens
 
         this.manaInfusion(BotaniaItems.grassHorn, ModItems.gjallarHornEmpty, 20000);
 
-        this.runeAltar(ModItems.midgardRune, 16000, Ingredient.of(BotaniaTags.Items.INGOTS_MANASTEEL), Ingredient.of(BotaniaItems.runeEarth), Ingredient.of(BotaniaItems.runeSpring), Ingredient.of(BotaniaItems.runeGreed), Ingredient.of(Blocks.GRASS_BLOCK));
-        this.runeAltar(ModItems.alfheimRune, 16000, Ingredient.of(BotaniaTags.Items.INGOTS_ELEMENTIUM), Ingredient.of(BotaniaItems.runeAir), Ingredient.of(BotaniaItems.runeSummer), Ingredient.of(BotaniaItems.runeLust), Ingredient.of(Blocks.ACACIA_LEAVES, Blocks.BIRCH_LEAVES, Blocks.DARK_OAK_LEAVES, Blocks.JUNGLE_LEAVES, Blocks.OAK_LEAVES, Blocks.SPRUCE_LEAVES));
-        this.runeAltar(ModItems.muspelheimRune, 16000, Ingredient.of(Tags.Items.BRICKS_NETHER), Ingredient.of(BotaniaItems.runeFire), Ingredient.of(BotaniaItems.runeSummer), Ingredient.of(BotaniaItems.runeWrath), Ingredient.of(Blocks.MAGMA_BLOCK));
-        this.runeAltar(ModItems.niflheimRune, 16000, Ingredient.of(Tags.Items.INGOTS_IRON), Ingredient.of(BotaniaItems.runeWater), Ingredient.of(BotaniaItems.runeWinter), Ingredient.of(BotaniaItems.runeWrath), Ingredient.of(Blocks.BLUE_ICE));
-        this.runeAltar(ModItems.asgardRune, 16000, Ingredient.of(Tags.Items.INGOTS_NETHERITE), Ingredient.of(BotaniaItems.runeAir), Ingredient.of(BotaniaItems.runeAutumn), Ingredient.of(BotaniaItems.runePride), Ingredient.of(BotaniaItems.rainbowRod));
-        this.runeAltar(ModItems.vanaheimRune, 16000, Ingredient.of(BotaniaTags.Items.INGOTS_TERRASTEEL), Ingredient.of(BotaniaItems.runeEarth), Ingredient.of(BotaniaItems.runeSpring), Ingredient.of(BotaniaItems.runePride), Ingredient.of(BotaniaBlocks.alfPortal));
-        this.runeAltar(ModItems.helheimRune, 16000, Ingredient.of(Tags.Items.INGOTS_GOLD), Ingredient.of(BotaniaItems.runeFire), Ingredient.of(BotaniaItems.runeAutumn), Ingredient.of(BotaniaItems.runeEnvy), Ingredient.of(Items.SKELETON_SKULL, Items.WITHER_SKELETON_SKULL, Items.CREEPER_HEAD, Items.DRAGON_HEAD, Items.ZOMBIE_HEAD));
-        this.runeAltar(ModItems.nidavellirRune, 16000, Ingredient.of(Tags.Items.INGOTS_COPPER), Ingredient.of(BotaniaItems.runeEarth), Ingredient.of(BotaniaItems.runeWinter), Ingredient.of(BotaniaItems.runeSloth), Ingredient.of(Blocks.IRON_BLOCK));
-        this.runeAltar(ModItems.joetunheimRune, 16000, Ingredient.of(Tags.Items.BRICKS_NORMAL), Ingredient.of(BotaniaItems.runeEarth), Ingredient.of(BotaniaItems.runeAutumn), Ingredient.of(BotaniaItems.runeGluttony), Ingredient.of(Blocks.BLACKSTONE));
+        this.runeAltar(ModItems.midgardRune, 16000, this.tagIngredient(BotaniaTags.Items.INGOTS_MANASTEEL), Ingredient.of(BotaniaItems.runeEarth), Ingredient.of(BotaniaItems.runeSpring), Ingredient.of(BotaniaItems.runeGreed), Ingredient.of(Blocks.GRASS_BLOCK));
+        this.runeAltar(ModItems.alfheimRune, 16000, this.tagIngredient(BotaniaTags.Items.INGOTS_ELEMENTIUM), Ingredient.of(BotaniaItems.runeAir), Ingredient.of(BotaniaItems.runeSummer), Ingredient.of(BotaniaItems.runeLust), Ingredient.of(Blocks.ACACIA_LEAVES, Blocks.BIRCH_LEAVES, Blocks.DARK_OAK_LEAVES, Blocks.JUNGLE_LEAVES, Blocks.OAK_LEAVES, Blocks.SPRUCE_LEAVES));
+        this.runeAltar(ModItems.muspelheimRune, 16000, this.tagIngredient(Tags.Items.BRICKS_NETHER), Ingredient.of(BotaniaItems.runeFire), Ingredient.of(BotaniaItems.runeSummer), Ingredient.of(BotaniaItems.runeWrath), Ingredient.of(Blocks.MAGMA_BLOCK));
+        this.runeAltar(ModItems.niflheimRune, 16000, this.tagIngredient(Tags.Items.INGOTS_IRON), Ingredient.of(BotaniaItems.runeWater), Ingredient.of(BotaniaItems.runeWinter), Ingredient.of(BotaniaItems.runeWrath), Ingredient.of(Blocks.BLUE_ICE));
+        this.runeAltar(ModItems.asgardRune, 16000, this.tagIngredient(Tags.Items.INGOTS_NETHERITE), Ingredient.of(BotaniaItems.runeAir), Ingredient.of(BotaniaItems.runeAutumn), Ingredient.of(BotaniaItems.runePride), Ingredient.of(BotaniaItems.rainbowRod));
+        this.runeAltar(ModItems.vanaheimRune, 16000, this.tagIngredient(BotaniaTags.Items.INGOTS_TERRASTEEL), Ingredient.of(BotaniaItems.runeEarth), Ingredient.of(BotaniaItems.runeSpring), Ingredient.of(BotaniaItems.runePride), Ingredient.of(BotaniaBlocks.alfPortal));
+        this.runeAltar(ModItems.helheimRune, 16000, this.tagIngredient(Tags.Items.INGOTS_GOLD), Ingredient.of(BotaniaItems.runeFire), Ingredient.of(BotaniaItems.runeAutumn), Ingredient.of(BotaniaItems.runeEnvy), Ingredient.of(Items.SKELETON_SKULL, Items.WITHER_SKELETON_SKULL, Items.CREEPER_HEAD, Items.DRAGON_HEAD, Items.ZOMBIE_HEAD));
+        this.runeAltar(ModItems.nidavellirRune, 16000, this.tagIngredient(Tags.Items.INGOTS_COPPER), Ingredient.of(BotaniaItems.runeEarth), Ingredient.of(BotaniaItems.runeWinter), Ingredient.of(BotaniaItems.runeSloth), Ingredient.of(Blocks.IRON_BLOCK));
+        this.runeAltar(ModItems.joetunheimRune, 16000, this.tagIngredient(Tags.Items.BRICKS_NORMAL), Ingredient.of(BotaniaItems.runeEarth), Ingredient.of(BotaniaItems.runeAutumn), Ingredient.of(BotaniaItems.runeGluttony), Ingredient.of(Blocks.BLACKSTONE));
 
-        this.elvenTrade(ModBlocks.dreamwoodLeaves, Ingredient.of(ItemTags.LEAVES));
+        this.elvenTrade(ModBlocks.dreamwoodLeaves, this.tagIngredient(ItemTags.LEAVES));
 
         this.infuser(BotaniaItems.terrasteel)
                 .addIngredient(BotaniaTags.Items.INGOTS_MANASTEEL)
@@ -121,7 +122,7 @@ public class RecipeProvider extends RecipeProviderBase implements CraftingExtens
                 .rune4(BotaniaItems.runeGreed, 2, 2)
                 .rune2(ModItems.alfheimRune, 3, 0)
                 .rune2(BotaniaItems.runeGreed, 0, 3)
-                .input(Ingredient.of(new ItemStack(ModItems.cursedAndwariRing), new ItemStack(ModItems.andwariRing)))
+                .input(Ingredient.of(ModItems.cursedAndwariRing, ModItems.andwariRing))
                 .input(BotaniaItems.manaweaveCloth)
                 .output(new ItemStack(ModItems.andwariRing))
                 .build();

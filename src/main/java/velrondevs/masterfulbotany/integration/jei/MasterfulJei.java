@@ -1,6 +1,6 @@
 package velrondevs.masterfulbotany.integration.jei;
 
-import java.util.Objects;
+import java.util.List;
 import javax.annotation.Nonnull;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
@@ -19,8 +19,9 @@ import velrondevs.masterfulbotany.registry.ModItems;
 import velrondevs.masterfulbotany.registry.ModRecipes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import velrondevs.botania.registry.BotaniaRecipeTypes;
 import net.minecraft.world.item.ItemStack;
 
 @JeiPlugin
@@ -28,22 +29,15 @@ public class MasterfulJei implements IModPlugin {
 
     @Nonnull
     @Override
-    public ResourceLocation getPluginUid() {
-        return ResourceLocation.fromNamespaceAndPath("masterfulbotany", "jeiplugin");
+    public Identifier getPluginUid() {
+        return Identifier.fromNamespaceAndPath("masterfulbotany", "jeiplugin");
     }
 
     @Override
     public void registerItemSubtypes(@Nonnull ISubtypeRegistration registration) {
-        // The alfsteel pick and the greatest mana band have creative tab variants that only differ by their NBT data
-        // (mana, tipped). Without a subtype interpreter JEI would treat them as duplicates of the same item.
         registration.registerSubtypeInterpreter(ModItems.alfsteelPick, new ISubtypeInterpreter<ItemStack>() {
             @Override
             public Object getSubtypeData(ItemStack stack, UidContext context) {
-                return this.getLegacyStringSubtypeInfo(stack, context);
-            }
-
-            @Override
-            public String getLegacyStringSubtypeInfo(ItemStack stack, UidContext context) {
                 if (context == UidContext.Recipe) {
                     return String.valueOf(TerraShattererItem.isTipped(stack));
                 }
@@ -53,11 +47,6 @@ public class MasterfulJei implements IModPlugin {
         registration.registerSubtypeInterpreter(ModItems.manaRingGreatest, new ISubtypeInterpreter<ItemStack>() {
             @Override
             public Object getSubtypeData(ItemStack stack, UidContext context) {
-                return this.getLegacyStringSubtypeInfo(stack, context);
-            }
-
-            @Override
-            public String getLegacyStringSubtypeInfo(ItemStack stack, UidContext context) {
                 return String.valueOf(XplatAbstractions.INSTANCE.findManaItem(stack).getMana());
             }
         });
@@ -74,10 +63,9 @@ public class MasterfulJei implements IModPlugin {
     @Override
     public void registerRecipes(@Nonnull IRecipeRegistration registration) {
         ClientLevel level = Minecraft.getInstance().level;
-        RecipeManager recipes = Objects.requireNonNull(level).getRecipeManager();
 
-        registration.addRecipes(InfusionCategory.TYPE, recipes.getAllRecipesFor(ModRecipes.infuser).stream().map(net.minecraft.world.item.crafting.RecipeHolder::value).toList());
-        registration.addRecipes(RuneRitualCategory.TYPE, recipes.getAllRecipesFor(ModRecipes.runeRitual).stream().map(net.minecraft.world.item.crafting.RecipeHolder::value).toList());
+        registration.addRecipes(InfusionCategory.TYPE, BotaniaRecipeTypes.getAllRecipesFor(level, ModRecipes.infuser).stream().map(RecipeHolder::value).toList());
+        registration.addRecipes(RuneRitualCategory.TYPE, BotaniaRecipeTypes.getAllRecipesFor(level, ModRecipes.runeRitual).stream().map(RecipeHolder::value).toList());
     }
 
     @Override

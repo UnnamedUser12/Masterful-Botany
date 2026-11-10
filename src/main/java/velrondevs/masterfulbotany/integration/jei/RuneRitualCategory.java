@@ -14,7 +14,9 @@ import mezz.jei.api.recipe.RecipeType;
 import velrondevs.masterfulbotany.common.crafting.RuneRitualRecipe;
 import velrondevs.masterfulbotany.MasterfulBotany;
 import velrondevs.masterfulbotany.registry.ModItems;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.resources.Identifier;
+import velrondevs.botania.client.integration.jei.JEIRecipeIds;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.ItemStack;
@@ -30,7 +32,7 @@ public class RuneRitualCategory implements IRecipeCategory<RuneRitualRecipe> {
     private final IDrawable icon;
     
     public RuneRitualCategory(IGuiHelper guiHelper) {
-        this.background = guiHelper.createDrawable(MasterfulBotany.getInstance().resource("textures/gui/jei_ritual.png"), 0, 0, 136, 196);
+        this.background = guiHelper.createDrawable(MasterfulBotany.getInstance().id("textures/gui/jei_ritual.png"), 0, 0, 136, 196);
         this.slot = guiHelper.getSlotDrawable();
         this.localizedName = Component.translatable("tooltip.masterfulbotany.rune_ritual");
         this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModItems.fimbultyrTablet));
@@ -48,10 +50,19 @@ public class RuneRitualCategory implements IRecipeCategory<RuneRitualRecipe> {
         return this.localizedName;
     }
 
-    @Nonnull
     @Override
-    public IDrawable getBackground() {
-        return this.background;
+    public int getWidth() {
+        return 136;
+    }
+
+    @Override
+    public int getHeight() {
+        return 196;
+    }
+
+    @Override
+    public Identifier getIdentifier(@Nonnull RuneRitualRecipe recipe) {
+        return JEIRecipeIds.idOf(recipe);
     }
 
     @Nonnull
@@ -59,7 +70,6 @@ public class RuneRitualCategory implements IRecipeCategory<RuneRitualRecipe> {
     public IDrawable getIcon() {
         return this.icon;
     }
-
 
     @Override
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, @Nonnull RuneRitualRecipe recipe, @Nonnull IFocusGroup focuses) {
@@ -88,13 +98,14 @@ public class RuneRitualCategory implements IRecipeCategory<RuneRitualRecipe> {
     private void initRunePositioned(@Nonnull IRecipeLayoutBuilder builder, RuneRitualRecipe.RunePosition rune) {
         int realX = 2 + (12 * (rune.getX() + 5));
         int realZ = 2 + (12 * ((-rune.getZ()) + 5));
-        builder.addSlot(rune.isConsumed() ? RecipeIngredientRole.INPUT : RecipeIngredientRole.CATALYST, realX, realZ)
+        builder.addSlot(rune.isConsumed() ? RecipeIngredientRole.INPUT : RecipeIngredientRole.CRAFTING_STATION, realX, realZ)
                 .setCustomRenderer(VanillaTypes.ITEM_STACK, LittleBoxItemRenderer.getRenderer(rune.getX(), rune.getZ(), rune.isConsumed()))
                 .addIngredients(rune.getRune());
     }
 
     @Override
-    public void draw(@Nonnull RuneRitualRecipe recipe, @Nonnull IRecipeSlotsView slots, @Nonnull GuiGraphics graphics, double mouseX, double mouseY) {
+    public void draw(@Nonnull RuneRitualRecipe recipe, @Nonnull IRecipeSlotsView slots, @Nonnull GuiGraphicsExtractor graphics, double mouseX, double mouseY) {
+        this.background.draw(graphics, 0, 0);
         if (recipe.getMana() > 0) {
             HUDHandler.renderManaBar(graphics, 17, 189, 0x0000FF, 0.75f, recipe.getMana(), 1000000);
         }

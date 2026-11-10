@@ -20,12 +20,11 @@ public class TileManaCollector extends BlockEntityMana implements ManaCollector,
 
     @Override
     protected boolean canReceive() {
-        return false; // This is just for sparks. We don't want mana from sparks.
+        return false;
     }
 
     @Override
     public void onClientDisplayTick() {
-        //
     }
 
     @Override

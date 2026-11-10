@@ -1,34 +1,24 @@
 package velrondevs.masterfulbotany.common.crafting;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import velrondevs.masterfulbotany.config.MasterfulConfig;
+import net.minecraft.resources.Identifier;
+import net.neoforged.neoforge.event.ModifyRecipeJsonsEvent;
 import velrondevs.masterfulbotany.MasterfulBotany;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeManager;
+import velrondevs.masterfulbotany.config.MasterfulConfig;
 
 public class RecipeRemover {
 
-    public static final ResourceLocation GAIA_PYLON = ResourceLocation.fromNamespaceAndPath("botania", "gaia_pylon");
-    public static final ResourceLocation HARD_PYLON = MasterfulBotany.getInstance().resource("gaia_pylon");
+    public static final Identifier GAIA_PYLON = Identifier.fromNamespaceAndPath("botania", "gaia_pylon");
+    public static final Identifier HARD_PYLON = MasterfulBotany.getInstance().id("gaia_pylon");
 
     private RecipeRemover() {
 
     }
 
-    public static void removeRecipes(RecipeManager rm) {
-        Set<ResourceLocation> recipesToRemove = new HashSet<>();
+    public static void removeRecipes(ModifyRecipeJsonsEvent event) {
         if (MasterfulConfig.replaceGaiaRecipe) {
-            recipesToRemove.add(GAIA_PYLON);
+            event.getRecipeJsons().remove(GAIA_PYLON);
         } else {
-            recipesToRemove.add(HARD_PYLON);
-        }
-
-        List<RecipeHolder<?>> remaining = rm.getRecipes().stream().filter(holder -> !recipesToRemove.contains(holder.id())).toList();
-        if (remaining.size() != rm.getRecipes().size()) {
-            rm.replaceRecipes(remaining);
+            event.getRecipeJsons().remove(HARD_PYLON);
         }
     }
 }

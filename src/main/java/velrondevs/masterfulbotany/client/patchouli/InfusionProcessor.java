@@ -2,7 +2,10 @@ package velrondevs.masterfulbotany.client.patchouli;
 
 import velrondevs.masterfulbotany.common.crafting.InfuserRecipe;
 import velrondevs.masterfulbotany.MasterfulBotany;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import velrondevs.botania.registry.BotaniaRecipeTypes;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import vazkii.patchouli.api.IComponentProcessor;
@@ -12,7 +15,7 @@ import vazkii.patchouli.api.IVariableProvider;
 public class InfusionProcessor implements IComponentProcessor {
 
     protected InfuserRecipe recipe;
-    protected ResourceLocation recipeId;
+    protected Identifier recipeId;
 
     public InfusionProcessor() {
 
@@ -20,10 +23,10 @@ public class InfusionProcessor implements IComponentProcessor {
 
     @Override
     public void setup(Level level, IVariableProvider variables) {
-        ResourceLocation id = ResourceLocation.parse(variables.get("recipe", level.registryAccess()).asString());
+        Identifier id = Identifier.parse(variables.get("recipe", level.registryAccess()).asString());
         this.recipe = null;
         this.recipeId = null;
-        RecipeHolder<?> holder = level.getRecipeManager().byKey(id).orElse(null);
+        RecipeHolder<?> holder = BotaniaRecipeTypes.recipeMap(level).byKey(ResourceKey.create(Registries.RECIPE, id));
         if (holder == null) {
             MasterfulBotany.logger.warn("Missing masterfulbotany infusion recipe: " + id);
         } else if (!(holder.value() instanceof InfuserRecipe infuserRecipe)) {

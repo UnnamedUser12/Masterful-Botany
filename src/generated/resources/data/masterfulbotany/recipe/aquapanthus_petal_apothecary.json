@@ -1,27 +1,14 @@
 {
   "type": "botania:petal_apothecary",
   "ingredients": [
-    {
-      "tag": "botania:petals/blue"
-    },
-    {
-      "tag": "botania:petals/blue"
-    },
-    {
-      "tag": "botania:petals/light_blue"
-    },
-    {
-      "tag": "botania:petals/green"
-    },
-    {
-      "tag": "botania:petals/cyan"
-    }
+    "#botania:petals/blue",
+    "#botania:petals/blue",
+    "#botania:petals/light_blue",
+    "#botania:petals/green",
+    "#botania:petals/cyan"
   ],
   "output": {
-    "count": 1,
     "id": "masterfulbotany:aquapanthus"
   },
-  "reagent": {
-    "tag": "botania:seed_apothecary_reagent"
-  }
+  "reagent": "#botania:seed_apothecary_reagent"
 }

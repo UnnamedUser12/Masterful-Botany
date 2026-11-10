@@ -1,12 +1,13 @@
 package velrondevs.masterfulbotany.client.patchouli;
 
 import com.google.gson.annotations.SerializedName;
-import com.mojang.blaze3d.systems.RenderSystem;
+
 import java.util.ArrayList;
 import velrondevs.masterfulbotany.MasterfulBotany;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -20,7 +21,7 @@ import velrondevs.botania.client.patchouli.component.ManaComponent;
 
 public class PageRitualInfo extends PageRuneRitualBase {
 
-    public static final ResourceLocation OVERLAY_TEXTURE = MasterfulBotany.getInstance().resource("textures/gui/patchouli_ritual_info.png");
+    public static final Identifier OVERLAY_TEXTURE = MasterfulBotany.getInstance().id("textures/gui/patchouli_ritual_info.png");
 
     @SerializedName("text")
     public String text;
@@ -35,7 +36,6 @@ public class PageRitualInfo extends PageRuneRitualBase {
         this.manaComponent.build((GuiBook.PAGE_WIDTH / 2) - 51, 115, pageNum);
         if (this.recipe != null) {
             ArrayList<ItemStack> outputs = new ArrayList<>();
-            //noinspection CollectionAddAllCanBeReplacedWithConstructor
             outputs.addAll(this.recipe.getOutputs());
             if (this.recipe.getSpecialOutput() != null) {
                 outputs.addAll(this.recipe.getSpecialOutput().getJeiOutputItems());
@@ -56,22 +56,20 @@ public class PageRitualInfo extends PageRuneRitualBase {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(graphics, mouseX, mouseY, partialTicks);
-        RenderSystem.enableBlend();
-        graphics.blit(OVERLAY_TEXTURE, 0, 0, 0, 0, GuiBook.PAGE_WIDTH, GuiBook.PAGE_HEIGHT, 256, 256);
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractRenderState(graphics, mouseX, mouseY, partialTicks);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, OVERLAY_TEXTURE, 0, 0, 0, 0, GuiBook.PAGE_WIDTH, GuiBook.PAGE_HEIGHT, 256, 256);
         this.renderInputs(graphics, mouseX, mouseY, partialTicks);
         this.renderOutputs(graphics, mouseX, mouseY, partialTicks);
         this.renderManaBar(graphics, mouseX, mouseY, partialTicks);
         if (this.desc != null) {
-            this.desc.render(graphics, mouseX, mouseY, partialTicks);
+            this.desc.extractRenderState(graphics, mouseX, mouseY, partialTicks);
         }
     }
 
-    private void renderInputs(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    private void renderInputs(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         if (this.recipe != null) {
             ArrayList<Ingredient> inputs = new ArrayList<>();
-            //noinspection CollectionAddAllCanBeReplacedWithConstructor
             inputs.addAll(this.recipe.getInputs());
             if (this.recipe.getSpecialInput() != null) {
                 inputs.addAll(this.recipe.getSpecialInput().getJeiInputItems());
@@ -83,10 +81,9 @@ public class PageRitualInfo extends PageRuneRitualBase {
         }
     }
 
-    private void renderOutputs(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    private void renderOutputs(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         if (this.recipe != null) {
             ArrayList<ItemStack> outputs = new ArrayList<>();
-            //noinspection CollectionAddAllCanBeReplacedWithConstructor
             outputs.addAll(this.recipe.getOutputs());
             if (this.recipe.getSpecialOutput() != null) {
                 outputs.addAll(this.recipe.getSpecialOutput().getJeiOutputItems());
@@ -98,11 +95,11 @@ public class PageRitualInfo extends PageRuneRitualBase {
         }
     }
 
-    private void renderManaBar(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    private void renderManaBar(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
         if (this.recipe != null && this.recipe.getMana() > 0) {
             this.manaComponent.mana = IVariable.wrap(this.recipe.getMana());
             this.manaComponent.onVariablesAvailable(v -> v, net.minecraft.client.Minecraft.getInstance().level.registryAccess());
-            this.manaComponent.render(graphics, this.parent, partialTicks, mouseX, mouseY);
+            this.manaComponent.extractRenderState(graphics, this.parent, partialTicks, mouseX, mouseY);
         }
     }
 }

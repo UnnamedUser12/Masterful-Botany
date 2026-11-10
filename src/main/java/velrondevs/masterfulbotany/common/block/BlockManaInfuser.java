@@ -3,22 +3,23 @@ package velrondevs.masterfulbotany.common.block;
 import javax.annotation.Nonnull;
 import velrondevs.masterfulbotany.common.block.block_entity.TileManaInfuser;
 import velrondevs.masterfulbotany.MasterfulBotany;
-import velrondevs.masterfulbotany.registry.ModRecipes;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.core.Direction;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.moddingx.libx.base.tile.BlockBE;
-import org.moddingx.libx.crafting.RecipeHelper;
+import velrondevs.masterfulbotany.common.crafting.InfuserRecipe;
 import org.moddingx.libx.mod.ModX;
 
 public class BlockManaInfuser extends BlockBE<TileManaInfuser> {
@@ -29,24 +30,24 @@ public class BlockManaInfuser extends BlockBE<TileManaInfuser> {
         super(mod, teClass, properties);
     }
 
-    @SuppressWarnings("deprecation")
     @Nonnull
-    public VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos, @Nonnull CollisionContext context) {
+    @Override
+    protected VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos, @Nonnull CollisionContext context) {
         return SHAPE;
     }
 
-    @SuppressWarnings("deprecation")
-    public boolean isPathfindable(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos, @Nonnull PathComputationType type) {
+    @Override
+    protected boolean isPathfindable(@Nonnull BlockState state, @Nonnull PathComputationType type) {
         return false;
     }
 
-    @SuppressWarnings("deprecation")
-    public boolean hasAnalogOutputSignal(@Nonnull BlockState state) {
+    @Override
+    protected boolean hasAnalogOutputSignal(@Nonnull BlockState state) {
         return true;
     }
 
-    @SuppressWarnings("deprecation")
-    public int getAnalogOutputSignal(@Nonnull BlockState blockState, @Nonnull Level level, @Nonnull BlockPos pos) {
+    @Override
+    protected int getAnalogOutputSignal(@Nonnull BlockState blockState, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Direction direction) {
         TileManaInfuser te = this.getBlockEntity(level, pos);
         double progress = te.getProgress();
         if (progress < 0) {
@@ -58,9 +59,9 @@ public class BlockManaInfuser extends BlockBE<TileManaInfuser> {
 
     @Nonnull
     @Override
-    protected ItemInteractionResult useItemOn(@Nonnull ItemStack stack, @Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand, @Nonnull BlockHitResult hit) {
-        if (!level.isClientSide) {
-            if (!stack.isEmpty() && RecipeHelper.isItemValidInput(level.getRecipeManager(), ModRecipes.infuser, stack)) {
+    protected InteractionResult useItemOn(@Nonnull ItemStack stack, @Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand, @Nonnull BlockHitResult hit) {
+        if (!level.isClientSide()) {
+            if (!stack.isEmpty() && InfuserRecipe.isItemValidInput(level, stack)) {
                 ItemStack copy = stack.copy();
                 stack.shrink(1);
                 player.setItemInHand(hand, stack);
@@ -71,7 +72,7 @@ public class BlockManaInfuser extends BlockBE<TileManaInfuser> {
                 entity.setPickUpDelay(40);
                 level.addFreshEntity(entity);
                 MasterfulBotany.getNetwork().setItemMagnetImmune(entity);
-                return ItemInteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             } else {
                 return super.useItemOn(stack, state, level, pos, player, hand, hit);
             }

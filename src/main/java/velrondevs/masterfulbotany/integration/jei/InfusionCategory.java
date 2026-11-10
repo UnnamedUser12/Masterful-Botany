@@ -1,6 +1,5 @@
 package velrondevs.masterfulbotany.integration.jei;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import javax.annotation.Nonnull;
@@ -17,15 +16,17 @@ import velrondevs.masterfulbotany.common.crafting.InfuserRecipe;
 import velrondevs.masterfulbotany.MasterfulBotany;
 import velrondevs.masterfulbotany.registry.ModBlocks;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec2;
+import velrondevs.botania.client.core.helper.RenderHelper;
 import velrondevs.botania.client.gui.HUDHandler;
+import velrondevs.botania.client.integration.jei.JEIRecipeIds;
 import velrondevs.botania.client.integration.jei.PetalApothecaryRecipeCategory;
 import velrondevs.botania.client.integration.jei.TerrestrialAgglomerationDrawable;
 import velrondevs.botania.registry.BotaniaBlocks;
@@ -34,16 +35,14 @@ public class InfusionCategory implements IRecipeCategory<InfuserRecipe> {
 
     public static final RecipeType<InfuserRecipe> TYPE = RecipeType.create(MasterfulBotany.getInstance().modid, "infuser", InfuserRecipe.class);
     
-    private final IDrawable background;
     private final Component localizedName;
     private final IDrawable overlay;
     private final IDrawable icon;
     private final IDrawable infuserPlate;
 
     public InfusionCategory(IGuiHelper guiHelper) {
-        this.background = guiHelper.createBlankDrawable(114, 141);
         this.localizedName = Component.translatable("block.masterfulbotany.mana_infuser");
-        this.overlay = guiHelper.createDrawable(ResourceLocation.fromNamespaceAndPath("botania", "textures/gui/terrasteel_jei_overlay.png"), 42, 29, 64, 64);
+        this.overlay = guiHelper.createDrawable(Identifier.fromNamespaceAndPath("botania", "textures/gui/terrasteel_jei_overlay.png"), 42, 29, 64, 64);
         this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlocks.manaInfuser));
         IDrawable shimmerrock = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(BotaniaBlocks.shimmerrock));
         this.infuserPlate = new TerrestrialAgglomerationDrawable(shimmerrock, shimmerrock, guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(Blocks.GOLD_BLOCK)));
@@ -61,10 +60,19 @@ public class InfusionCategory implements IRecipeCategory<InfuserRecipe> {
         return this.localizedName;
     }
 
-    @Nonnull
     @Override
-    public IDrawable getBackground() {
-        return this.background;
+    public int getWidth() {
+        return 114;
+    }
+
+    @Override
+    public int getHeight() {
+        return 141;
+    }
+
+    @Override
+    public Identifier getIdentifier(@Nonnull InfuserRecipe recipe) {
+        return JEIRecipeIds.idOf(recipe);
     }
 
     @Nonnull
@@ -83,18 +91,16 @@ public class InfusionCategory implements IRecipeCategory<InfuserRecipe> {
             builder.addSlot(RecipeIngredientRole.INPUT, Math.round(point.x), Math.round(point.y)).addIngredients(recipe.getIngredients().get(i - 1));
             point = PetalApothecaryRecipeCategory.rotatePointAbout(point, center, angle);
         }
-        builder.addSlot(RecipeIngredientRole.CATALYST, 49, 93).addItemStack(new ItemStack(ModBlocks.manaInfuser));
+        builder.addSlot(RecipeIngredientRole.CRAFTING_STATION, 49, 93).addItemStack(new ItemStack(ModBlocks.manaInfuser));
     }
 
     @Override
-    public void draw(@Nonnull InfuserRecipe recipe, @Nonnull IRecipeSlotsView slots, @Nonnull GuiGraphics graphics, double mouseX, double mouseY) {
-        RenderSystem.enableBlend();
+    public void draw(@Nonnull InfuserRecipe recipe, @Nonnull IRecipeSlotsView slots, @Nonnull GuiGraphicsExtractor graphics, double mouseX, double mouseY) {
         this.overlay.draw(graphics, 25, 14);
         HUDHandler.renderManaBar(graphics, 6, 126, 0x0000FF, 0.75f, recipe.getManaUsage(), 4000000);
         this.infuserPlate.draw(graphics, 35, 92);
-        RenderSystem.disableBlend();
         MutableComponent manaAmount = Component.literal(BigDecimal.valueOf(recipe.getManaUsage() / 1000000d).setScale(2, RoundingMode.HALF_UP).stripTrailingZeros().toPlainString()).withStyle(ChatFormatting.BLUE);
         MutableComponent tc = Component.translatable("tooltip.masterfulbotany.cost_pools", manaAmount);
-        graphics.drawString(Minecraft.getInstance().font, tc, 57 - (Minecraft.getInstance().font.width(tc) / 2), 133, 0x000000, false);
+        RenderHelper.drawString(graphics, Minecraft.getInstance().font, tc, 57 - (Minecraft.getInstance().font.width(tc) / 2), 133, 0x000000, false);
     }
 }

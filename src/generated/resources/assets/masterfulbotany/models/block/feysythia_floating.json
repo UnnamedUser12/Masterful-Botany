@@ -1,9 +1,10 @@
 {
   "parent": "minecraft:block/block",
   "flower": {
-    "parent": "masterfulbotany:block/feysythia",
-    "render_type": "minecraft:cutout_mipped"
+    "parent": "masterfulbotany:block/feysythia"
   },
   "loader": "botania:floating_flower",
-  "render_type": "minecraft:cutout_mipped"
+  "textures": {
+    "particle": "masterfulbotany:block/feysythia"
+  }
 }

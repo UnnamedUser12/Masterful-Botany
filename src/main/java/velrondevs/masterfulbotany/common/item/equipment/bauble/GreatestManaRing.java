@@ -20,9 +20,6 @@ public class GreatestManaRing extends BandOfManaItem implements CreativeTabItemP
         return Integer.MAX_VALUE;
     }
 
-    /**
-     * Mana item implementation with a bigger capacity. Registered in the capability registration event.
-     */
     public static class GreatestManaItemImpl extends ManaItemImpl {
 
         public GreatestManaItemImpl(ItemStack stack) {
@@ -44,6 +41,5 @@ public class GreatestManaRing extends BandOfManaItem implements CreativeTabItemP
 
     @Override
     public void addToCreativeTab(net.minecraft.world.item.Item me, net.minecraft.world.item.CreativeModeTab.Output output) {
-        // handled by the LibX creative tab
     }
 }

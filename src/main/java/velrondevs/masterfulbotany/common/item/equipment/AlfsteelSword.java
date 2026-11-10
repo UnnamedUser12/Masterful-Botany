@@ -17,17 +17,19 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.client.Minecraft;
+import net.minecraft.server.level.ServerLevel;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
+
 import velrondevs.botania.api.internal.ManaBurst;
 import velrondevs.botania.common.entity.ManaBurstEntity;
 import velrondevs.botania.common.item.equipment.tool.terrasteel.TerraBladeItem;
-import velrondevs.botania.common.lib.BotaniaTags;
+
 import velrondevs.botania.registry.BotaniaSounds;
 
 public class AlfsteelSword extends TerraBladeItem implements PylonRepairable {
@@ -46,7 +48,7 @@ public class AlfsteelSword extends TerraBladeItem implements PylonRepairable {
 
     private void onLeftClick(PlayerInteractEvent.LeftClickEmpty evt) {
         if (!evt.getItemStack().isEmpty() && evt.getItemStack().getItem() == this) {
-            PacketDistributor.sendToServer(new AlfSwordLeftClickMessage());
+            ClientPacketDistributor.sendToServer(new AlfSwordLeftClickMessage());
         }
     }
 
@@ -57,11 +59,6 @@ public class AlfsteelSword extends TerraBladeItem implements PylonRepairable {
 
     public float getDamage() {
         return (float) MasterfulConfig.alftools.tool_values.sword_damage;
-    }
-
-    @Override
-    public boolean isValidRepairItem(@Nonnull ItemStack toRepair, @Nonnull ItemStack repair) {
-        return repair.getItem() == ModItems.alfsteelIngot || (!Ingredient.of(BotaniaTags.Items.INGOTS_TERRASTEEL).test(repair) && super.isValidRepairItem(toRepair, repair));
     }
 
     @Override
@@ -114,14 +111,14 @@ public class AlfsteelSword extends TerraBladeItem implements PylonRepairable {
                 if (mana >= 33) {
                     burst.setMana(mana - 33);
                     float damage = 4 + this.getDamage();
-                    if (!burst.isFake() && !entity.level().isClientSide) {
+                    if (!burst.isFake() && !entity.level().isClientSide()) {
                         DamageSource source = entity.level().damageSources().magic();
                         if (thrower instanceof Player player) {
                             source = entity.level().damageSources().playerAttack(player);
                         } else if (thrower instanceof LivingEntity livingThrower) {
                             source = entity.level().damageSources().mobAttack(livingThrower);
                         }
-                        living.hurt(source, damage);
+                        living.hurtServer((ServerLevel) entity.level(), source, damage);
                         if (burst.getMana() <= 0) entity.discard();
                     }
                 }

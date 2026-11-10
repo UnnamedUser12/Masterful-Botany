@@ -2,16 +2,16 @@ package velrondevs.masterfulbotany.datagen.providers.lexicon.page;
 
 import java.util.List;
 import javax.annotation.Nullable;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.moddingx.libx.datagen.provider.patchouli.content.RecipePage;
 
 public class PetalPage extends RecipePage {
 
-    public PetalPage(ResourceLocation recipe) {
+    public PetalPage(Identifier recipe) {
         this(List.of(recipe), null);
     }
     
-    private PetalPage(List<ResourceLocation> recipes, @Nullable String caption) {
+    private PetalPage(List<Identifier> recipes, @Nullable String caption) {
         super("botania:petal_apothecary", recipes, caption);
     }
 

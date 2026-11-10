@@ -14,23 +14,30 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategories;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.tuple.Pair;
+import velrondevs.botania.registry.BotaniaRecipeTypes;
 
 public class InfuserRecipe implements Recipe<StackListInput> {
 
-    private final ItemStack output;
+    private static final PlacementInfo NO_PLACEMENT = PlacementInfo.NOT_PLACEABLE;
+
+    private final ItemStackTemplate output;
     private final NonNullList<Ingredient> inputs;
     private final int mana;
     private final int fromColor;
     private final int toColor;
 
-    public InfuserRecipe(ItemStack output, int mana, int fromColor, int toColor, List<Ingredient> inputs) {
+    public InfuserRecipe(ItemStackTemplate output, int mana, int fromColor, int toColor, List<Ingredient> inputs) {
         this.output = output;
         this.mana = mana;
         this.fromColor = fromColor;
@@ -40,14 +47,37 @@ public class InfuserRecipe implements Recipe<StackListInput> {
 
     @Nonnull
     @Override
-    public RecipeType<?> getType() {
+    public RecipeType<InfuserRecipe> getType() {
         return ModRecipes.infuser;
     }
 
     @Nonnull
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<InfuserRecipe> getSerializer() {
         return Serializer.INSTANCE;
+    }
+
+    @Override
+    public boolean showNotification() {
+        return false;
+    }
+
+    @Nonnull
+    @Override
+    public String group() {
+        return "";
+    }
+
+    @Nonnull
+    @Override
+    public PlacementInfo placementInfo() {
+        return NO_PLACEMENT;
+    }
+
+    @Nonnull
+    @Override
+    public RecipeBookCategory recipeBookCategory() {
+        return RecipeBookCategories.CRAFTING_MISC;
     }
 
     public int getManaUsage() {
@@ -73,32 +103,23 @@ public class InfuserRecipe implements Recipe<StackListInput> {
 
     @Nonnull
     public ItemStack getResultItem() {
-        return this.output;
+        return this.output.create();
     }
 
     @Nonnull
-    @Override
     public ItemStack getResultItem(@Nonnull HolderLookup.Provider registries) {
         return this.getResultItem();
     }
 
     @Nonnull
     @Override
-    public ItemStack assemble(@Nonnull StackListInput container, @Nonnull HolderLookup.Provider registries) {
+    public ItemStack assemble(@Nonnull StackListInput container) {
         return this.getResultItem().copy();
     }
 
-    /**
-     * Special recipes are not shown in the recipe book (the recipe book has no category for custom recipe types).
-     */
     @Override
     public boolean isSpecial() {
         return true;
-    }
-
-    @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return false;
     }
 
     public ItemStack result(List<ItemStack> inputs) {
@@ -110,13 +131,23 @@ public class InfuserRecipe implements Recipe<StackListInput> {
             }
             return ItemStack.EMPTY;
         }
-        return this.output.copy();
+        return this.output.create();
     }
 
     @Nonnull
-    @Override
     public NonNullList<Ingredient> getIngredients() {
         return this.inputs;
+    }
+
+    public static boolean isItemValidInput(Level level, ItemStack stack) {
+        for (RecipeHolder<InfuserRecipe> holder : BotaniaRecipeTypes.getAllRecipesFor(level, ModRecipes.infuser)) {
+            for (Ingredient ingredient : holder.value().getIngredients()) {
+                if (ingredient.test(stack)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Nullable
@@ -125,7 +156,7 @@ public class InfuserRecipe implements Recipe<StackListInput> {
             if (inputs.stream().anyMatch(stack -> stack.getCount() != 1)) {
                 return null;
             }
-            for (RecipeHolder<InfuserRecipe> holder : level.getRecipeManager().getAllRecipesFor(ModRecipes.infuser)) {
+            for (RecipeHolder<InfuserRecipe> holder : BotaniaRecipeTypes.getAllRecipesFor(level, ModRecipes.infuser)) {
                 InfuserRecipe infuserRecipe = holder.value();
                 ItemStack stack = infuserRecipe.result(inputs);
                 if (!stack.isEmpty()) return Pair.of(infuserRecipe, stack.copy());
@@ -134,12 +165,10 @@ public class InfuserRecipe implements Recipe<StackListInput> {
         return null;
     }
 
-    public static class Serializer implements RecipeSerializer<InfuserRecipe> {
-
-        public static final Serializer INSTANCE = new Serializer();
+    public static class Serializer {
 
         public static final MapCodec<InfuserRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-                ItemStack.STRICT_CODEC.fieldOf("output").forGetter(InfuserRecipe::getResultItem),
+                ItemStackTemplate.CODEC.fieldOf("output").forGetter(recipe -> recipe.output),
                 com.mojang.serialization.Codec.INT.fieldOf("mana").forGetter(InfuserRecipe::getManaUsage),
                 com.mojang.serialization.Codec.INT.fieldOf("fromColor").forGetter(InfuserRecipe::fromColor),
                 com.mojang.serialization.Codec.INT.fieldOf("toColor").forGetter(InfuserRecipe::toColor),
@@ -147,7 +176,7 @@ public class InfuserRecipe implements Recipe<StackListInput> {
         ).apply(instance, InfuserRecipe::new));
 
         public static final StreamCodec<RegistryFriendlyByteBuf, InfuserRecipe> STREAM_CODEC = StreamCodec.composite(
-                ItemStack.STREAM_CODEC, InfuserRecipe::getResultItem,
+                ItemStackTemplate.STREAM_CODEC, recipe -> recipe.output,
                 ByteBufCodecs.VAR_INT, InfuserRecipe::getManaUsage,
                 ByteBufCodecs.INT, InfuserRecipe::fromColor,
                 ByteBufCodecs.INT, InfuserRecipe::toColor,
@@ -155,20 +184,10 @@ public class InfuserRecipe implements Recipe<StackListInput> {
                 InfuserRecipe::new
         );
 
+        public static final RecipeSerializer<InfuserRecipe> INSTANCE = new RecipeSerializer<>(CODEC, STREAM_CODEC);
+
         private Serializer() {
 
-        }
-
-        @Nonnull
-        @Override
-        public MapCodec<InfuserRecipe> codec() {
-            return CODEC;
-        }
-
-        @Nonnull
-        @Override
-        public StreamCodec<RegistryFriendlyByteBuf, InfuserRecipe> streamCodec() {
-            return STREAM_CODEC;
         }
     }
 }

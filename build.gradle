@@ -2,7 +2,7 @@ plugins {
     id 'java-library'
     id 'eclipse'
     id 'idea'
-    id 'net.neoforged.moddev' version '2.0.147'
+    id 'net.neoforged.moddev' version '2.0.148'
 }
 
 version = "${mcversion}-${mod_version}-${tag_lanzador}"
@@ -11,9 +11,7 @@ base {
     archivesName = "${mod_named}"
 }
 
-// Minecraft 1.21.1 needs Java 21
 java.toolchain {
-    vendor = JvmVendorSpec.ADOPTIUM
     languageVersion = JavaLanguageVersion.of(java_version.toInteger())
 }
 
@@ -21,7 +19,6 @@ java {
     withSourcesJar()
 }
 
-// GameTests: separate source set, not part of the release jar. Run with ./gradlew runGameTestServer
 sourceSets {
     gametest {
         compileClasspath += sourceSets.main.compileClasspath + sourceSets.main.output
@@ -39,10 +36,13 @@ neoForge {
     }
 
     runs {
+        configureEach {
+            systemProperty 'fml.earlyprogresswindow', 'false'
+        }
+
         client {
             client()
             gameDirectory = file('run')
-            // Abre directo el mundo de pruebas: ./gradlew runClient -Pvm_world=<carpeta en run/saves>
             def world = findProperty('vm_world') ?: 'masterful_test'
             if (file("run/saves/${world}").isDirectory()) {
                 programArguments.addAll '--quickPlaySingleplayer', world.toString()
@@ -61,8 +61,16 @@ neoForge {
             systemProperty 'neoforge.enabledGameTestNamespaces', "${modid}"
         }
 
-        data {
-            data()
+        serverData {
+            serverData()
+            gameDirectory = file('run')
+            programArguments.addAll '--mod', "${modid}", '--all',
+                    '--output', file('src/generated/resources').getAbsolutePath(),
+                    '--existing', file('src/main/resources').getAbsolutePath()
+        }
+
+        clientData {
+            clientData()
             gameDirectory = file('run')
             programArguments.addAll '--mod', "${modid}", '--all',
                     '--output', file('src/generated/resources').getAbsolutePath(),
@@ -91,15 +99,8 @@ tasks.named('processResources') {
 repositories {
     mavenCentral()
     maven {
-        name = 'Curse Maven'
-        url = 'https://cursemaven.com'
-        content {
-            includeGroup 'curse.maven'
-        }
-    }
-    maven {
-        name = 'ModdingX'
-        url = 'https://maven.moddingx.org/'
+        name = 'ModdingX Maven'
+        url = 'https://maven.moddingx.org/release'
         content {
             includeGroup 'org.moddingx'
         }
@@ -107,29 +108,47 @@ repositories {
     maven {
         name = 'Jared'
         url = 'https://maven.blamejared.com/'
+        content {
+            includeGroup 'vazkii.patchouli'
+            includeGroup 'mezz.jei'
+            includeGroup 'net.mezzdev.config'
+        }
     }
-    maven {
-        name = 'C4'
-        url = 'https://maven.theillusivec4.top/'
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = 'Curse Maven'
+                url = 'https://cursemaven.com'
+            }
+        }
+        filter {
+            includeGroup 'curse.maven'
+        }
+    }
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = 'Modrinth'
+                url = 'https://api.modrinth.com/maven'
+            }
+        }
+        filter {
+            includeGroup 'maven.modrinth'
+        }
     }
 }
 
 dependencies {
-    // Botania Revived (package velrondevs.botania, modid botania)
     implementation "curse.maven:botania-revived-1725641:${botania_curse_file_id}"
 
-    // Patchouli (required by Botania, used for the custom book pages)
-    implementation "vazkii.patchouli:Patchouli:${patchouli_version}"
+    implementation "vazkii.patchouli:patchouli-neoforge:${patchouli_version}"
 
-    // LibX (library by the original author, ModdingX)
-    implementation "org.moddingx:LibX:${libx_version}"
-    annotationProcessor "org.moddingx:LibX:${libx_version}"
+    implementation "org.moddingx:LibX:${mcversion}-${libx_version}"
+    annotationProcessor "org.moddingx:LibX:${mcversion}-${libx_version}"
 
-    // Curios
-    compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}:api"
-    runtimeOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}"
+    compileOnly "maven.modrinth:curios:${curios_version}"
+    runtimeOnly "maven.modrinth:curios:${curios_version}"
 
-    // JEI
     compileOnly "mezz.jei:jei-${mcversion}-common-api:${jei_version}"
     compileOnly "mezz.jei:jei-${mcversion}-neoforge-api:${jei_version}"
     runtimeOnly "mezz.jei:jei-${mcversion}-neoforge:${jei_version}"
@@ -153,7 +172,6 @@ jar {
     }
 }
 
-// Includes the license file in the built mod
 tasks.withType(Jar).configureEach {
     from(rootProject.file('LICENSE')) { rename { "${it}-${modid}" } }
     from(rootProject.file('NOTICE')) { rename { "${it}-${modid}" } }
@@ -170,9 +188,9 @@ tasks.withType(ProcessResources).configureEach {
             minecraft_version_range       : minecraft_version_range,
             neoforge_version              : neoversion,
             neoforge_loader_version_range : loader_version,
-            libx_version                  : libx_version,
+            libx_version                  : "${mcversion}-${libx_version}".toString(),
             patchouli_version             : patchouli_version,
-            curios_version                : curios_version,
+            curios_version                : curios_version.tokenize('+')[0],
             jei_version                   : jei_version,
     ]
     inputs.properties replaceProperties
@@ -180,21 +198,23 @@ tasks.withType(ProcessResources).configureEach {
     filesMatching(['META-INF/neoforge.mods.toml']) {
         expand replaceProperties
     }
-    filesMatching(['pack.mcmeta']) {
-        expand pack_format: pack_format
-    }
 }
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
-    options.release = 21
+    options.release = 25
     options.compilerArgs << '-Xmaxerrs' << '100000'
 }
 
-// The game tests always start from a fresh world. Chunks saved by a previous run would keep the old (possibly
-// structure-less) generation results.
 tasks.matching { it.name == 'runGameTestServer' }.configureEach {
     doFirst {
         delete file('run/gametest/world')
+    }
+}
+
+tasks.register('printCompileClasspath') {
+    def cp = sourceSets.main.compileClasspath
+    doLast {
+        file('build/cp.txt').text = cp.files.join(File.pathSeparator)
     }
 }

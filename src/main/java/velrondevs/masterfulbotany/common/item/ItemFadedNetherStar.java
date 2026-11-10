@@ -9,9 +9,8 @@ import org.moddingx.libx.creativetab.CreativeTabX;
 
 public class ItemFadedNetherStar extends ItemBase {
 
-    public ItemFadedNetherStar() {
-        // The max damage is replaced with the config value in ModDefaultComponents
-        super(MasterfulBotany.getInstance(), new Properties().stacksTo(1).durability(WitherAconite.DEFAULT_MANA_PER_STAR));
+    public ItemFadedNetherStar(Properties properties) {
+        super(MasterfulBotany.getInstance(), properties.stacksTo(1).durability(WitherAconite.DEFAULT_MANA_PER_STAR));
     }
 
     @Override

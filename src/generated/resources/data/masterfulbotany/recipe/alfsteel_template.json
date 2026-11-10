@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "e": {
-      "tag": "botania:elementium_ingots"
-    },
-    "g": {
-      "tag": "c:ingots/gold"
-    },
-    "l": {
-      "item": "botania:lens_explosive"
-    },
-    "t": {
-      "item": "masterfulbotany:alfsteel_template"
-    }
+    "e": "#botania:elementium_ingots",
+    "g": "#c:ingots/gold",
+    "l": "botania:lens_explosive",
+    "t": "masterfulbotany:alfsteel_template"
   },
   "pattern": [
     "gtg",

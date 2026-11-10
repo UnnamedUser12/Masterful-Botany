@@ -2,19 +2,14 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "d": {
-      "tag": "botania:mana_dusts"
-    },
-    "w": {
-      "tag": "c:ingots/iron"
-    }
+    "d": "#botania:mana_dusts",
+    "w": "#c:ingots/iron"
   },
   "pattern": [
     " w ",
     "wdw"
   ],
   "result": {
-    "count": 1,
     "id": "masterfulbotany:rune_holder"
   }
 }

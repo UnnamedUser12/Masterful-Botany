@@ -30,8 +30,7 @@ public class Feysythia extends FunctionalFlowerBase {
 
     @Override
     protected void tickFlower() {
-        //noinspection ConstantConditions
-        if (!this.level.isClientSide && this.mana <= 0) {
+        if (!this.level.isClientSide() && this.mana <= 0) {
             List<ItemEntity> items = this.level.getEntitiesOfClass(ItemEntity.class, new AABB(Vec3.atLowerCornerOf(this.worldPosition.offset(-1, -1, -1)), Vec3.atLowerCornerOf(this.worldPosition.offset(2, 2, 2))));
             for (ItemEntity ie : items) {
                 ItemStack stack = ie.getItem();

@@ -19,14 +19,12 @@ import velrondevs.botania.registry.BotaniaEntities;
 
 public class FimbultyrModifier extends LootModifier {
     
-    public static final MapCodec<FimbultyrModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            LOOT_CONDITIONS_CODEC.fieldOf("conditions").forGetter(lm -> lm.conditions)
-    ).apply(instance, FimbultyrModifier::new));
+    public static final MapCodec<FimbultyrModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> codecStart(instance).apply(instance, FimbultyrModifier::new));
     
     
     
-    public FimbultyrModifier(LootItemCondition... conditions) {
-        super(conditions);
+    public FimbultyrModifier(LootItemCondition[] conditions, int priority) {
+        super(conditions, priority);
     }
 
     @Override
@@ -37,10 +35,10 @@ public class FimbultyrModifier extends LootModifier {
     @Nonnull
     @Override
     protected ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
-        Entity self = context.getParamOrNull(LootContextParams.ATTACKING_ENTITY);
-        Entity dead = context.getParamOrNull(LootContextParams.THIS_ENTITY);
+        Entity self = context.getOptionalParameter(LootContextParams.ATTACKING_ENTITY);
+        Entity dead = context.getOptionalParameter(LootContextParams.THIS_ENTITY);
         if (self instanceof Player && dead instanceof GaiaGuardianEntity && dead.getType() == BotaniaEntities.DOPPLEGANGER) {
-            if (((GaiaGuardianEntity) dead).isHardMode() && MasterfulPlayerData.getData((Player) self).getBoolean("MimirKnowledge")) {
+            if (((GaiaGuardianEntity) dead).isHardMode() && MasterfulPlayerData.has((Player) self, "MimirKnowledge")) {
                 generatedLoot.add(new ItemStack(ModItems.fimbultyrTablet));
             }
         }

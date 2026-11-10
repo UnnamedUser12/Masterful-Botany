@@ -9,8 +9,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.registration.HandlerThread;
 import org.moddingx.libx.network.PacketHandler;
@@ -18,7 +16,7 @@ import velrondevs.botania.client.fx.WispParticleData;
 
 public record InfusionMessage(BlockPos pos, double progress, int fromColor, int toColor) implements CustomPacketPayload {
 
-    public static final Type<InfusionMessage> TYPE = new Type<>(MasterfulBotany.getInstance().resource("infusion"));
+    public static final Type<InfusionMessage> TYPE = new Type<>(MasterfulBotany.getInstance().id("infusion"));
     public static final StreamCodec<FriendlyByteBuf, InfusionMessage> CODEC = StreamCodec.ofMember(
             (msg, buffer) -> {
                 buffer.writeBlockPos(msg.pos());
@@ -48,10 +46,8 @@ public record InfusionMessage(BlockPos pos, double progress, int fromColor, int 
         }
 
         @Override
-        @OnlyIn(Dist.CLIENT)
         public void handle(InfusionMessage msg, IPayloadContext ctx) {
             Level level = Minecraft.getInstance().level;
-            //noinspection ConstantConditions
             if (level == null) return;
 
             int ticks = (int) (100.0 * msg.progress());

@@ -3,7 +3,7 @@ package velrondevs.masterfulbotany.registry;
 import velrondevs.masterfulbotany.common.crafting.InfuserRecipe;
 import velrondevs.masterfulbotany.common.crafting.RuneRitualRecipe;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -19,7 +19,7 @@ public class ModRecipes {
     
     private static class MasterfulRecipeType<T extends Recipe<?>> implements RecipeType<T>, Registerable {
         
-        private ResourceLocation id;
+        private Identifier id;
         private final RecipeSerializer<T> serializer;
 
         private MasterfulRecipeType(RecipeSerializer<T> serializer) {

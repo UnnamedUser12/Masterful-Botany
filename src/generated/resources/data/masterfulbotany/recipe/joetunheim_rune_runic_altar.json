@@ -1,25 +1,14 @@
 {
   "type": "botania:runic_altar",
   "ingredients": [
-    {
-      "tag": "c:bricks/normal"
-    },
-    {
-      "item": "botania:rune_earth"
-    },
-    {
-      "item": "botania:rune_autumn"
-    },
-    {
-      "item": "botania:rune_gluttony"
-    },
-    {
-      "item": "minecraft:blackstone"
-    }
+    "#c:bricks/normal",
+    "botania:rune_earth",
+    "botania:rune_autumn",
+    "botania:rune_gluttony",
+    "minecraft:blackstone"
   ],
   "mana": 16000,
   "output": {
-    "count": 1,
     "id": "masterfulbotany:joetunheim_rune"
   }
 }

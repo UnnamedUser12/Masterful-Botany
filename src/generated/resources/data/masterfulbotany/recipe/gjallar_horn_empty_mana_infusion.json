@@ -1,11 +1,8 @@
 {
   "type": "botania:mana_infusion",
-  "input": {
-    "item": "botania:horn_grass"
-  },
+  "input": "botania:horn_grass",
   "mana": 20000,
   "output": {
-    "count": 1,
     "id": "masterfulbotany:gjallar_horn_empty"
   }
 }

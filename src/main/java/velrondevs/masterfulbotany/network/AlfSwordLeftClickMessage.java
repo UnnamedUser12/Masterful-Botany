@@ -16,7 +16,7 @@ import org.moddingx.libx.network.PacketHandler;
 
 public record AlfSwordLeftClickMessage() implements CustomPacketPayload {
 
-    public static final Type<AlfSwordLeftClickMessage> TYPE = new Type<>(MasterfulBotany.getInstance().resource("alf_sword_left_click"));
+    public static final Type<AlfSwordLeftClickMessage> TYPE = new Type<>(MasterfulBotany.getInstance().id("alf_sword_left_click"));
     public static final StreamCodec<FriendlyByteBuf, AlfSwordLeftClickMessage> CODEC = StreamCodec.unit(new AlfSwordLeftClickMessage());
 
     @Nonnull

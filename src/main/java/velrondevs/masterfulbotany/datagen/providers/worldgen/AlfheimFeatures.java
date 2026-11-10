@@ -50,7 +50,7 @@ public class AlfheimFeatures extends FeatureProviderBase {
     ).ignoreVines().build());
     
     public final Holder<ConfiguredFeature<?, ?>> motifFlowers = this.feature(ModFeatures.motifFlowers);
-    public final Holder<ConfiguredFeature<?, ?>> alfheimGrass = this.feature((Feature<FeatureConfiguration>) (Feature<?>) Feature.RANDOM_PATCH, this.holder(VegetationFeatures.PATCH_GRASS_JUNGLE).value().config());
+    public final Holder<ConfiguredFeature<?, ?>> alfheimGrass = this.holder(VegetationFeatures.GRASS_JUNGLE);
     public final Holder<ConfiguredFeature<?, ?>> manaCrystals = this.feature(ModFeatures.manaCrystals);
     public final Holder<ConfiguredFeature<?, ?>> abandonedApothecaries = this.feature(ModFeatures.abandonedApothecaries, new AbandonedApothecaryConfiguration(
             List.of(

@@ -1,24 +1,30 @@
 package velrondevs.masterfulbotany.common.helper;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
 
 public class MasterfulPlayerData {
-    
+
+    private static final String KEY = "MasterfulBotanyPlayerInfo";
+
     public static CompoundTag getData(Player player) {
-        if (player.getPersistentData().contains("MasterfulBotanyPlayerInfo", Tag.TAG_COMPOUND)) {
-            return player.getPersistentData().getCompound("MasterfulBotanyPlayerInfo");
+        CompoundTag persistent = player.getPersistentData();
+        if (persistent.contains(KEY)) {
+            return persistent.getCompoundOrEmpty(KEY);
         } else {
             CompoundTag nbt = new CompoundTag();
-            player.getPersistentData().put("MasterfulBotanyPlayerInfo", nbt);
+            persistent.put(KEY, nbt);
             return nbt;
         }
     }
-    
+
+    public static boolean has(Player player, String flag) {
+        return getData(player).getBooleanOr(flag, false);
+    }
+
     public static void copy(Player source, Player target) {
-        if (source.getPersistentData().contains("MasterfulBotanyPlayerInfo", Tag.TAG_COMPOUND)) {
-            target.getPersistentData().put("MasterfulBotanyPlayerInfo", source.getPersistentData().getCompound("MasterfulBotanyPlayerInfo").copy());
+        if (source.getPersistentData().contains(KEY)) {
+            target.getPersistentData().put(KEY, source.getPersistentData().getCompoundOrEmpty(KEY).copy());
         }
     }
 }

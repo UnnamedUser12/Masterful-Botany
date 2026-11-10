@@ -1,0 +1,33 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "property": "botania:flag",
+    "kind": "terra_pick_tipped",
+    "on_false": {
+      "type": "minecraft:condition",
+      "property": "botania:flag",
+      "kind": "terra_pick_active",
+      "on_false": {
+        "type": "minecraft:model",
+        "model": "masterfulbotany:item/alfsteel_pick"
+      },
+      "on_true": {
+        "type": "minecraft:model",
+        "model": "masterfulbotany:item/alfsteel_pick_active"
+      }
+    },
+    "on_true": {
+      "type": "minecraft:condition",
+      "property": "botania:flag",
+      "kind": "terra_pick_active",
+      "on_false": {
+        "type": "minecraft:model",
+        "model": "masterfulbotany:item/alfsteel_pick_tipped"
+      },
+      "on_true": {
+        "type": "minecraft:model",
+        "model": "masterfulbotany:item/alfsteel_pick_tipped_active"
+      }
+    }
+  }
+}

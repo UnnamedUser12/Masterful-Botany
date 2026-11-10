@@ -1,13 +1,10 @@
 {
   "type": "botania:elven_trade",
   "ingredients": [
-    {
-      "tag": "minecraft:leaves"
-    }
+    "#minecraft:leaves"
   ],
   "output": [
     {
-      "count": 1,
       "id": "masterfulbotany:dreamwood_leaves"
     }
   ]

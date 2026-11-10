@@ -4,16 +4,15 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import velrondevs.masterfulbotany.common.block.flower.BlockFloatingFunctionalFlower;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -21,8 +20,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.moddingx.libx.base.tile.BlockEntityBase;
 import org.moddingx.libx.base.tile.TickingBlock;
 import org.moddingx.libx.LibX;
@@ -39,8 +36,8 @@ import velrondevs.botania.client.core.helper.RenderHelper;
 
 public abstract class FunctionalFlowerBase extends BlockEntityBase implements TickingBlock, WandBindable, Wandable, WandHUD {
 
-    public static final ResourceLocation POOL_ID = ResourceLocation.fromNamespaceAndPath("botania", "mana_pool");
-    public static final ResourceLocation SPREADER_ID = ResourceLocation.fromNamespaceAndPath("botania", "mana_spreader");
+    public static final Identifier POOL_ID = Identifier.fromNamespaceAndPath("botania", "mana_pool");
+    public static final Identifier SPREADER_ID = Identifier.fromNamespaceAndPath("botania", "mana_spreader");
     
     public static final int DEFAULT_MAX_MANA = 300;
     public static final int DEFAULT_MAX_TRANSFER = 30;
@@ -88,8 +85,7 @@ public abstract class FunctionalFlowerBase extends BlockEntityBase implements Ti
 
         this.linkPool();
 
-        //noinspection ConstantConditions
-        if (!this.level.isClientSide) {
+        if (!this.level.isClientSide()) {
             if (this.isGenerating) {
                 if (this.spreaderTile != null) {
                     if (this.mana > 0) {
@@ -124,7 +120,7 @@ public abstract class FunctionalFlowerBase extends BlockEntityBase implements Ti
         this.didWork = false;
         this.tickFlower();
 
-        if (this.level.isClientSide) {
+        if (this.level.isClientSide()) {
             if (this.didWork) particleChance = 3 * particleChance;
             float red = (float) (this.color >> 16 & 0xFF) / 255.0f;
             float green = (float) (this.color >> 8 & 0xFF) / 255.0f;
@@ -181,10 +177,7 @@ public abstract class FunctionalFlowerBase extends BlockEntityBase implements Ti
         } else {
             theTile = (BlockEntity) theTileObj;
         }
-        //noinspection ConstantConditions
         if ((this.pool != null && theTile == null) || this.pool != null && !this.pool.equals(theTile.getBlockPos()) || (this.pool != null && this.level.getBlockEntity(this.pool) != theTile)) {
-            // tile is outdated. Update it
-            //noinspection ConstantConditions
             BlockEntity te = this.level.getBlockEntity(this.pool);
             if (this.isGenerating) {
                 this.poolTile = null;
@@ -237,75 +230,32 @@ public abstract class FunctionalFlowerBase extends BlockEntityBase implements Ti
     }
 
     @Override
-    public void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.loadAdditional(nbt, registries);
-        if (nbt.contains("mana", Tag.TAG_INT)) {
-            this.mana = Mth.clamp(nbt.getInt("mana"), 0, this.maxMana);
-        } else {
-            this.mana = 0;
-        }
-        if (nbt.contains("pool")) {
-            CompoundTag poolTag = nbt.getCompound("pool");
-            this.pool = new BlockPos(poolTag.getInt("x"), poolTag.getInt("y"), poolTag.getInt("z"));
-        } else {
-            this.pool = null;
-        }
-        this.floating = nbt.getBoolean("floating");
+    protected void loadAdditional(@Nonnull ValueInput input) {
+        super.loadAdditional(input);
+        this.mana = Mth.clamp(input.getIntOr("mana", 0), 0, this.maxMana);
+        this.pool = input.child("pool")
+                .map(poolTag -> new BlockPos(poolTag.getIntOr("x", 0), poolTag.getIntOr("y", 0), poolTag.getIntOr("z", 0)))
+                .orElse(null);
+        this.floating = input.getBooleanOr("floating", false);
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag compound, @Nonnull HolderLookup.Provider registries) {
-        super.saveAdditional(compound, registries);
-        compound.putInt("mana", Mth.clamp(this.mana, 0, this.maxMana));
+    protected void saveAdditional(@Nonnull ValueOutput output) {
+        super.saveAdditional(output);
+        output.putInt("mana", Mth.clamp(this.mana, 0, this.maxMana));
         if (this.pool != null) {
-            CompoundTag poolTag = new CompoundTag();
+            ValueOutput poolTag = output.child("pool");
             poolTag.putInt("x", this.pool.getX());
             poolTag.putInt("y", this.pool.getY());
             poolTag.putInt("z", this.pool.getZ());
-            compound.put("pool", poolTag);
         }
-        compound.putBoolean("floating", this.floating);
-    }
-
-    @Nonnull
-    @Override
-    public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
-        CompoundTag tag = super.getUpdateTag(registries);
-        //noinspection ConstantConditions
-        if (!this.level.isClientSide) {
-            tag.putInt("mana", Mth.clamp(this.mana, 0, this.maxMana));
-            if (this.pool != null) {
-                CompoundTag poolTag = new CompoundTag();
-                poolTag.putInt("x", this.pool.getX());
-                poolTag.putInt("y", this.pool.getY());
-                poolTag.putInt("z", this.pool.getZ());
-                tag.put("pool", poolTag);
-            }
-            tag.putBoolean("floating", this.floating);
-        }
-        return tag;
-    }
-
-    @Override
-    public void handleUpdateTag(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        //noinspection ConstantConditions
-        if (this.level.isClientSide) {
-            this.mana = Mth.clamp(nbt.getInt("mana"), 0, this.maxMana);
-            if (nbt.contains("pool")) {
-                CompoundTag poolTag = nbt.getCompound("pool");
-                this.pool = new BlockPos(poolTag.getInt("x"), poolTag.getInt("y"), poolTag.getInt("z"));
-            } else {
-                this.pool = null;
-            }
-            this.floating = nbt.getBoolean("floating");
-        }
+        output.putBoolean("floating", this.floating);
     }
 
     public boolean isValidBinding() {
         Object theTileObj = this.isGenerating ? this.spreaderTile : this.poolTile;
         if (!(theTileObj instanceof BlockEntity theTile))
             return false;
-        // noinspection ConstantConditions,deprecation,deprecation
         return this.pool != null && theTile != null && theTile.hasLevel() && !theTile.isRemoved() && this.level.hasChunkAt(theTile.getBlockPos()) && this.getLevel().getBlockEntity(this.pool) == theTile;
     }
 
@@ -322,26 +272,24 @@ public abstract class FunctionalFlowerBase extends BlockEntityBase implements Ti
         this.setChanged();
     }
 
-    @OnlyIn(Dist.CLIENT)
     public RadiusDescriptor getRadius() {
         return null;
     }
     
-    @OnlyIn(Dist.CLIENT)
     public RadiusDescriptor getSecondaryRadius() {
         return null;
     }
 
     @Override
     public boolean onUsedByWand(@Nullable Player player, ItemStack stack, Direction side) {
-        if (this.level != null && this.level.isClientSide) {
+        if (this.level != null && this.level.isClientSide()) {
             LibX.getNetwork().requestBE(this.level, this.worldPosition);
         }
         return true;
     }
     
     @Override
-    public void renderHUD(GuiGraphics graphics, Minecraft minecraft) {
+    public void renderHUD(GuiGraphicsExtractor graphics, Minecraft minecraft) {
         if (this.level == null) return;
         String name = I18n.get(this.getBlockState().getBlock().getDescriptionId());
 
@@ -351,7 +299,7 @@ public abstract class FunctionalFlowerBase extends BlockEntityBase implements Ti
         int right = left + 20;
 
         RenderHelper.renderHUDBox(graphics, centerX - left, centerY + 8, centerX + right, centerY + 30);
-        BotaniaAPIClient.instance().drawComplexManaHUD(graphics, this.color, this.getCurrentMana(), this.maxMana, name, new ItemStack(Objects.requireNonNull(BuiltInRegistries.ITEM.get(this.isGenerating ? SPREADER_ID : POOL_ID))), this.isValidBinding());
+        BotaniaAPIClient.instance().drawComplexManaHUD(graphics, this.color, this.getCurrentMana(), this.maxMana, name, new ItemStack(Objects.requireNonNull(BuiltInRegistries.ITEM.getValue(this.isGenerating ? SPREADER_ID : POOL_ID))), this.isValidBinding());
     }
     
     private void setPoolChanged() {

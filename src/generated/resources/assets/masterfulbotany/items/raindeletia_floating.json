@@ -1,0 +1,15 @@
+{
+  "model": {
+    "type": "minecraft:composite",
+    "models": [
+      {
+        "type": "minecraft:model",
+        "model": "masterfulbotany:block/raindeletia_floating"
+      },
+      {
+        "type": "minecraft:model",
+        "model": "botania:block/islands/island_grass"
+      }
+    ]
+  }
+}

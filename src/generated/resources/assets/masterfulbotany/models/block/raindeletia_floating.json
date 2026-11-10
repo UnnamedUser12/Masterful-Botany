@@ -1,9 +1,10 @@
 {
   "parent": "minecraft:block/block",
   "flower": {
-    "parent": "masterfulbotany:block/raindeletia",
-    "render_type": "minecraft:cutout_mipped"
+    "parent": "masterfulbotany:block/raindeletia"
   },
   "loader": "botania:floating_flower",
-  "render_type": "minecraft:cutout_mipped"
+  "textures": {
+    "particle": "masterfulbotany:block/raindeletia"
+  }
 }

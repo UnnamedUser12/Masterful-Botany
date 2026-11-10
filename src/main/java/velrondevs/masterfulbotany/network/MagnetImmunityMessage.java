@@ -9,15 +9,13 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.registration.HandlerThread;
 import org.moddingx.libx.network.PacketHandler;
 
 public record MagnetImmunityMessage(int entityId, boolean immune, double x, double y, double z) implements CustomPacketPayload {
 
-    public static final Type<MagnetImmunityMessage> TYPE = new Type<>(MasterfulBotany.getInstance().resource("magnet_immunity"));
+    public static final Type<MagnetImmunityMessage> TYPE = new Type<>(MasterfulBotany.getInstance().id("magnet_immunity"));
     public static final StreamCodec<FriendlyByteBuf, MagnetImmunityMessage> CODEC = StreamCodec.ofMember(
             (msg, buffer) -> {
                 buffer.writeInt(msg.entityId());
@@ -49,7 +47,6 @@ public record MagnetImmunityMessage(int entityId, boolean immune, double x, doub
         }
 
         @Override
-        @OnlyIn(Dist.CLIENT)
         public void handle(MagnetImmunityMessage msg, IPayloadContext ctx) {
             Level level = Minecraft.getInstance().level;
             if (level != null) {

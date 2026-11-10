@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "d": {
-      "item": "botania:pixie_dust"
-    },
-    "e": {
-      "tag": "botania:elementium_ingots"
-    },
-    "p": {
-      "item": "masterfulbotany:alfsteel_pylon"
-    }
+    "d": "botania:pixie_dust",
+    "e": "#botania:elementium_ingots",
+    "p": "masterfulbotany:alfsteel_pylon"
   },
   "pattern": [
     " d ",
@@ -18,7 +12,6 @@
     " d "
   ],
   "result": {
-    "count": 1,
     "id": "botania:gaia_pylon"
   }
 }

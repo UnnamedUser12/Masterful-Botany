@@ -30,8 +30,8 @@ public class AlfheimGroundModifier extends PlacementModifier {
     @Nonnull
     @Override
     public Stream<BlockPos> getPositions(@Nonnull PlacementContext context, @Nonnull RandomSource random, @Nonnull BlockPos pos) {
-        BlockPos.MutableBlockPos mpos = new BlockPos.MutableBlockPos(pos.getX(), context.getMinBuildHeight() + context.getGenDepth(), pos.getZ());
-        while (mpos.getY() >= context.getMinBuildHeight()) {
+        BlockPos.MutableBlockPos mpos = new BlockPos.MutableBlockPos(pos.getX(), context.getMinY() + context.getGenDepth(), pos.getZ());
+        while (mpos.getY() >= context.getMinY()) {
             if (!AlfheimWorldGen.passthrough(context.getLevel().getBlockState(mpos))) {
                 return Stream.of(mpos.immutable().relative(Direction.UP));
             }

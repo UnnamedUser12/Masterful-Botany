@@ -40,13 +40,13 @@
       "xz_scale": 1.0,
       "y_scale": 0.7142857142857143
     },
-    "initial_density_without_jaggedness": "masterfulbotany:alfheim_initial",
     "lava": {
       "type": "minecraft:noise",
       "noise": "minecraft:aquifer_lava",
       "xz_scale": 1.0,
       "y_scale": 1.0
     },
+    "preliminary_surface_level": "masterfulbotany:alfheim_initial",
     "ridges": "masterfulbotany:alfheim_weirdness",
     "temperature": "masterfulbotany:alfheim_temperature",
     "vegetation": "masterfulbotany:alfheim_humidity",

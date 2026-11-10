@@ -20,6 +20,7 @@ import velrondevs.masterfulbotany.MasterfulBotany;
 import velrondevs.masterfulbotany.registry.ModBlocks;
 import velrondevs.masterfulbotany.registry.ModEnchantments;
 import velrondevs.masterfulbotany.registry.ModItems;
+import velrondevs.masterfulbotany.registry.ModRecipes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -42,7 +43,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.common.util.TriState;
+import net.minecraft.util.TriState;
 import net.neoforged.neoforge.event.entity.item.ItemExpireEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.CriticalHitEvent;
@@ -50,9 +51,9 @@ import net.neoforged.neoforge.event.entity.player.ItemEntityPickupEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
-import net.neoforged.neoforge.event.level.SleepFinishedTimeEvent;
+
+import net.neoforged.neoforge.event.ModifyRecipeJsonsEvent;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
-import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import top.theillusivec4.curios.api.CuriosApi;
@@ -73,18 +74,17 @@ public class EventListener {
     private final Set<UUID> crittingPlayers = new HashSet<>();
 
     @SubscribeEvent
-    public void serverStarting(ServerStartingEvent event) {
-        RecipeRemover.removeRecipes(event.getServer().getRecipeManager());
+    public void modifyRecipes(ModifyRecipeJsonsEvent event) {
+        RecipeRemover.removeRecipes(event);
     }
 
-    @SubscribeEvent(priority = EventPriority.LOW)
+    @SubscribeEvent
     public void datapackSync(OnDatapackSyncEvent event) {
-        RecipeRemover.removeRecipes(event.getPlayerList().getServer().getRecipeManager());
+        event.sendRecipes(ModRecipes.infuser, ModRecipes.runeRitual);
     }
 
     @SubscribeEvent
     public void onDamage(LivingIncomingDamageEvent event) {
-        // The rings work for the attacker: the target of a player wearing the ring is ignited / slowed down
         if (event.getSource().getEntity() instanceof Player attacker) {
             ICuriosItemHandler curios = CuriosApi.getCuriosInventory(attacker).orElse(null);
             if (curios != null && curios.findFirstCurio(ModItems.fireRing).isPresent()) {
@@ -93,8 +93,8 @@ public class EventListener {
                 }
             }
             if (curios != null && curios.findFirstCurio(ModItems.iceRing).isPresent()) {
-                if (!event.getEntity().hasEffect(MobEffects.MOVEMENT_SLOWDOWN)) {
-                    event.getEntity().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 99));
+                if (!event.getEntity().hasEffect(MobEffects.SLOWNESS)) {
+                    event.getEntity().addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 20, 99));
                 }
             }
         }
@@ -170,7 +170,7 @@ public class EventListener {
                         });
                     }
                     ItemStack drop = Andwari.randomAndwariItem(event.getLevel().getRandom(), serverLevel.registryAccess());
-                    living.spawnAtLocation(drop);
+                    living.spawnAtLocation(serverLevel, drop);
                 }
             }));
         }
@@ -178,7 +178,7 @@ public class EventListener {
 
     @SubscribeEvent
     public void pickupItem(ItemEntityPickupEvent.Pre event) {
-        if (!event.getItemEntity().getCommandSenderWorld().isClientSide) {
+        if (!event.getItemEntity().level().isClientSide()) {
             if (event.getItemEntity().getItem().getItem() == ModBlocks.mjoellnir.asItem()) {
                 if (!BlockMjoellnir.canHold(event.getPlayer())) {
                     event.setCanPickup(TriState.FALSE);
@@ -190,21 +190,16 @@ public class EventListener {
     @SubscribeEvent
     public void alfPortalUpdate(ElvenPortalUpdateEvent event) {
         BlockEntity portal = event.getPortalTile();
-        if (event.isOpen() && portal.getLevel() != null && !portal.getLevel().isClientSide) {
+        if (event.isOpen() && portal.getLevel() != null && !portal.getLevel().isClientSide()) {
             if (Alfheim.DIMENSION.equals(portal.getLevel().dimension())) {
-                // Alfheim portals in alfheim make no sense. better close this one.
                 if (portal instanceof AlfheimPortalBlockEntity alfPortal) {
-                    // A portal will close if it tries to consume mana without pylons.
-                    // So we just let it consume 0 mana with 0 pylons which should close
-                    // the portal.
                     alfPortal.consumeMana(new ArrayList<>(), 0, true);
                 }
             }
-            // We only teleport from the overworld.
             if (Level.OVERWORLD.equals(portal.getLevel().dimension()) && AlfheimPortalHandler.shouldCheck(portal.getLevel())) {
                 List<Player> playersInPortal = portal.getLevel().getEntitiesOfClass(Player.class, event.getAabb());
                 for (Player player : playersInPortal) {
-                    if (player instanceof ServerPlayer && MasterfulPlayerData.getData(player).getBoolean("KvasirKnowledge")) {
+                    if (player instanceof ServerPlayer && MasterfulPlayerData.has(player, "KvasirKnowledge")) {
                         if (AlfheimPortalHandler.setInPortal(portal.getLevel(), player)) {
                             if (!AlfheimTeleporter.teleportToAlfheim((ServerPlayer) player, portal.getBlockPos())) {
                                 player.sendSystemMessage(Component.translatable("message.masterfulbotany.alfheim_not_loaded"));
@@ -218,7 +213,7 @@ public class EventListener {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void itemDespawn(ItemExpireEvent event) {
-        if (!event.getEntity().level().isClientSide && Alfheim.DIMENSION.equals(event.getEntity().level().dimension())) {
+        if (!event.getEntity().level().isClientSide() && Alfheim.DIMENSION.equals(event.getEntity().level().dimension())) {
             if (event.getEntity().getItem().getItem() == BotaniaItems.pixieDust) {
                 BlockPos pos = event.getEntity().blockPosition();
                 if (TileReturnPortal.validPortal(event.getEntity().level(), pos)) {
@@ -231,39 +226,25 @@ public class EventListener {
 
     @SubscribeEvent
     public void playerTick(PlayerTickEvent.Post event) {
-        if (event.getEntity().tickCount % 4 == 1 && !event.getEntity().level().isClientSide && Alfheim.DIMENSION.equals(event.getEntity().level().dimension())) {
-            if (MasterfulConfig.lockAlfheim && !MasterfulPlayerData.getData(event.getEntity()).getBoolean("KvasirKnowledge")) {
-                // Player used another mod to get to alfheim
+        if (event.getEntity().tickCount % 4 == 1 && !event.getEntity().level().isClientSide() && Alfheim.DIMENSION.equals(event.getEntity().level().dimension())) {
+            if (MasterfulConfig.lockAlfheim && !MasterfulPlayerData.has(event.getEntity(), "KvasirKnowledge")) {
                 event.getEntity().addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 60, 0, true, false, true));
             }
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void sleepFinished(SleepFinishedTimeEvent event) {
-        if (event.getLevel() instanceof ServerLevel level && !level.isClientSide) {
-            if (Alfheim.DIMENSION.equals(level.dimension())) {
-                level.getServer().overworld().setDayTime(event.getNewTime());
-            }
-        }
-    }
-
-    /**
-     * Mjoellnir gets bonus damage from sharpness and bonus attack speed from hammer mobility.
-     * This can't be done in the default attribute modifiers as these depend on the enchantments.
-     */
     @SubscribeEvent
     public void itemAttributes(ItemAttributeModifierEvent event) {
         ItemStack stack = event.getItemStack();
         if (stack.getItem() == ModBlocks.mjoellnir.asItem()) {
             int mobility = level(stack, ModEnchantments.HAMMER_MOBILITY);
             if (mobility > 0) {
-                event.addModifier(Attributes.ATTACK_SPEED, new AttributeModifier(MasterfulBotany.getInstance().resource("hammer_mobility"), MasterfulConfig.mjoellnir.attack_speed_multiplier * mobility, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND);
+                event.addModifier(Attributes.ATTACK_SPEED, new AttributeModifier(MasterfulBotany.getInstance().id("hammer_mobility"), MasterfulConfig.mjoellnir.attack_speed_multiplier * mobility, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND);
             }
             int sharpness = level(stack, Enchantments.SHARPNESS);
             if (sharpness > 0) {
                 float bonus = 1.0f + Math.max(0, sharpness - 1) * 0.5f;
-                event.addModifier(Attributes.ATTACK_DAMAGE, new AttributeModifier(MasterfulBotany.getInstance().resource("mjoellnir_sharpness"), (MasterfulConfig.mjoellnir.enchantment_multiplier - 1) * bonus, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND);
+                event.addModifier(Attributes.ATTACK_DAMAGE, new AttributeModifier(MasterfulBotany.getInstance().id("mjoellnir_sharpness"), (MasterfulConfig.mjoellnir.enchantment_multiplier - 1) * bonus, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND);
             }
         }
     }

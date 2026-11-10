@@ -9,44 +9,33 @@ import velrondevs.masterfulbotany.common.pylon.PylonRepairable;
 import velrondevs.masterfulbotany.config.MasterfulConfig;
 import velrondevs.masterfulbotany.MasterfulBotany;
 import velrondevs.masterfulbotany.registry.ModItems;
-import net.minecraft.client.renderer.item.ItemProperties;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.crafting.Ingredient;
+
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+
 import org.moddingx.libx.creativetab.CreativeTabItemProvider;
 import org.moddingx.libx.creativetab.CreativeTabX;
-import org.moddingx.libx.registration.Registerable;
-import org.moddingx.libx.registration.SetupContext;
+
 import velrondevs.botania.common.helper.PlayerHelper;
 import velrondevs.botania.common.item.equipment.tool.terrasteel.TerraShattererItem;
 import velrondevs.botania.common.item.equipment.tool.ToolCommons;
 import velrondevs.botania.common.item.relic.RingOfThorItem;
 import velrondevs.botania.common.item.StoneOfTemperanceItem;
-import velrondevs.botania.common.lib.BotaniaTags;
+
 import velrondevs.botania.common.lib.ResourceLocationHelper;
 
-public class AlfsteelPick extends TerraShattererItem implements PylonRepairable, Registerable, CreativeTabItemProvider {
+public class AlfsteelPick extends TerraShattererItem implements PylonRepairable, CreativeTabItemProvider {
     
     public AlfsteelPick(Properties props) {
         super(props.durability(MasterfulConfig.alftools.durability.pickaxe.max_durability()));
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void setupClient(SetupContext ctx) {
-        ctx.enqueue(() -> {
-            ItemProperties.register(ModItems.alfsteelPick, MasterfulBotany.getInstance().resource("tipped"), (stack, level, entity, seed) -> isTipped(stack) ? 1 : 0);
-            ItemProperties.register(ModItems.alfsteelPick, MasterfulBotany.getInstance().resource("active"), (stack, level, entity, seed) -> isEnabled(stack) ? 1 : 0);
-        });
     }
 
     @Override
@@ -93,11 +82,6 @@ public class AlfsteelPick extends TerraShattererItem implements PylonRepairable,
                 }
             }
         }
-    }
-
-    @Override
-    public boolean isValidRepairItem(@Nonnull ItemStack toRepair, @Nonnull ItemStack repair) {
-        return repair.getItem() == ModItems.alfsteelIngot || (!Ingredient.of(BotaniaTags.Items.INGOTS_TERRASTEEL).test(repair) && super.isValidRepairItem(toRepair, repair));
     }
 
     @Override

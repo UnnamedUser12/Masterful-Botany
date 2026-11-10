@@ -8,6 +8,7 @@ import javax.annotation.Nonnull;
 import velrondevs.masterfulbotany.common.item.equipment.AlfsteelPick;
 import velrondevs.masterfulbotany.registry.ModItems;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
@@ -18,12 +19,10 @@ import velrondevs.botania.common.lib.BotaniaTags;
 
 public class AlfsteelDisposeModifier extends LootModifier {
     
-    public static final MapCodec<AlfsteelDisposeModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            LOOT_CONDITIONS_CODEC.fieldOf("conditions").forGetter(lm -> lm.conditions)
-    ).apply(instance, AlfsteelDisposeModifier::new));
+    public static final MapCodec<AlfsteelDisposeModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> codecStart(instance).apply(instance, AlfsteelDisposeModifier::new));
 
-    public AlfsteelDisposeModifier(LootItemCondition... conditions) {
-        super(conditions);
+    public AlfsteelDisposeModifier(LootItemCondition[] conditions, int priority) {
+        super(conditions, priority);
     }
 
     @Override
@@ -34,8 +33,9 @@ public class AlfsteelDisposeModifier extends LootModifier {
     @Nonnull
     @Override
     protected ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
-        Entity entity = context.getParamOrNull(LootContextParams.THIS_ENTITY);
-        ItemStack tool = context.getParamOrNull(LootContextParams.TOOL);
+        Entity entity = context.getOptionalParameter(LootContextParams.THIS_ENTITY);
+        ItemInstance toolInstance = context.getOptionalParameter(LootContextParams.TOOL);
+        ItemStack tool = toolInstance instanceof ItemStack toolStack ? toolStack : null;
         if (entity != null && tool != null && !tool.isEmpty()) {
             filterDisposable(generatedLoot, entity, tool);
         }

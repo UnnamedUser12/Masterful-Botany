@@ -12,10 +12,10 @@ import net.minecraft.stats.Stats;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.level.Level;
 import org.moddingx.libx.base.ItemBase;
 import org.moddingx.libx.mod.ModX;
@@ -33,9 +33,9 @@ public class FullGjallarHorn extends ItemBase {
                 CriteriaTriggers.CONSUME_ITEM.trigger((ServerPlayer) player, stack);
             }
             player.awardStat(Stats.ITEM_USED.get(this));
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 CompoundTag nbt = MasterfulPlayerData.getData(player);
-                if (nbt.getBoolean("MimirKnowledge")) {
+                if (nbt.getBooleanOr("MimirKnowledge", false)) {
                     player.sendSystemMessage(Component.translatable("message.masterfulbotany.mimir_known").withStyle(ChatFormatting.GRAY));
                 } else {
                     nbt.putBoolean("MimirKnowledge", true);
@@ -60,12 +60,12 @@ public class FullGjallarHorn extends ItemBase {
     }
 
     @Nonnull
-    public UseAnim getUseAnimation(@Nonnull ItemStack stack) {
-        return UseAnim.DRINK;
+    public ItemUseAnimation getUseAnimation(@Nonnull ItemStack stack) {
+        return ItemUseAnimation.DRINK;
     }
 
     @Nonnull
-    public InteractionResultHolder<ItemStack> use(@Nonnull Level level, @Nonnull Player player, @Nonnull InteractionHand hand) {
+    public InteractionResult use(@Nonnull Level level, @Nonnull Player player, @Nonnull InteractionHand hand) {
         return ItemUtils.startUsingInstantly(level, player, hand);
     }
 }

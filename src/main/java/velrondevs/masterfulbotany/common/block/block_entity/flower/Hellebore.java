@@ -10,8 +10,6 @@ import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import velrondevs.botania.api.block_entity.RadiusDescriptor;
 
 public class Hellebore extends FunctionalFlowerBase {
@@ -24,8 +22,7 @@ public class Hellebore extends FunctionalFlowerBase {
 
     @Override
     protected void tickFlower() {
-        //noinspection ConstantConditions
-        if (!this.level.isClientSide) {
+        if (!this.level.isClientSide()) {
             int prevMana = this.mana;
 
             List<AbstractPiglin> piglins = this.level.getEntitiesOfClass(AbstractPiglin.class, new AABB(this.worldPosition.getX() - 5.5, this.worldPosition.getY() - 2, this.worldPosition.getZ() - 5.5, this.worldPosition.getX() + 6.5, this.worldPosition.getY() + 3, this.worldPosition.getZ() + 6.5));
@@ -54,7 +51,6 @@ public class Hellebore extends FunctionalFlowerBase {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public RadiusDescriptor getRadius() {
         return RadiusDescriptor.Rectangle.square(this.worldPosition, 5);
     }

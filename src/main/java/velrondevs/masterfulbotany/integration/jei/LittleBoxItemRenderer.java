@@ -8,7 +8,7 @@ import javax.annotation.Nonnull;
 import mezz.jei.api.ingredients.IIngredientRenderer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -53,12 +53,12 @@ public class LittleBoxItemRenderer implements IIngredientRenderer<ItemStack> {
     }
 
     @Override
-    public void render(@Nonnull GuiGraphics graphics, @Nonnull ItemStack stack) {
+    public void render(@Nonnull GuiGraphicsExtractor graphics, @Nonnull ItemStack stack) {
         if (parent != null) {
-            graphics.pose().pushPose();
-            graphics.pose().translate(-2, -2, 0);
+            graphics.pose().pushMatrix();
+            graphics.pose().translate(-2, -2);
             parent.render(graphics, stack);
-            graphics.pose().popPose();
+            graphics.pose().popMatrix();
         }
     }
 

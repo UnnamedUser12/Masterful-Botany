@@ -4,10 +4,9 @@ import java.util.Arrays;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
-import org.moddingx.libx.datagen.provider.recipe.RecipeExtension;
 import velrondevs.botania.common.crafting.ElvenTradeRecipe;
 
-public interface ElvenTradeExtension extends RecipeExtension {
+public interface ElvenTradeExtension extends MasterfulRecipeExtension {
 
     default void elvenTrade(ItemLike output, ItemLike... inputs) {
         this.elvenTrade(new ItemStack(output), inputs);
@@ -22,6 +21,6 @@ public interface ElvenTradeExtension extends RecipeExtension {
     }
 
     default void elvenTrade(ItemStack output, Ingredient... inputs) {
-        this.output().accept(this.provider().loc(output.getItem(), "elven_trade"), new ElvenTradeRecipe(new ItemStack[] { output }, inputs), null);
+        this.save(this.provider().id(output.getItem(), "elven_trade"), new ElvenTradeRecipe(new ItemStack[] { output }, inputs));
     }
 }

@@ -8,10 +8,10 @@ version = "${version}"
 displayName = "${mod_name}"
 logoFile = "logo.png"
 authors = "${mod_author}"
-credits = "Derivative work of the original mod by noeppi_noeppi (contributor: MelanX). NeoForge 1.21.1 port for Botania Revived by UnnamedUser12."
+credits = "Derivative work of the original mod by noeppi_noeppi (contributor: MelanX). NeoForge 26.1.2 port for Botania Revived by UnnamedUser12."
 description = '''
 Dive deeper into the world of Botania.
-An addon for Botania Revived on Minecraft 1.21.1 / NeoForge.
+An addon for Botania Revived on Minecraft 26.1.2 / NeoForge.
 '''
 
 [[mixins]]
@@ -44,7 +44,7 @@ file = "META-INF/accesstransformer.cfg"
 [[dependencies.${mod_id}]]
     modId = "botania"
     type = "required"
-    versionRange = "[1.0.3,)"
+    versionRange = "[1.0.7,)"
     ordering = "AFTER"
     side = "BOTH"
 

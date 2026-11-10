@@ -10,9 +10,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
+
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import org.jspecify.annotations.Nullable;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -27,13 +30,14 @@ public class ItemMjoellnir extends BlockItem {
 
     @Nonnull
     @Override
-    public InteractionResultHolder<ItemStack> use(@Nonnull Level level, @Nonnull Player player, @Nonnull InteractionHand hand) {
+    public InteractionResult use(@Nonnull Level level, @Nonnull Player player, @Nonnull InteractionHand hand) {
         if (!player.isShiftKeyDown()) {
+            ItemStack held = player.getItemInHand(hand);
             this.throwHammer(level, player, hand);
             if (MasterfulConfig.mjoellnir.ranged_cooldown > 0) {
-                player.getCooldowns().addCooldown(this, MasterfulConfig.mjoellnir.ranged_cooldown);
+                player.getCooldowns().addCooldown(held, MasterfulConfig.mjoellnir.ranged_cooldown);
             }
-            return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide);
+            return InteractionResult.SUCCESS;
         } else {
             return super.use(level, player, hand);
         }
@@ -42,7 +46,6 @@ public class ItemMjoellnir extends BlockItem {
     @Nonnull
     @Override
     public InteractionResult useOn(@Nonnull UseOnContext context) {
-        // the hammer can only be placed with shift
         if (context.getPlayer() != null && context.getPlayer().isShiftKeyDown()) {
             return super.useOn(context);
         } else {
@@ -56,8 +59,8 @@ public class ItemMjoellnir extends BlockItem {
     }
 
     @Override
-    public void inventoryTick(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull Entity entity, int itemSlot, boolean isSelected) {
-        if (!level.isClientSide && entity instanceof Player player) {
+    public void inventoryTick(@Nonnull ItemStack stack, @Nonnull ServerLevel level, @Nonnull Entity entity, @Nullable EquipmentSlot slot) {
+        if (entity instanceof Player player) {
             if (!BlockMjoellnir.canHold(player)) {
                 BlockMjoellnir.putInWorld(stack.copy(), level, player.blockPosition());
                 stack.shrink(stack.getCount());
@@ -67,7 +70,7 @@ public class ItemMjoellnir extends BlockItem {
     }
 
     private void throwHammer(Level level, Player player, InteractionHand hand) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             ItemStack hammer = player.getItemInHand(hand).copy();
             player.setItemInHand(hand, ItemStack.EMPTY);
             Mjoellnir projectile = new Mjoellnir(level);
@@ -84,16 +87,6 @@ public class ItemMjoellnir extends BlockItem {
     @Override
     public int getEntityLifespan(ItemStack itemStack, Level level) {
         return Integer.MAX_VALUE;
-    }
-
-    @Override
-    public int getEnchantmentValue(ItemStack stack) {
-        return 1;
-    }
-
-    @Override
-    public boolean isEnchantable(@Nonnull ItemStack stack) {
-        return true;
     }
 
 }

@@ -1,0 +1,9 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "libx:item/base/special_block",
+    "model": {
+      "type": "libx:item_stack_renderer"
+    }
+  }
+}

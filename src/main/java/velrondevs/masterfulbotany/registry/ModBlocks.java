@@ -54,13 +54,13 @@ public class ModBlocks {
     public static final BlockBE<TileYggdrasilBranch> yggdrasilBranch = new BlockYggdrasilBranch(MasterfulBotany.getInstance(), Properties.of().strength(4).sound(SoundType.WOOD));
     public static final BlockBE<TileRuneHolder> runeHolder = new BlockRuneHolder<>(MasterfulBotany.getInstance(), TileRuneHolder.class, Properties.ofFullCopy(Blocks.IRON_BARS).strength(3).sound(SoundType.METAL));
     public static final BlockBE<TileCentralRuneHolder> centralRuneHolder = new BlockCentralRuneHolder(MasterfulBotany.getInstance(), Properties.ofFullCopy(Blocks.IRON_BARS).strength(3).sound(SoundType.METAL));
-    public static final BlockMjoellnir mjoellnir = new BlockMjoellnir(MasterfulBotany.getInstance(), Properties.of().strength(-1.0F, 3600000.0F).noLootTable(), new Item.Properties().stacksTo(1).rarity(Rarity.EPIC));
-    public static final Block dreamwoodLeaves = new BlockAlfheimLeaves(MasterfulBotany.getInstance());
+    public static final BlockMjoellnir mjoellnir = new BlockMjoellnir(MasterfulBotany.getInstance(), Properties.of().strength(-1.0F, 3600000.0F).noLootTable(), new Item.Properties().stacksTo(1).rarity(Rarity.EPIC).enchantable(1));
+    public static final Block dreamwoodLeaves = new BlockAlfheimLeaves(MasterfulBotany.getInstance(), BlockAlfheimLeaves.createProperties(), new Item.Properties());
     public static final BlockBase elementiumOre = new BlockBase(MasterfulBotany.getInstance(), BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_ORE).strength(4, 4).requiresCorrectToolForDrops());
     public static final BlockBase dragonstoneOre = new BlockBase(MasterfulBotany.getInstance(),BlockBehaviour.Properties.ofFullCopy(Blocks.DIAMOND_ORE).strength(5, 5).requiresCorrectToolForDrops());
     public static final BlockBase goldOre = new BlockBase(MasterfulBotany.getInstance(), BlockBehaviour.Properties.ofFullCopy(Blocks.GOLD_ORE).strength(3, 3).requiresCorrectToolForDrops());
     public static final BlockBase rawElementiumBlock = new BlockBase(MasterfulBotany.getInstance(), Properties.ofFullCopy(Blocks.RAW_IRON_BLOCK).requiresCorrectToolForDrops());
-    public static final BlockBE<TileReturnPortal> returnPortal = new BlockReturnPortal(MasterfulBotany.getInstance(), BlockBehaviour.Properties.of().noCollission().noLootTable().strength(-1.0F).sound(SoundType.GLASS).lightLevel(state -> 4));
+    public static final BlockBE<TileReturnPortal> returnPortal = new BlockReturnPortal(MasterfulBotany.getInstance(), BlockBehaviour.Properties.of().noCollision().noLootTable().strength(-1.0F).sound(SoundType.GLASS).lightLevel(state -> 4));
 
     public static java.util.List<BlockFunctionalFlower<? extends velrondevs.masterfulbotany.common.block.block_entity.flower.FunctionalFlowerBase>> functionalFlowers() {
         return java.util.List.of(exoblaze, witherAconite, aquapanthus, hellebore, raindeletia, feysythia, petrunia);

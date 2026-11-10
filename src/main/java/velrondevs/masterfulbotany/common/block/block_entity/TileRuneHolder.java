@@ -4,10 +4,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import velrondevs.masterfulbotany.registry.tags.ModItemTags;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
+
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -38,46 +38,20 @@ public class TileRuneHolder extends BlockEntityBase {
     }
 
     @Override
-    public void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.loadAdditional(nbt, registries);
-        this.inventory.deserializeNBT(registries, nbt.getCompound("Inventory"));
-        this.target = NbtUtils.readBlockPos(nbt, "TargetPos").orElse(null);
-        this.floatProgress = nbt.getDouble("FloatProgress");
+    protected void loadAdditional(@Nonnull ValueInput input) {
+        super.loadAdditional(input);
+        this.inventory.deserialize(input.childOrEmpty("Inventory"));
+        this.target = input.read("TargetPos", BlockPos.CODEC).orElse(null);
+        this.floatProgress = input.getDoubleOr("FloatProgress", 0);
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.saveAdditional(nbt, registries);
-        nbt.put("Inventory", this.inventory.serializeNBT(registries));
+    protected void saveAdditional(@Nonnull ValueOutput output) {
+        super.saveAdditional(output);
+        this.inventory.serialize(output.child("Inventory"));
         if (this.target != null) {
-            nbt.put("TargetPos", NbtUtils.writeBlockPos(this.target));
-            nbt.putDouble("FloatProgress", this.floatProgress);
-        }
-    }
-
-    @Nonnull
-    @Override
-    public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
-        CompoundTag nbt = super.getUpdateTag(registries);
-        //noinspection ConstantConditions
-        if (!this.level.isClientSide) {
-            nbt.put("Inventory", this.inventory.serializeNBT(registries));
-            if (this.target != null) {
-                nbt.put("TargetPos", NbtUtils.writeBlockPos(this.target));
-                nbt.putDouble("FloatProgress", this.floatProgress);
-            }
-        }
-        return nbt;
-    }
-
-    @Override
-    public void handleUpdateTag(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.handleUpdateTag(nbt, registries);
-        //noinspection ConstantConditions
-        if (this.level.isClientSide) {
-            this.inventory.deserializeNBT(registries, nbt.getCompound("Inventory"));
-            this.target = NbtUtils.readBlockPos(nbt, "TargetPos").orElse(null);
-            this.floatProgress = nbt.getDouble("FloatProgress");
+            output.store("TargetPos", BlockPos.CODEC, this.target);
+            output.putDouble("FloatProgress", this.floatProgress);
         }
     }
 

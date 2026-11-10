@@ -11,6 +11,7 @@ import velrondevs.masterfulbotany.registry.ModEntities;
 import velrondevs.masterfulbotany.registry.ModItems;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import org.moddingx.libx.datagen.DatagenContext;
 import org.moddingx.libx.datagen.provider.AdvancementProviderBase;
 import velrondevs.botania.registry.BotaniaItems;
@@ -25,7 +26,7 @@ public class AdvancementProvider extends AdvancementProviderBase {
     @Override
     public void setup() {
         this.root().display(wandIcon())
-                .background(this.mod.resource("textures/block/alfsteel_block.png"))
+                .background(this.mod.id("textures/block/alfsteel_block.png"))
                 .task(this.items(BotaniaTags.Items.INGOTS_TERRASTEEL));
 
         this.advancement("all_runes").display(ModItems.joetunheimRune)
@@ -70,13 +71,13 @@ public class AdvancementProvider extends AdvancementProviderBase {
                 .task(this.items(ModItems.alfsteelIngot));
 
         this.advancement("mending_repair").parent("alfsteel").display(ModBlocks.alfsteelPylon)
-                .task(ModCriteria.ALF_REPAIR.createCriterion(new AlfRepairTrigger.Instance(Optional.empty(), Optional.of(this.stack(Enchantments.MENDING).build()))));
+                .task(ModCriteria.ALF_REPAIR.createCriterion(new AlfRepairTrigger.Instance(Optional.empty(), Optional.of(this.stack(Enchantments.MENDING)))));
     }
     
-    private static ItemStack wandIcon() {
+    private static ItemStackTemplate wandIcon() {
         ItemStack stack = new ItemStack(BotaniaItems.dreamwoodWand);
         ItemNBTHelper.setInt(stack, "color1", 4);
         ItemNBTHelper.setInt(stack, "color2", 3);
-        return stack;
+        return ItemStackTemplate.fromNonEmptyStack(stack);
     }
 }

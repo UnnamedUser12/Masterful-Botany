@@ -10,6 +10,8 @@ import velrondevs.masterfulbotany.MasterfulBotany;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -38,7 +40,6 @@ public class TileManaInfuser extends BlockEntityBase implements SparkAttachable,
     @Nullable private transient InfuserRecipe recipe;
     @Nullable private ItemStack output;
 
-    // The following are just there for the client
     private transient int maxMana;
     private transient int fromColor = -1;
     private transient int toColor = -1;
@@ -49,8 +50,7 @@ public class TileManaInfuser extends BlockEntityBase implements SparkAttachable,
 
     @Override
     public void tick() {
-        //noinspection ConstantConditions
-        if (this.level.isClientSide) {
+        if (this.level.isClientSide()) {
             return;
         }
         if (!this.hasValidPlatform()) {
@@ -126,13 +126,11 @@ public class TileManaInfuser extends BlockEntityBase implements SparkAttachable,
     }
 
     private List<ItemEntity> getItems() {
-        //noinspection ConstantConditions
         return this.level.getEntitiesOfClass(ItemEntity.class, new AABB(Vec3.atLowerCornerOf(this.worldPosition), Vec3.atLowerCornerOf(this.worldPosition.offset(1, 1, 1))));
     }
 
     private boolean hasValidPlatform() {
         BlockPos center = this.worldPosition.below();
-        //noinspection ConstantConditions
         return this.level.getBlockState(center).getBlock() == BotaniaBlocks.shimmerrock
                 && this.level.getBlockState(center.north().west()).getBlock() == BotaniaBlocks.shimmerrock
                 && this.level.getBlockState(center.north().east()).getBlock() == BotaniaBlocks.shimmerrock
@@ -200,7 +198,6 @@ public class TileManaInfuser extends BlockEntityBase implements SparkAttachable,
     public void receiveMana(int mana) {
         if (this.recipe != null) {
             this.mana = Mth.clamp(this.mana + mana, 0, this.recipe.getManaUsage());
-            //noinspection ConstantConditions
             this.level.updateNeighbourForOutputSignal(this.worldPosition, this.getBlockState().getBlock());
             this.setChanged();
             this.setDispatchable();
@@ -228,32 +225,28 @@ public class TileManaInfuser extends BlockEntityBase implements SparkAttachable,
     }
 
     @Override
-    public void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.loadAdditional(nbt, registries);
-        this.mana = nbt.getInt("mana");
-        if (nbt.contains("output")) {
-            this.output = ItemStack.parseOptional(registries, nbt.getCompound("output"));
-        } else {
-            this.output = null;
-        }
+    protected void loadAdditional(@Nonnull ValueInput input) {
+        super.loadAdditional(input);
+        this.mana = input.getIntOr("mana", 0);
+        this.output = input.read("output", ItemStack.OPTIONAL_CODEC).orElse(null);
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.saveAdditional(nbt, registries);
-        nbt.putInt("mana", this.mana);
+    protected void saveAdditional(@Nonnull ValueOutput output) {
+        super.saveAdditional(output);
+        output.putInt("mana", this.mana);
         if (this.output != null) {
-            nbt.put("output", this.output.saveOptional(registries));
+            output.store("output", ItemStack.OPTIONAL_CODEC, this.output);
         }
     }
 
     @Nonnull
     @Override
     public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
-        //noinspection ConstantConditions
-        if (this.level.isClientSide)
-            return super.getUpdateTag(registries);
         CompoundTag compound = super.getUpdateTag(registries);
+        if (this.level == null || this.level.isClientSide()) {
+            return compound;
+        }
         compound.putInt("mana", this.mana);
         if (this.recipe != null) {
             compound.putInt("maxMana", this.maxMana);
@@ -268,14 +261,14 @@ public class TileManaInfuser extends BlockEntityBase implements SparkAttachable,
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundTag tag, @Nonnull HolderLookup.Provider registries) {
-        //noinspection ConstantConditions
-        if (!this.level.isClientSide)
+    public void handleUpdateTag(@Nonnull ValueInput input) {
+        if (this.level == null || !this.level.isClientSide()) {
             return;
-        this.mana = tag.getInt("mana");
-        this.maxMana = tag.getInt("maxMana");
-        this.fromColor = tag.getInt("fromColor");
-        this.toColor = tag.getInt("toColor");
+        }
+        this.mana = input.getIntOr("mana", 0);
+        this.maxMana = input.getIntOr("maxMana", 0);
+        this.fromColor = input.getIntOr("fromColor", -1);
+        this.toColor = input.getIntOr("toColor", -1);
     }
 
     public int getSourceColor() {

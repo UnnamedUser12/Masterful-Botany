@@ -13,7 +13,7 @@ public class ModCriteria {
 
     public static void register(RegisterEvent event) {
         MasterfulBotany mod = MasterfulBotany.getInstance();
-        event.register(Registries.TRIGGER_TYPE, mod.resource("alf_repair"), () -> ALF_REPAIR);
-        event.register(Registries.TRIGGER_TYPE, mod.resource("mjoellnir"), () -> MJOELLNIR);
+        event.register(Registries.TRIGGER_TYPE, mod.id("alf_repair"), () -> ALF_REPAIR);
+        event.register(Registries.TRIGGER_TYPE, mod.id("mjoellnir"), () -> MJOELLNIR);
     }
 }

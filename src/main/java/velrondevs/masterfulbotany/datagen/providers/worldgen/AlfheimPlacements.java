@@ -1,7 +1,12 @@
 package velrondevs.masterfulbotany.datagen.providers.worldgen;
 
 import velrondevs.masterfulbotany.common.world.placement.AlfheimGroundModifier;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
+import net.minecraft.world.level.levelgen.placement.BlockPredicateFilter;
+import net.minecraft.world.level.levelgen.placement.CountPlacement;
+import net.minecraft.world.level.levelgen.placement.RandomOffsetPlacement;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -52,6 +57,12 @@ public class AlfheimPlacements extends FeatureProviderBase {
             .count(15)
             .spread()
             .add(AlfheimGroundModifier.INSTANCE)
+            .add(CountPlacement.of(32))
+            .add(RandomOffsetPlacement.ofTriangle(7, 3))
+            .add(BlockPredicateFilter.forPredicate(BlockPredicate.allOf(
+                    BlockPredicate.ONLY_IN_AIR_PREDICATE,
+                    BlockPredicate.not(BlockPredicate.matchesBlocks(Direction.DOWN.getUnitVec3i(), Blocks.PODZOL))
+            )))
             .biomeFilter()
             .build();
     

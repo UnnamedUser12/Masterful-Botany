@@ -1,42 +1,21 @@
 {
   "type": "botania:runic_altar",
   "ingredients": [
-    {
-      "tag": "botania:elementium_ingots"
-    },
-    {
-      "item": "botania:rune_air"
-    },
-    {
-      "item": "botania:rune_summer"
-    },
-    {
-      "item": "botania:rune_lust"
-    },
+    "#botania:elementium_ingots",
+    "botania:rune_air",
+    "botania:rune_summer",
+    "botania:rune_lust",
     [
-      {
-        "item": "minecraft:acacia_leaves"
-      },
-      {
-        "item": "minecraft:birch_leaves"
-      },
-      {
-        "item": "minecraft:dark_oak_leaves"
-      },
-      {
-        "item": "minecraft:jungle_leaves"
-      },
-      {
-        "item": "minecraft:oak_leaves"
-      },
-      {
-        "item": "minecraft:spruce_leaves"
-      }
+      "minecraft:acacia_leaves",
+      "minecraft:birch_leaves",
+      "minecraft:dark_oak_leaves",
+      "minecraft:jungle_leaves",
+      "minecraft:oak_leaves",
+      "minecraft:spruce_leaves"
     ]
   ],
   "mana": 16000,
   "output": {
-    "count": 1,
     "id": "masterfulbotany:alfheim_rune"
   }
 }

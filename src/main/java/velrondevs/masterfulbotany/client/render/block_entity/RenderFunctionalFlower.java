@@ -1,45 +1,46 @@
 package velrondevs.masterfulbotany.client.render.block_entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.Optional;
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import velrondevs.masterfulbotany.common.block.block_entity.flower.FunctionalFlowerBase;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import velrondevs.botania.client.render.block_entity.BotaniaBlockEntityRenderer;
 import velrondevs.botania.client.render.block_entity.FloatingFlowerBlockEntityRenderer;
 import velrondevs.botania.client.render.block_entity.SpecialFlowerBlockEntityRenderer;
-import velrondevs.botania.common.helper.PlayerHelper;
 import velrondevs.botania.common.item.equipment.bauble.ManaseerMonocleItem;
-import velrondevs.botania.common.item.WandOfTheForestItem;
-import velrondevs.botania.registry.BotaniaItems;
 import velrondevs.botania.xplat.BotaniaConfig;
 
-public class RenderFunctionalFlower<T extends FunctionalFlowerBase> implements BlockEntityRenderer<T> {
+public class RenderFunctionalFlower<T extends FunctionalFlowerBase> extends BotaniaBlockEntityRenderer<T> {
 
     @Override
-    public net.minecraft.world.phys.AABB getRenderBoundingBox(T blockEntity) {
-        return new net.minecraft.world.phys.AABB(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+    public AABB getRenderBoundingBox(T blockEntity) {
+        return new AABB(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
     }
-    
+
     @Override
-    public void render(@Nonnull T blockEntity, float partialTicks, @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource buffer, int light, int overlay) {
+    protected void render(@Nullable T blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, SubmitNodeCollector collector, int light, int overlay) {
+        if (blockEntity == null) {
+            return;
+        }
         if (blockEntity.isFloating() && !BotaniaConfig.client().staticFloaters()) {
             FloatingFlowerBlockEntityRenderer.renderFloatingIsland(blockEntity, partialTicks, poseStack, buffer, overlay);
         }
-        if (Minecraft.getInstance().cameraEntity instanceof LivingEntity view) {
+        if (Minecraft.getInstance().getCameraEntity() instanceof LivingEntity view) {
             if (ManaseerMonocleItem.hasMonocle(view)) {
                 HitResult ray = Minecraft.getInstance().hitResult;
                 if (ray != null && ray.getType() == HitResult.Type.BLOCK) {
                     BlockPos pos = ((BlockHitResult) ray).getBlockPos();
-                    if (blockEntity.getBlockPos().equals(pos) || hasBindingAttempt(view, blockEntity.getBlockPos())) {
+                    boolean binding = SpecialFlowerBlockEntityRenderer.hasBindingAttempt(view, blockEntity.getBlockPos());
+                    if (blockEntity.getBlockPos().equals(pos) || binding) {
                         poseStack.pushPose();
-                        if (hasBindingAttempt(view, blockEntity.getBlockPos())) {
+                        if (binding) {
                             poseStack.translate(0, 0.005, 0);
                         }
                         SpecialFlowerBlockEntityRenderer.renderRadius(blockEntity, poseStack, buffer, blockEntity.getRadius());
@@ -49,16 +50,6 @@ public class RenderFunctionalFlower<T extends FunctionalFlowerBase> implements B
                     }
                 }
             }
-        }
-    }
-
-    public static boolean hasBindingAttempt(LivingEntity view, BlockPos tilePos) {
-        ItemStack stackHeld = PlayerHelper.getFirstHeldItem(view, BotaniaItems.twigWand);
-        if (!stackHeld.isEmpty() && WandOfTheForestItem.getBindMode(stackHeld)) {
-            Optional<BlockPos> coords = WandOfTheForestItem.getBindingAttempt(stackHeld);
-            return coords.isPresent() && coords.get().equals(tilePos);
-        } else {
-            return false;
         }
     }
 }

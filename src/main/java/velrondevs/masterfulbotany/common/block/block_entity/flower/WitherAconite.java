@@ -23,8 +23,7 @@ public class WitherAconite extends FunctionalFlowerBase {
 
     @Override
     protected void tickFlower() {
-        //noinspection ConstantConditions
-        if (!this.level.isClientSide) {
+        if (!this.level.isClientSide()) {
             List<ItemEntity> items = this.level.getEntitiesOfClass(ItemEntity.class, new AABB(Vec3.atLowerCornerOf(this.worldPosition), Vec3.atLowerCornerOf(this.worldPosition.immutable().offset(1, 1, 1))));
             if (items.size() == 1) {
                 ItemEntity item = items.get(0);

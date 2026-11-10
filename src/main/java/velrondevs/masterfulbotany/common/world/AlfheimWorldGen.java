@@ -20,7 +20,7 @@ public class AlfheimWorldGen {
     public static final RuleTest alfheimStone = new TagMatchTest(ModBlockTags.BASE_STONE_ALFHEIM);
     
     public static BlockPos highestFreeBlock(LevelAccessor level, HorizontalPos hor) {
-        return hor.trace(level.getMaxBuildHeight(), level.getMinBuildHeight(), p -> !level.isEmptyBlock(p) && !passthrough(level.getBlockState(p)));
+        return hor.trace(level.getMaxY() + 1, level.getMinY(), p -> !level.isEmptyBlock(p) && !passthrough(level.getBlockState(p)));
     }
     
     public static boolean passthrough(BlockState state) {

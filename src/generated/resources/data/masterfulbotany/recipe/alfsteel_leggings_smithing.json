@@ -1,16 +1,9 @@
 {
   "type": "minecraft:smithing_transform",
-  "addition": {
-    "item": "masterfulbotany:alfsteel_ingot"
-  },
-  "base": {
-    "item": "botania:terrasteel_leggings"
-  },
+  "addition": "masterfulbotany:alfsteel_ingot",
+  "base": "botania:terrasteel_leggings",
   "result": {
-    "count": 1,
     "id": "masterfulbotany:alfsteel_leggings"
   },
-  "template": {
-    "item": "masterfulbotany:alfsteel_template"
-  }
+  "template": "masterfulbotany:alfsteel_template"
 }

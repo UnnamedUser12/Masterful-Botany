@@ -6,10 +6,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -17,12 +17,11 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.moddingx.libx.LibX;
 import velrondevs.botania.api.block_entity.RadiusDescriptor;
 import velrondevs.botania.api.block.PetalApothecary;
@@ -33,19 +32,19 @@ public class Aquapanthus extends FunctionalFlowerBase {
     public static final int MAX_TICK_TO_NEXT_CHECK = 5;
     public static final int MANA_PER_TICK = 2;
     public static final int TICKS_TO_FILL = 20;
-    public static final Set<ResourceLocation> FILLING_SLOW_IDS = ImmutableSet.of(
-            ResourceLocation.fromNamespaceAndPath("exnihilosequentia", "barrel_wood"),
-            ResourceLocation.fromNamespaceAndPath("exnihilosequentia", "barrel_stone"),
-            ResourceLocation.fromNamespaceAndPath("excompressum", "oak_crucible"),
-            ResourceLocation.fromNamespaceAndPath("excompressum", "spruce_crucible"),
-            ResourceLocation.fromNamespaceAndPath("excompressum", "birch_crucible"),
-            ResourceLocation.fromNamespaceAndPath("excompressum", "jungle_crucible"),
-            ResourceLocation.fromNamespaceAndPath("excompressum", "acacia_crucible"),
-            ResourceLocation.fromNamespaceAndPath("excompressum", "dark_oak_crucible")
+    public static final Set<Identifier> FILLING_SLOW_IDS = ImmutableSet.of(
+            Identifier.fromNamespaceAndPath("exnihilosequentia", "barrel_wood"),
+            Identifier.fromNamespaceAndPath("exnihilosequentia", "barrel_stone"),
+            Identifier.fromNamespaceAndPath("excompressum", "oak_crucible"),
+            Identifier.fromNamespaceAndPath("excompressum", "spruce_crucible"),
+            Identifier.fromNamespaceAndPath("excompressum", "birch_crucible"),
+            Identifier.fromNamespaceAndPath("excompressum", "jungle_crucible"),
+            Identifier.fromNamespaceAndPath("excompressum", "acacia_crucible"),
+            Identifier.fromNamespaceAndPath("excompressum", "dark_oak_crucible")
     );
-    public static final Set<ResourceLocation> FILLING_FAST_IDS = ImmutableSet.of(
-            ResourceLocation.fromNamespaceAndPath("exnihilosequentia", "crucible_wood"),
-            ResourceLocation.fromNamespaceAndPath("exnihilosequentia", "crucible_fired")
+    public static final Set<Identifier> FILLING_FAST_IDS = ImmutableSet.of(
+            Identifier.fromNamespaceAndPath("exnihilosequentia", "crucible_wood"),
+            Identifier.fromNamespaceAndPath("exnihilosequentia", "crucible_fired")
     );
 
     private transient int tickToNextCheck = 0;
@@ -59,8 +58,7 @@ public class Aquapanthus extends FunctionalFlowerBase {
 
     @Override
     protected void tickFlower() {
-        //noinspection ConstantConditions
-        if (!this.level.isClientSide) {
+        if (!this.level.isClientSide()) {
             if (this.currentlyFilling != null) {
                 if (this.mana >= MANA_PER_TICK) {
                     if (this.fill()) {
@@ -122,18 +120,15 @@ public class Aquapanthus extends FunctionalFlowerBase {
         } else if (te instanceof PetalApothecary && ((PetalApothecary) te).getFluid() == PetalApothecary.State.EMPTY) {
             return true;
         } else if ((FILLING_SLOW_IDS.contains(BuiltInRegistries.BLOCK.getKey(state.getBlock())) || FILLING_FAST_IDS.contains(BuiltInRegistries.BLOCK.getKey(state.getBlock()))) && te != null) {
-            //noinspection ConstantConditions
-            IFluidHandler handler = this.level.getCapability(Capabilities.FluidHandler.BLOCK, te.getBlockPos(), Direction.UP);
-            //noinspection ConstantConditions
+            ResourceHandler<FluidResource> handler = this.level.getCapability(Capabilities.Fluid.BLOCK, te.getBlockPos(), Direction.UP);
             if (handler != null) {
+                FluidResource water = FluidResource.of(Fluids.WATER);
+                int amount = FILLING_FAST_IDS.contains(BuiltInRegistries.BLOCK.getKey(state.getBlock())) ? FluidType.BUCKET_VOLUME : (FluidType.BUCKET_VOLUME / 3) + 1;
                 int filled;
-                if (FILLING_FAST_IDS.contains(BuiltInRegistries.BLOCK.getKey(state.getBlock()))) {
-                    filled = handler.fill(new FluidStack(Fluids.WATER, FluidType.BUCKET_VOLUME), IFluidHandler.FluidAction.SIMULATE);
-                } else {
-                    filled = handler.fill(new FluidStack(Fluids.WATER, (FluidType.BUCKET_VOLUME / 3) + 1), IFluidHandler.FluidAction.SIMULATE);
+                try (Transaction transaction = Transaction.openRoot()) {
+                    filled = handler.insert(water, amount, transaction);
                 }
-                // extra check for capacity is required as excompressum seems to accept more fluid even if full
-                return filled > 0 && handler.getFluidInTank(0).getAmount() < handler.getTankCapacity(0);
+                return filled > 0 && handler.size() > 0 && handler.getAmountAsInt(0) < handler.getCapacityAsInt(0, water);
             } else {
                 return false;
             }
@@ -143,7 +138,6 @@ public class Aquapanthus extends FunctionalFlowerBase {
     }
     
     private boolean fill() {
-        //noinspection ConstantConditions
         BlockState state = this.level.getBlockState(this.currentlyFilling);
         BlockEntity be = this.level.getBlockEntity(this.currentlyFilling);
         if (state.getBlock() == Blocks.CAULDRON || (state.getBlock() == Blocks.WATER_CAULDRON && state.getValue(LayeredCauldronBlock.LEVEL) < 3) || (be instanceof PetalApothecary && ((PetalApothecary) be).getFluid() == PetalApothecary.State.EMPTY)) {
@@ -161,14 +155,12 @@ public class Aquapanthus extends FunctionalFlowerBase {
             return true;
         } else if ((FILLING_SLOW_IDS.contains(BuiltInRegistries.BLOCK.getKey(state.getBlock())) || FILLING_FAST_IDS.contains(BuiltInRegistries.BLOCK.getKey(state.getBlock()))) && be != null) {
             if (this.fillingSince >= TICKS_TO_FILL) {
-                //noinspection ConstantConditions
-                IFluidHandler handler = this.level.getCapability(Capabilities.FluidHandler.BLOCK, be.getBlockPos(), Direction.UP);
-                //noinspection ConstantConditions
+                ResourceHandler<FluidResource> handler = this.level.getCapability(Capabilities.Fluid.BLOCK, be.getBlockPos(), Direction.UP);
                 if (handler != null) {
-                    if (FILLING_FAST_IDS.contains(BuiltInRegistries.BLOCK.getKey(state.getBlock()))) {
-                        handler.fill(new FluidStack(Fluids.WATER, FluidType.BUCKET_VOLUME), IFluidHandler.FluidAction.EXECUTE);
-                    } else {
-                        handler.fill(new FluidStack(Fluids.WATER, (FluidType.BUCKET_VOLUME / 3) + 1), IFluidHandler.FluidAction.EXECUTE);
+                    int amount = FILLING_FAST_IDS.contains(BuiltInRegistries.BLOCK.getKey(state.getBlock())) ? FluidType.BUCKET_VOLUME : (FluidType.BUCKET_VOLUME / 3) + 1;
+                    try (Transaction transaction = Transaction.openRoot()) {
+                        handler.insert(FluidResource.of(Fluids.WATER), amount, transaction);
+                        transaction.commit();
                     }
                     be.setChanged();
                 }
@@ -182,66 +174,28 @@ public class Aquapanthus extends FunctionalFlowerBase {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public RadiusDescriptor getRadius() {
         return RadiusDescriptor.Rectangle.square(this.worldPosition, 3);
     }
 
     @Override
-    public void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.loadAdditional(nbt, registries);
-        if (nbt.contains("waterFilling")) {
-            CompoundTag fillingTag = nbt.getCompound("waterFilling");
-            this.currentlyFilling = new BlockPos(fillingTag.getInt("x"), fillingTag.getInt("y"), fillingTag.getInt("z"));
-        } else {
-            this.currentlyFilling = null;
-        }
-        this.fillingSince = nbt.getInt("filling_since");
+    protected void loadAdditional(@Nonnull ValueInput input) {
+        super.loadAdditional(input);
+        this.currentlyFilling = input.child("waterFilling")
+                .map(fillingTag -> new BlockPos(fillingTag.getIntOr("x", 0), fillingTag.getIntOr("y", 0), fillingTag.getIntOr("z", 0)))
+                .orElse(null);
+        this.fillingSince = input.getIntOr("filling_since", 0);
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.saveAdditional(nbt, registries);
+    protected void saveAdditional(@Nonnull ValueOutput output) {
+        super.saveAdditional(output);
         if (this.currentlyFilling != null) {
-            CompoundTag fillingTag = new CompoundTag();
+            ValueOutput fillingTag = output.child("waterFilling");
             fillingTag.putInt("x", this.currentlyFilling.getX());
             fillingTag.putInt("y", this.currentlyFilling.getY());
             fillingTag.putInt("z", this.currentlyFilling.getZ());
-            nbt.put("waterFilling", fillingTag);
-            nbt.putInt("filling_since", this.fillingSince);
+            output.putInt("filling_since", this.fillingSince);
         }
-    }
-
-    @Nonnull
-    @Override
-    public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
-        CompoundTag updateTag = super.getUpdateTag(registries);
-        //noinspection ConstantConditions
-        if (!this.level.isClientSide) {
-            if (this.currentlyFilling != null) {
-                CompoundTag fillingTag = new CompoundTag();
-                fillingTag.putInt("x", this.currentlyFilling.getX());
-                fillingTag.putInt("y", this.currentlyFilling.getY());
-                fillingTag.putInt("z", this.currentlyFilling.getZ());
-                updateTag.put("waterFilling", fillingTag);
-            }
-            updateTag.putInt("filling_since", this.fillingSince);
-        }
-        return updateTag;
-    }
-
-    @Override
-    public void handleUpdateTag(@Nonnull CompoundTag tag, @Nonnull HolderLookup.Provider registries) {
-        //noinspection ConstantConditions
-        if (this.level.isClientSide) {
-            if (tag.contains("waterFilling")) {
-                CompoundTag fillingTag = tag.getCompound("waterFilling");
-                this.currentlyFilling = new BlockPos(fillingTag.getInt("x"), fillingTag.getInt("y"), fillingTag.getInt("z"));
-            } else {
-                this.currentlyFilling = null;
-            }
-            this.fillingSince = tag.getInt("filling_since");
-        }
-        super.handleUpdateTag(tag, registries);
     }
 }

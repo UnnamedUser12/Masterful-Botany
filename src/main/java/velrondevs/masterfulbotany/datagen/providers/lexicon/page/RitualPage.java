@@ -2,7 +2,7 @@ package velrondevs.masterfulbotany.datagen.providers.lexicon.page;
 
 import com.google.gson.JsonObject;
 import javax.annotation.Nullable;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import org.moddingx.libx.datagen.provider.patchouli.content.CaptionContent;
@@ -11,13 +11,13 @@ import org.moddingx.libx.datagen.provider.patchouli.page.PageBuilder;
 public class RitualPage extends CaptionContent {
 
     private final Item item;
-    private final ResourceLocation id;
+    private final Identifier id;
 
-    public RitualPage(ItemLike item, ResourceLocation id) {
+    public RitualPage(ItemLike item, Identifier id) {
         this(item.asItem(), id, null);
     }
     
-    private RitualPage(Item item, ResourceLocation id, @Nullable String caption) {
+    private RitualPage(Item item, Identifier id, @Nullable String caption) {
         super(caption);
         this.item = item;
         this.id = id;

@@ -5,14 +5,13 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import org.moddingx.libx.datagen.provider.recipe.RecipeExtension;
 import velrondevs.botania.common.lib.BotaniaTags;
 import velrondevs.botania.common.crafting.PetalsRecipe;
 
-public interface PetalExtension extends RecipeExtension {
+public interface PetalExtension extends MasterfulRecipeExtension {
 
     default Ingredient petal(DyeColor color) {
-        return Ingredient.of(switch (color) {
+        return this.tagIngredient(switch (color) {
             case WHITE -> BotaniaTags.Items.PETALS_WHITE;
             case ORANGE -> BotaniaTags.Items.PETALS_ORANGE;
             case MAGENTA -> BotaniaTags.Items.PETALS_MAGENTA;
@@ -45,6 +44,6 @@ public interface PetalExtension extends RecipeExtension {
     }
 
     default void petalApothecary(ItemStack output, Ingredient... inputs) {
-        this.output().accept(this.provider().loc(output.getItem(), "petal_apothecary"), new PetalsRecipe(output, Ingredient.of(BotaniaTags.Items.SEED_APOTHECARY_REAGENT), inputs), null);
+        this.save(this.provider().id(output.getItem(), "petal_apothecary"), new PetalsRecipe(output, this.tagIngredient(BotaniaTags.Items.SEED_APOTHECARY_REAGENT), inputs));
     }
 }

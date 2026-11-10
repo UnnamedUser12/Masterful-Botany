@@ -15,8 +15,7 @@ public class Raindeletia extends FunctionalFlowerBase {
 
     @Override
     protected void tickFlower() {
-        //noinspection ConstantConditions
-        if (!this.level.isClientSide) {
+        if (!this.level.isClientSide()) {
             float multiplier = 0;
             if (this.level.isRainingAt(this.worldPosition)) {
                 multiplier = this.level.isThundering() ? MasterfulConfig.flowers.raindeletia.thunder : MasterfulConfig.flowers.raindeletia.rain;

@@ -1,0 +1,10 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "masterfulbotany:item/alfsteel_pylon",
+    "model": {
+      "type": "masterfulbotany:block_entity",
+      "block": "masterfulbotany:alfsteel_pylon"
+    }
+  }
+}

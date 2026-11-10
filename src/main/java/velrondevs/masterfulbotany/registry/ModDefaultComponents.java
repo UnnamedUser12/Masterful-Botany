@@ -7,34 +7,36 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.EquipmentSlotGroup;
-import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.equipment.ArmorType;
+import net.minecraft.world.item.enchantment.Repairable;
+import net.minecraft.core.HolderSet;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.event.ModifyDefaultComponentsEvent;
 
-/**
- * Applies the config dependent values (durability, attribute modifiers) to the default components of the items.
- */
 public class ModDefaultComponents {
 
     public static void modifyDefaultComponents(ModifyDefaultComponentsEvent event) {
         event.modify(ModItems.fadedNetherStar, builder -> builder.set(DataComponents.MAX_DAMAGE, MasterfulConfig.flowers.witherAconiteMana));
 
+        for (Item repairable : new Item[]{ModItems.alfsteelSword, ModItems.alfsteelPick, ModItems.alfsteelAxe, ModItems.alfsteelHelmet, ModItems.alfsteelChestplate, ModItems.alfsteelLeggings, ModItems.alfsteelBoots}) {
+            event.modify(repairable, builder -> builder.set(DataComponents.REPAIRABLE, new Repairable(HolderSet.direct(ModItems.alfsteelIngot.builtInRegistryHolder()))));
+        }
+
         int armorDurability = MasterfulConfig.alftools.durability.armor.max_durability();
         event.modify(ModItems.alfsteelHelmet, builder -> builder
                 .set(DataComponents.MAX_DAMAGE, armorDurability)
-                .set(DataComponents.ATTRIBUTE_MODIFIERS, CommonAlfsteelArmor.createModifiers(ArmorItem.Type.HELMET)));
+                .set(DataComponents.ATTRIBUTE_MODIFIERS, CommonAlfsteelArmor.createModifiers(ArmorType.HELMET)));
         event.modify(ModItems.alfsteelChestplate, builder -> builder
                 .set(DataComponents.MAX_DAMAGE, armorDurability)
-                .set(DataComponents.ATTRIBUTE_MODIFIERS, CommonAlfsteelArmor.createModifiers(ArmorItem.Type.CHESTPLATE)));
+                .set(DataComponents.ATTRIBUTE_MODIFIERS, CommonAlfsteelArmor.createModifiers(ArmorType.CHESTPLATE)));
         event.modify(ModItems.alfsteelLeggings, builder -> builder
                 .set(DataComponents.MAX_DAMAGE, armorDurability)
-                .set(DataComponents.ATTRIBUTE_MODIFIERS, CommonAlfsteelArmor.createModifiers(ArmorItem.Type.LEGGINGS)));
+                .set(DataComponents.ATTRIBUTE_MODIFIERS, CommonAlfsteelArmor.createModifiers(ArmorType.LEGGINGS)));
         event.modify(ModItems.alfsteelBoots, builder -> builder
                 .set(DataComponents.MAX_DAMAGE, armorDurability)
-                .set(DataComponents.ATTRIBUTE_MODIFIERS, CommonAlfsteelArmor.createModifiers(ArmorItem.Type.BOOTS)));
+                .set(DataComponents.ATTRIBUTE_MODIFIERS, CommonAlfsteelArmor.createModifiers(ArmorType.BOOTS)));
 
-        // The tool constructors apply the durability of the tier (terrasteel) after the item properties, so it has to be set here.
         event.modify(ModItems.alfsteelSword, builder -> builder
                 .set(DataComponents.MAX_DAMAGE, MasterfulConfig.alftools.durability.sword.max_durability())
                 .set(DataComponents.ATTRIBUTE_MODIFIERS, AlfsteelSword.createModifiers()));

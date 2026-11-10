@@ -10,20 +10,18 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.PacketFlow;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.registration.HandlerThread;
 import org.moddingx.libx.network.PacketHandler;
 
-public record ParticleMessage(ResourceLocation particleId, double x, double y, double z, int amount, double xm, double ym, double zm, double xd, double yd, double zd, boolean randomizePosition) implements CustomPacketPayload {
+public record ParticleMessage(Identifier particleId, double x, double y, double z, int amount, double xm, double ym, double zm, double xd, double yd, double zd, boolean randomizePosition) implements CustomPacketPayload {
 
-    public static final Type<ParticleMessage> TYPE = new Type<>(MasterfulBotany.getInstance().resource("particle"));
+    public static final Type<ParticleMessage> TYPE = new Type<>(MasterfulBotany.getInstance().id("particle"));
     public static final StreamCodec<FriendlyByteBuf, ParticleMessage> CODEC = StreamCodec.ofMember(
             (msg, buffer) -> {
-                buffer.writeResourceLocation(msg.particleId());
+                buffer.writeIdentifier(msg.particleId());
                 buffer.writeDouble(msg.x());
                 buffer.writeDouble(msg.y());
                 buffer.writeDouble(msg.z());
@@ -37,7 +35,7 @@ public record ParticleMessage(ResourceLocation particleId, double x, double y, d
                 buffer.writeBoolean(msg.randomizePosition());
             },
             buffer -> {
-                ResourceLocation particleId = buffer.readResourceLocation();
+                Identifier particleId = buffer.readIdentifier();
                 double x = buffer.readDouble();
                 double y = buffer.readDouble();
                 double z = buffer.readDouble();
@@ -66,11 +64,10 @@ public record ParticleMessage(ResourceLocation particleId, double x, double y, d
         }
 
         @Override
-        @OnlyIn(Dist.CLIENT)
         public void handle(ParticleMessage msg, IPayloadContext ctx) {
             Level level = Minecraft.getInstance().level;
             if (level == null) return;
-            ParticleType<?> particle = BuiltInRegistries.PARTICLE_TYPE.get(msg.particleId());
+            ParticleType<?> particle = BuiltInRegistries.PARTICLE_TYPE.getValue(msg.particleId());
             if (particle instanceof SimpleParticleType) {
                 MasterfulBotany.getNetwork().spawnParticle(level, (SimpleParticleType) particle, msg.amount(), msg.x(), msg.y(), msg.z(), msg.xm(), msg.ym(), msg.zm(), msg.xd(), msg.yd(), msg.zd(), msg.randomizePosition());
             }

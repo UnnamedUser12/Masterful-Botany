@@ -5,8 +5,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import velrondevs.botania.api.block_entity.RadiusDescriptor;
 
 public class Exoblaze extends FunctionalFlowerBase {
@@ -22,8 +20,7 @@ public class Exoblaze extends FunctionalFlowerBase {
 
     @Override
     protected void tickFlower() {
-        //noinspection ConstantConditions
-        if (!this.level.isClientSide) {
+        if (!this.level.isClientSide()) {
             if (this.tickToNextCheck > 0) {
                 this.tickToNextCheck -= 1;
                 return;
@@ -51,7 +48,6 @@ public class Exoblaze extends FunctionalFlowerBase {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public RadiusDescriptor getRadius() {
         return RadiusDescriptor.Rectangle.square(this.worldPosition, 3);
     }

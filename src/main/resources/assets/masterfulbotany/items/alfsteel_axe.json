@@ -1,0 +1,15 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "property": "botania:flag",
+    "kind": "terra_axe_active",
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "masterfulbotany:item/alfsteel_axe"
+    },
+    "on_true": {
+      "type": "minecraft:model",
+      "model": "masterfulbotany:item/alfsteel_axe_active"
+    }
+  }
+}

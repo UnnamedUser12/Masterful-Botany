@@ -2,16 +2,16 @@ package velrondevs.masterfulbotany.datagen.providers.lexicon.page;
 
 import java.util.List;
 import javax.annotation.Nullable;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.moddingx.libx.datagen.provider.patchouli.content.RecipePage;
 
 public class InfuserPage extends RecipePage {
 
-    public InfuserPage(ResourceLocation recipe) {
+    public InfuserPage(Identifier recipe) {
         this(List.of(recipe), null);
     }
     
-    private InfuserPage(List<ResourceLocation> recipes, @Nullable String caption) {
+    private InfuserPage(List<Identifier> recipes, @Nullable String caption) {
         super("botania:masterfulbotany_infuser", recipes, caption);
     }
 

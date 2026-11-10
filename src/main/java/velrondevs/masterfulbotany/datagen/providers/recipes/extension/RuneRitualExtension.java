@@ -10,24 +10,22 @@ import javax.annotation.Nullable;
 import velrondevs.masterfulbotany.common.crafting.RuneRitualRecipe;
 import velrondevs.masterfulbotany.common.crafting.SpecialRuneInput;
 import velrondevs.masterfulbotany.common.crafting.SpecialRuneOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import org.moddingx.libx.crafting.RecipeHelper;
-import org.moddingx.libx.datagen.provider.recipe.RecipeExtension;
 
-public interface RuneRitualExtension extends RecipeExtension {
+public interface RuneRitualExtension extends MasterfulRecipeExtension {
 
     default RuneRitualRecipeBuilder runeRitual(ItemLike centerRune) {
         return new RuneRitualRecipeBuilder(this, Ingredient.of(centerRune));
     }
 
     default RuneRitualRecipeBuilder runeRitual(TagKey<Item> centerRune) {
-        return new RuneRitualRecipeBuilder(this, Ingredient.of(centerRune));
+        return new RuneRitualRecipeBuilder(this, this.tagIngredient(centerRune));
     }
 
     default RuneRitualRecipeBuilder runeRitual(Ingredient centerRune) {
@@ -36,7 +34,7 @@ public interface RuneRitualExtension extends RecipeExtension {
     
     class RuneRitualRecipeBuilder {
 
-        private final RecipeExtension ext;
+        private final MasterfulRecipeExtension ext;
         private final Ingredient centerRune;
         private final List<RuneRitualRecipe.RunePosition> runes = new ArrayList<>();
         private int manaCost = 0;
@@ -48,7 +46,7 @@ public interface RuneRitualExtension extends RecipeExtension {
         @Nullable
         private SpecialRuneOutput specialOutput;
 
-        private RuneRitualRecipeBuilder(RecipeExtension ext, Ingredient centerRune) {
+        private RuneRitualRecipeBuilder(MasterfulRecipeExtension ext, Ingredient centerRune) {
             this.ext = ext;
             this.centerRune = centerRune;
         }
@@ -58,7 +56,7 @@ public interface RuneRitualExtension extends RecipeExtension {
         }
 
         public RuneRitualRecipeBuilder rune(TagKey<Item> rune, int x, int z, boolean consume) {
-            return this.rune(Ingredient.of(rune), x, z, consume);
+            return this.rune(this.ext.tagIngredient(rune), x, z, consume);
         }
 
         public RuneRitualRecipeBuilder rune(Ingredient rune, int x, int z, boolean consume) {
@@ -198,7 +196,7 @@ public interface RuneRitualExtension extends RecipeExtension {
         }
 
         public RuneRitualRecipeBuilder input(TagKey<Item> input) {
-            return this.input(Ingredient.of(input));
+            return this.input(this.ext.tagIngredient(input));
         }
 
         public RuneRitualRecipeBuilder input(Ingredient input) {
@@ -226,9 +224,9 @@ public interface RuneRitualExtension extends RecipeExtension {
         }
 
         public void build() {
-            ResourceLocation rl = null;
+            Identifier rl = null;
             if (this.outputs.size() == 1) {
-                rl = this.ext.provider().loc(this.outputs.get(0).getItem());
+                rl = this.ext.provider().id(this.outputs.get(0).getItem());
             } else if (this.specialOutput != null) {
                 rl = this.specialOutput.id;
             }
@@ -238,8 +236,8 @@ public interface RuneRitualExtension extends RecipeExtension {
             this.build(rl);
         }
 
-        public void build(ResourceLocation id) {
-            this.ext.output().accept(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "masterfulbotany_rune_rituals/" + id.getPath()), new RuneRitualRecipe(this.centerRune, this.runes, this.manaCost, this.tickTime, this.inputs, this.outputs, this.specialInput == null ? null : this.specialInput.id, this.specialOutput == null ? null : this.specialOutput.id), null);
+        public void build(Identifier id) {
+            this.ext.save(Identifier.fromNamespaceAndPath(id.getNamespace(), "masterfulbotany_rune_rituals/" + id.getPath()), new RuneRitualRecipe(this.centerRune, this.runes, this.manaCost, this.tickTime, this.inputs, this.outputs.stream().map(net.minecraft.world.item.ItemStackTemplate::fromNonEmptyStack).toList(), this.specialInput == null ? null : this.specialInput.id, this.specialOutput == null ? null : this.specialOutput.id));
         }
     }
 }

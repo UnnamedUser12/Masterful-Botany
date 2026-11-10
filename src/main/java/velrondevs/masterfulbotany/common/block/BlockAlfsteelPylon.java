@@ -6,30 +6,27 @@ import velrondevs.masterfulbotany.common.block.block_entity.TileAlfsteelPylon;
 import velrondevs.masterfulbotany.common.pylon.PylonRepairable;
 import velrondevs.masterfulbotany.common.pylon.PylonRepairables;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
+
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+
 import org.moddingx.libx.base.tile.BlockBE;
 import org.moddingx.libx.mod.ModX;
-import org.moddingx.libx.registration.RegistrationContext;
+
 import org.moddingx.libx.registration.SetupContext;
-import org.moddingx.libx.registration.util.ClientExtensionInfo;
 
 public class BlockAlfsteelPylon extends BlockBE<TileAlfsteelPylon> {
 
@@ -40,40 +37,27 @@ public class BlockAlfsteelPylon extends BlockBE<TileAlfsteelPylon> {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void setupClient(SetupContext ctx) {
         ctx.enqueue(() -> BlockEntityRenderers.register(this.getBlockEntityType(), RenderAlfsteelPylon::new));
     }
 
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void registerClientAdditional(RegistrationContext ctx, EntryCollector builder) {
-        super.registerClientAdditional(ctx, builder);
-        builder.register(null, new ClientExtensionInfo.Item(new IClientItemExtensions() {
-
-            @Override
-            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                return new RenderAlfsteelPylon.ItemRenderer();
-            }
-        }));
-    }
     
     @Nonnull
-    @SuppressWarnings("deprecation")
-    public VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos, @Nonnull CollisionContext context) {
+    @Override
+    protected VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos, @Nonnull CollisionContext context) {
         return SHAPE;
     }
 
     @Nonnull
-    @SuppressWarnings("deprecation")
-    public RenderShape getRenderShape(@Nonnull BlockState state) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
+    @Override
+    protected RenderShape getRenderShape(@Nonnull BlockState state) {
+        return RenderShape.INVISIBLE;
     }
 
     @Nonnull
     @Override
-    protected ItemInteractionResult useItemOn(@Nonnull ItemStack stack, @Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand, @Nonnull BlockHitResult hit) {
-        if (!level.isClientSide) {
+    protected InteractionResult useItemOn(@Nonnull ItemStack stack, @Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand, @Nonnull BlockHitResult hit) {
+        if (!level.isClientSide()) {
             PylonRepairable repairable = PylonRepairables.getRepairInfo(stack);
             if (stack.getCount() == 1 && repairable != null && repairable.canRepairPylon(stack)) {
                 ItemStack copy = stack.copy();
@@ -83,7 +67,7 @@ public class BlockAlfsteelPylon extends BlockBE<TileAlfsteelPylon> {
                 entity.setThrower(player);
                 entity.setPickUpDelay(40);
                 level.addFreshEntity(entity);
-                return ItemInteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             } else {
                 return super.useItemOn(stack, state, level, pos, player, hand, hit);
             }
@@ -93,7 +77,7 @@ public class BlockAlfsteelPylon extends BlockBE<TileAlfsteelPylon> {
     }
 
     @Override
-    public float getEnchantPowerBonus(BlockState state, LevelReader level, BlockPos pos) {
+    public float getEnchantPowerBonus(BlockState state, BlockGetter level, BlockPos pos) {
         return 15;
     }
 }

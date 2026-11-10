@@ -7,17 +7,15 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import velrondevs.masterfulbotany.common.crafting.InfuserRecipe;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import org.moddingx.libx.crafting.RecipeHelper;
-import org.moddingx.libx.datagen.provider.recipe.RecipeExtension;
 
-public interface InfuserExtension extends RecipeExtension {
+public interface InfuserExtension extends MasterfulRecipeExtension {
 
     default InfuserRecipeBuilder infuser(ItemLike result) {
         return new InfuserRecipeBuilder(this, new ItemStack(result)).setGroup("infuser");
@@ -29,7 +27,7 @@ public interface InfuserExtension extends RecipeExtension {
     
     class InfuserRecipeBuilder {
 
-        private final RecipeExtension ext;
+        private final MasterfulRecipeExtension ext;
         private final ItemStack result;
         private final List<Ingredient> ingredients = new ArrayList<>();
         private String group;
@@ -37,13 +35,13 @@ public interface InfuserExtension extends RecipeExtension {
         private int fromColor = 0xFFFFFF;
         private int toColor = 0xFFFFFF;
 
-        private InfuserRecipeBuilder(RecipeExtension ext, ItemStack result) {
+        private InfuserRecipeBuilder(MasterfulRecipeExtension ext, ItemStack result) {
             this.ext = ext;
             this.result = result;
         }
 
         public InfuserRecipeBuilder addIngredient(TagKey<Item> tag) {
-            return this.addIngredient(Ingredient.of(tag));
+            return this.addIngredient(this.ext.tagIngredient(tag));
         }
 
         public InfuserRecipeBuilder addIngredient(ItemLike item) {
@@ -87,15 +85,15 @@ public interface InfuserExtension extends RecipeExtension {
         }
 
         public void build() {
-            this.build(this.ext.provider().loc(this.result.getItem()));
+            this.build(this.ext.provider().id(this.result.getItem()));
         }
 
-        public void build(ResourceLocation id) {
+        public void build(Identifier id) {
             this.validate(id);
-            this.ext.output().accept(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "masterfulbotany_infusion/" + id.getPath()), new InfuserRecipe(this.result, this.manaCost, this.fromColor, this.toColor, this.ingredients), null);
+            this.ext.save(Identifier.fromNamespaceAndPath(id.getNamespace(), "masterfulbotany_infusion/" + id.getPath()), new InfuserRecipe(net.minecraft.world.item.ItemStackTemplate.fromNonEmptyStack(this.result), this.manaCost, this.fromColor, this.toColor, this.ingredients));
         }
 
-        private void validate(ResourceLocation id) {
+        private void validate(Identifier id) {
             if (this.manaCost < 0) {
                 throw new IllegalStateException("No mana cost set for " + id);
             }

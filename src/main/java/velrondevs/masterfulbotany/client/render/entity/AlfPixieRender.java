@@ -6,20 +6,27 @@ import velrondevs.masterfulbotany.common.entity.AlfPixie;
 import velrondevs.masterfulbotany.MasterfulBotany;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import velrondevs.botania.client.model.BotaniaModelLayers;
+import velrondevs.botania.client.render.entity.PixieRenderer;
 
-public class AlfPixieRender extends MobRenderer<AlfPixie, AlfPixieModel> {
-    
-    private static final ResourceLocation TEXTURE = MasterfulBotany.getInstance().resource("textures/entity/alf_pixie.png");
+public class AlfPixieRender extends MobRenderer<AlfPixie, PixieRenderer.State, AlfPixieModel> {
+
+    private static final Identifier TEXTURE = MasterfulBotany.getInstance().id("textures/entity/alf_pixie.png");
 
     public AlfPixieRender(EntityRendererProvider.Context context) {
         super(context, new AlfPixieModel(context.bakeLayer(BotaniaModelLayers.PIXIE)), 0);
     }
-    
+
     @Nonnull
     @Override
-    public ResourceLocation getTextureLocation(@Nonnull AlfPixie entity) {
+    public PixieRenderer.State createRenderState() {
+        return new PixieRenderer.State();
+    }
+
+    @Nonnull
+    @Override
+    public Identifier getTextureLocation(@Nonnull PixieRenderer.State state) {
         return TEXTURE;
     }
 }

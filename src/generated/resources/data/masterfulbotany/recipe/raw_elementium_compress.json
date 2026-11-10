@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "item": "masterfulbotany:raw_elementium"
-    }
+    "a": "masterfulbotany:raw_elementium"
   },
   "pattern": [
     "aaa",
@@ -12,7 +10,6 @@
     "aaa"
   ],
   "result": {
-    "count": 1,
     "id": "masterfulbotany:raw_elementium_block"
   }
 }

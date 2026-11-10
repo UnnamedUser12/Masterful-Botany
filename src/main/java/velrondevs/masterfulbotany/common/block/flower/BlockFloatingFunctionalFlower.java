@@ -1,19 +1,13 @@
 package velrondevs.masterfulbotany.common.block.flower;
 
-import java.util.List;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import velrondevs.masterfulbotany.client.render.block_entity.RenderFunctionalFlower;
 import velrondevs.masterfulbotany.common.block.block_entity.flower.FunctionalFlowerBase;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SoundType;
@@ -23,7 +17,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.fml.loading.FMLEnvironment;
 import org.moddingx.libx.base.tile.BlockBE;
 import org.moddingx.libx.mod.ModX;
@@ -36,14 +29,13 @@ public class BlockFloatingFunctionalFlower<T extends FunctionalFlowerBase> exten
 
     private final BlockFunctionalFlower<T> nonFloatingBlock;
 
-    public BlockFloatingFunctionalFlower(ModX mod, Class<T> beClass, BlockFunctionalFlower<T> nonFloatingBlock) {
+    public BlockFloatingFunctionalFlower(ModX mod, Class<T> beClass, BlockFunctionalFlower<T> nonFloatingBlock, ResourceKey<Block> id) {
         super(mod, beClass, Properties.ofFullCopy(Blocks.RED_TULIP).isRedstoneConductor((state, world, pos) -> false)
-                .instabreak().sound(SoundType.GRASS));
+                .instabreak().sound(SoundType.GRASS).setId(id));
         this.nonFloatingBlock = nonFloatingBlock;
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void setupClient(SetupContext ctx) {
         ctx.enqueue(() -> BlockEntityRenderers.register(this.getBlockEntityType(), mgr -> new RenderFunctionalFlower<>()));
     }
@@ -54,20 +46,17 @@ public class BlockFloatingFunctionalFlower<T extends FunctionalFlowerBase> exten
 
     @Nonnull
     @Override
-    @SuppressWarnings("deprecation")
-    public VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos, @Nonnull CollisionContext context) {
+    protected VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos, @Nonnull CollisionContext context) {
         return SHAPE;
     }
-    
+
     @Override
-    @SuppressWarnings("deprecation")
-    public boolean hasAnalogOutputSignal(@Nonnull BlockState state) {
+    protected boolean hasAnalogOutputSignal(@Nonnull BlockState state) {
         return true;
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public int getAnalogOutputSignal(@Nonnull BlockState blockState, @Nonnull Level level, @Nonnull BlockPos pos) {
+    protected int getAnalogOutputSignal(@Nonnull BlockState blockState, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Direction direction) {
         FunctionalFlowerBase te = this.getBlockEntity(level, pos);
         if (te.getCurrentMana() > 0) {
             return 1 + (int) ((te.getCurrentMana() / (double) te.maxMana) * 14);
@@ -76,37 +65,20 @@ public class BlockFloatingFunctionalFlower<T extends FunctionalFlowerBase> exten
         }
     }
 
-    public boolean propagatesSkylightDown(BlockState state, @Nonnull BlockGetter reader, @Nonnull BlockPos pos) {
+    @Override
+    protected boolean propagatesSkylightDown(BlockState state) {
         return state.getFluidState().isEmpty();
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack stack, @Nonnull Item.TooltipContext context, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
-        super.appendHoverText(stack, context, tooltip, flag);
-        if (this.getNonFloatingBlock().isGenerating) {
-            tooltip.add(Component.translatable("botania.flowerType.generating").withStyle(ChatFormatting.BLUE, ChatFormatting.ITALIC));
-
-        } else {
-            tooltip.add(Component.translatable("botania.flowerType.functional").withStyle(ChatFormatting.BLUE, ChatFormatting.ITALIC));
-
-        }
-        ResourceLocation id = BuiltInRegistries.BLOCK.getKey(this.getNonFloatingBlock());
-        if (id != null) {
-            tooltip.add(Component.translatable("block." + id.getNamespace() + "." + id.getPath() + ".description").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
-        }
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public boolean useShapeForLightOcclusion(@Nonnull BlockState state) {
+    protected boolean useShapeForLightOcclusion(@Nonnull BlockState state) {
         return true;
     }
 
     @Nonnull
-    @SuppressWarnings("deprecation")
     @Override
-    public RenderShape getRenderShape(@Nonnull BlockState state) {
-        if (FMLEnvironment.dist != Dist.CLIENT) return RenderShape.ENTITYBLOCK_ANIMATED;
-        return BotaniaConfig.client().staticFloaters() ? RenderShape.MODEL : RenderShape.ENTITYBLOCK_ANIMATED;
+    protected RenderShape getRenderShape(@Nonnull BlockState state) {
+        if (FMLEnvironment.getDist() != Dist.CLIENT) return RenderShape.INVISIBLE;
+        return BotaniaConfig.client().staticFloaters() ? RenderShape.MODEL : RenderShape.INVISIBLE;
     }
 }

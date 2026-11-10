@@ -2,15 +2,10 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "tag": "botania:floating_flowers"
-    },
-    {
-      "item": "masterfulbotany:hellebore"
-    }
+    "#botania:floating_flowers",
+    "masterfulbotany:hellebore"
   ],
   "result": {
-    "count": 1,
     "id": "masterfulbotany:hellebore_floating"
   }
 }

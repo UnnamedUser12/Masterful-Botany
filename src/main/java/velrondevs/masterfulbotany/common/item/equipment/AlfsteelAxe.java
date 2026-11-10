@@ -6,37 +6,27 @@ import velrondevs.masterfulbotany.common.pylon.PylonRepairable;
 import velrondevs.masterfulbotany.config.MasterfulConfig;
 import velrondevs.masterfulbotany.MasterfulBotany;
 import velrondevs.masterfulbotany.registry.ModItems;
-import net.minecraft.client.renderer.item.ItemProperties;
+
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
+
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.item.crafting.Ingredient;
+
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import org.moddingx.libx.registration.Registerable;
-import org.moddingx.libx.registration.SetupContext;
-import velrondevs.botania.common.item.equipment.tool.terrasteel.TerraTruncatorItem;
-import velrondevs.botania.common.lib.BotaniaTags;
 
-public class AlfsteelAxe extends TerraTruncatorItem implements PylonRepairable, Registerable {
+import velrondevs.botania.common.item.equipment.tool.terrasteel.TerraTruncatorItem;
+
+public class AlfsteelAxe extends TerraTruncatorItem implements PylonRepairable {
 
     public static final int ITEM_COLLECT_RANGE = 8;
 
     public AlfsteelAxe(Properties props) {
         super(props.durability(MasterfulConfig.alftools.durability.axe.max_durability()));
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void setupClient(SetupContext ctx) {
-        ctx.enqueue(() -> ItemProperties.register(ModItems.alfsteelAxe, MasterfulBotany.getInstance().resource("active"), (stack, world, entity, seed) -> entity instanceof Player && !shouldBreak((Player) entity) ? 0 : 1));
     }
 
     @Override
@@ -58,25 +48,20 @@ public class AlfsteelAxe extends TerraTruncatorItem implements PylonRepairable, 
 
     @Nonnull
     @Override
-    public InteractionResultHolder<ItemStack> use(@Nonnull Level level, Player player, @Nonnull InteractionHand hand) {
+    public InteractionResult use(@Nonnull Level level, Player player, @Nonnull InteractionHand hand) {
         double x = player.getX();
         double y = player.getY();
         double z = player.getZ();
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             ItemStack stack = player.getItemInHand(hand);
             stack.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
             player.setItemInHand(hand, stack);
         }
         List<ItemEntity> items = level.getEntitiesOfClass(ItemEntity.class, new AABB(x - ITEM_COLLECT_RANGE, y - ITEM_COLLECT_RANGE, z - ITEM_COLLECT_RANGE, x + ITEM_COLLECT_RANGE, y + ITEM_COLLECT_RANGE, z + ITEM_COLLECT_RANGE));
         for (ItemEntity item : items) {
-            item.moveTo(x + level.random.nextFloat() - 0.5f, y + level.random.nextFloat(), z + level.random.nextFloat() - 0.5f, item.getYRot(), item.getXRot());
+            item.snapTo(x + level.getRandom().nextFloat() - 0.5f, y + level.getRandom().nextFloat(), z + level.getRandom().nextFloat() - 0.5f, item.getYRot(), item.getXRot());
         }
-        return InteractionResultHolder.success(player.getItemInHand(hand));
-    }
-
-    @Override
-    public boolean isValidRepairItem(@Nonnull ItemStack toRepair, @Nonnull ItemStack repair) {
-        return repair.getItem() == ModItems.alfsteelIngot || (!Ingredient.of(BotaniaTags.Items.INGOTS_TERRASTEEL).test(repair) && super.isValidRepairItem(toRepair, repair));
+        return InteractionResult.SUCCESS;
     }
 
     @Override

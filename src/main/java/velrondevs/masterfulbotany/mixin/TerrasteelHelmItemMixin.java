@@ -8,10 +8,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.Mixin;
 import velrondevs.botania.common.item.equipment.armor.terrasteel.TerrasteelHelmItem;
 
-/**
- * Makes the alfsteel armor set count as a terrasteel armor set. This replaces the
- * {@code terra_helmet_check} coremod of the original mod.
- */
 @Mixin(TerrasteelHelmItem.class)
 public class TerrasteelHelmItemMixin {
 

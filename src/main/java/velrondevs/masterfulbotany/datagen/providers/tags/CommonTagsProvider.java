@@ -7,7 +7,7 @@ import velrondevs.masterfulbotany.registry.ModBlocks;
 import velrondevs.masterfulbotany.registry.ModItems;
 import velrondevs.masterfulbotany.registry.tags.ModBlockTags;
 import velrondevs.masterfulbotany.registry.tags.ModItemTags;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -36,7 +36,7 @@ public class CommonTagsProvider extends CommonTagsProviderBase {
         this.item(ItemTags.GOLD_ORES).add(ModBlocks.goldOre.asItem());
         this.item(Tags.Items.ORES).addTag(ModItemTags.ALFHEIM_ORES);
         this.item(Tags.Items.RAW_MATERIALS).add(ModItems.rawElementium);
-        this.item(ItemTags.create(ResourceLocation.fromNamespaceAndPath("curios", "ring"))).add(
+        this.item(ItemTags.create(Identifier.fromNamespaceAndPath("curios", "ring"))).add(
                 ModItems.manaRingGreatest, ModItems.auraRingGreatest, ModItems.fireRing, ModItems.iceRing,
                 ModItems.andwariRing, ModItems.cursedAndwariRing
         );

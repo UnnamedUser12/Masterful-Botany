@@ -8,14 +8,10 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.Item;
 
-/**
- * Enchantments are data driven in 1.21. The definition of the hammer mobility enchantment is in
- * {@code data/masterfulbotany/enchantment/hammer_mobility.json}.
- */
 public class ModEnchantments {
 
-    public static final ResourceKey<Enchantment> HAMMER_MOBILITY = ResourceKey.create(Registries.ENCHANTMENT, MasterfulBotany.getInstance().resource("hammer_mobility"));
-    public static final TagKey<Item> MJOELLNIR_ENCHANTABLE = ItemTags.create(MasterfulBotany.getInstance().resource("enchantable/mjoellnir"));
+    public static final ResourceKey<Enchantment> HAMMER_MOBILITY = ResourceKey.create(Registries.ENCHANTMENT, MasterfulBotany.getInstance().id("hammer_mobility"));
+    public static final TagKey<Item> MJOELLNIR_ENCHANTABLE = ItemTags.create(MasterfulBotany.getInstance().id("enchantable/mjoellnir"));
 
     public static int level(net.minecraft.world.item.ItemStack stack, ResourceKey<Enchantment> key) {
         for (var entry : stack.getEnchantments().entrySet()) {

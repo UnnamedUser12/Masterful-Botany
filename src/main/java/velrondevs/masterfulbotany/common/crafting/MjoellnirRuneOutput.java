@@ -14,7 +14,7 @@ public class MjoellnirRuneOutput extends SpecialRuneOutput {
     public static final MjoellnirRuneOutput INSTANCE = new MjoellnirRuneOutput();
     
     private MjoellnirRuneOutput() {
-        super(MasterfulBotany.getInstance().resource("mjoellnir"));
+        super(MasterfulBotany.getInstance().id("mjoellnir"));
     }
 
     @Override

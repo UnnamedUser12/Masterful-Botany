@@ -1,7 +1,9 @@
 package velrondevs.masterfulbotany.gametest;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.GameTest;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -9,8 +11,6 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import velrondevs.botania.registry.BotaniaItems;
 import velrondevs.masterfulbotany.common.entity.AlfPixie;
 import velrondevs.masterfulbotany.common.entity.Mjoellnir;
@@ -18,8 +18,6 @@ import velrondevs.masterfulbotany.registry.ModBlocks;
 import velrondevs.masterfulbotany.registry.ModEntities;
 import velrondevs.masterfulbotany.registry.ModItems;
 
-@GameTestHolder("masterfulbotany")
-@PrefixGameTestTemplate(false)
 public class EntityTests {
 
     private static final BlockPos POS = TestUtil.CENTER;
@@ -27,16 +25,15 @@ public class EntityTests {
     @GameTest(template = "empty")
     public static void alfPixieAttributesAndSpawnEgg(GameTestHelper helper) {
         AlfPixie pixie = helper.spawn(ModEntities.alfPixie, POS.above(2));
-        helper.assertTrue(pixie.getMaxHealth() == 4, "unexpected pixie health " + pixie.getMaxHealth());
-        helper.assertTrue(!pixie.onClimbable(), "pixies do not climb");
-        helper.assertTrue(pixie.getMaxSpawnClusterSize() == 7, "unexpected cluster size");
-        // Fall damage is disabled for the pixie
-        helper.assertTrue(!pixie.causeFallDamage(30, 1, pixie.damageSources().fall()), "pixies take no fall damage");
+        TestUtil.check(helper, pixie.getMaxHealth() == 4, "unexpected pixie health " + pixie.getMaxHealth());
+        TestUtil.check(helper, !pixie.onClimbable(), "pixies do not climb");
+        TestUtil.check(helper, pixie.getMaxSpawnClusterSize() == 7, "unexpected cluster size");
+        TestUtil.check(helper, !pixie.causeFallDamage(30, 1, pixie.damageSources().fall()), "pixies take no fall damage");
 
         ServerPlayer player = TestUtil.player(helper, true);
         var result = TestUtil.useOn(helper, player, new ItemStack(ModItems.alfPixieSpawnEgg), POS.above(4));
-        helper.assertTrue(result.consumesAction(), "the spawn egg did not work: " + result);
-        helper.assertTrue(helper.getLevel().getEntitiesOfClass(AlfPixie.class, new AABB(helper.absolutePos(POS)).inflate(8)).size() == 2, "the spawn egg should have spawned a second pixie");
+        TestUtil.check(helper, result.consumesAction(), "the spawn egg did not work: " + result);
+        TestUtil.check(helper, helper.getLevel().getEntitiesOfClass(AlfPixie.class, new AABB(helper.absolutePos(POS)).inflate(8)).size() == 2, "the spawn egg should have spawned a second pixie");
         helper.succeed();
     }
 
@@ -47,9 +44,9 @@ public class EntityTests {
         float damaged = pixie.getHealth();
         Vec3 start = pixie.position();
         helper.succeedWhen(() -> {
-            helper.assertTrue(pixie.isAlive(), "the pixie died");
-            helper.assertTrue(pixie.getHealth() > damaged, "the pixie did not heal");
-            helper.assertTrue(pixie.position().distanceTo(start) > 0.3, "the pixie did not move");
+            TestUtil.check(helper, pixie.isAlive(), "the pixie died");
+            TestUtil.check(helper, pixie.getHealth() > damaged, "the pixie did not heal");
+            TestUtil.check(helper, pixie.position().distanceTo(start) > 0.3, "the pixie did not move");
         });
     }
 
@@ -61,10 +58,10 @@ public class EntityTests {
             pixie.hurt(pixie.damageSources().generic(), 100);
         }
         for (ItemEntity item : helper.getLevel().getEntitiesOfClass(ItemEntity.class, new AABB(helper.absolutePos(POS)).inflate(8))) {
-            helper.assertTrue(item.getItem().is(BotaniaItems.pixieDust), "unexpected drop " + item.getItem());
+            TestUtil.check(helper, item.getItem().is(BotaniaItems.pixieDust), "unexpected drop " + item.getItem());
             dust += item.getItem().getCount();
         }
-        helper.assertTrue(dust > 0, "40 pixies dropped no pixie dust at all");
+        TestUtil.check(helper, dust > 0, "40 pixies dropped no pixie dust at all");
         helper.succeed();
     }
 
@@ -78,15 +75,16 @@ public class EntityTests {
         projectile.setThrowPos(new Vec3(1, 2, 3));
         projectile.setHotBarSlot(4);
         projectile.setLifeLeft(17);
-        CompoundTag tag = new CompoundTag();
-        projectile.saveWithoutId(tag);
+        TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, helper.getLevel().registryAccess());
+        projectile.saveWithoutId(output);
+        CompoundTag tag = output.buildResult();
         Mjoellnir copy = new Mjoellnir(helper.getLevel());
-        copy.load(tag);
-        helper.assertTrue(copy.getStack().is(hammer.getItem()), "the stack was lost");
-        helper.assertTrue(player.getUUID().equals(copy.getThrowerId()), "the thrower was lost");
-        helper.assertTrue(new Vec3(1, 2, 3).equals(copy.getThrowPos()), "the throw position was lost");
-        helper.assertTrue(copy.getHotBarSlot() == 4 && copy.getLifeLeft() == 17, "slot / lifetime were lost");
-        helper.assertTrue(!copy.isReturning(), "should not be returning");
+        copy.load(TagValueInput.create(ProblemReporter.DISCARDING, helper.getLevel().registryAccess(), tag));
+        TestUtil.check(helper, copy.getStack().is(hammer.getItem()), "the stack was lost");
+        TestUtil.check(helper, player.getUUID().equals(copy.getThrowerId()), "the thrower was lost");
+        TestUtil.check(helper, new Vec3(1, 2, 3).equals(copy.getThrowPos()), "the throw position was lost");
+        TestUtil.check(helper, copy.getHotBarSlot() == 4 && copy.getLifeLeft() == 17, "slot / lifetime were lost");
+        TestUtil.check(helper, !copy.isReturning(), "should not be returning");
         helper.succeed();
     }
 
@@ -99,8 +97,8 @@ public class EntityTests {
         projectile.setReturning(true);
         helper.getLevel().addFreshEntity(projectile);
         helper.succeedWhen(() -> {
-            helper.assertTrue(projectile.isRemoved(), "the hammer entity should have vanished");
-            helper.assertTrue(helper.getLevel().getBlockState(BlockPos.containing(pos)).is(ModBlocks.mjoellnir), "the hammer should have been placed as a block");
+            TestUtil.check(helper, projectile.isRemoved(), "the hammer entity should have vanished");
+            TestUtil.check(helper, helper.getLevel().getBlockState(BlockPos.containing(pos)).is(ModBlocks.mjoellnir), "the hammer should have been placed as a block");
         });
     }
 }

@@ -5,9 +5,8 @@ import javax.annotation.Nullable;
 import velrondevs.masterfulbotany.common.block.block_entity.TileCentralRuneHolder;
 import velrondevs.masterfulbotany.registry.ModBlocks;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -24,8 +23,7 @@ public class Petrunia extends FunctionalFlowerBase {
     
     @Override
     protected void tickFlower() {
-        //noinspection ConstantConditions
-        if (!this.level.isClientSide) {
+        if (!this.level.isClientSide()) {
             if (this.currentPos == null) {
                 find: for (int x = -3; x <= 3; x++) {
                     for (int y = -1; y <= 1; y++) {
@@ -68,16 +66,16 @@ public class Petrunia extends FunctionalFlowerBase {
     }
 
     @Override
-    public void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.loadAdditional(nbt, registries);
-        this.storedMana = nbt.getInt("StoredMana");
-        this.currentPos = NbtUtils.readBlockPos(nbt, "CurrentRuneTargetPos").orElse(null);
+    protected void loadAdditional(@Nonnull ValueInput input) {
+        super.loadAdditional(input);
+        this.storedMana = input.getIntOr("StoredMana", 0);
+        this.currentPos = input.read("CurrentRuneTargetPos", BlockPos.CODEC).orElse(null);
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.saveAdditional(nbt, registries);
-        nbt.putInt("StoredMana", this.storedMana);
-        if (this.currentPos != null) nbt.put("CurrentRuneTargetPos", NbtUtils.writeBlockPos(this.currentPos));
+    protected void saveAdditional(@Nonnull ValueOutput output) {
+        super.saveAdditional(output);
+        output.putInt("StoredMana", this.storedMana);
+        if (this.currentPos != null) output.store("CurrentRuneTargetPos", BlockPos.CODEC, this.currentPos);
     }
 }

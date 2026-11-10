@@ -1,6 +1,7 @@
 package velrondevs.masterfulbotany;
 
 import javax.annotation.Nonnull;
+import velrondevs.masterfulbotany.client.render.MasterfulBlockEntityItem;
 import velrondevs.masterfulbotany.client.patchouli.PageRitualInfo;
 import velrondevs.masterfulbotany.client.patchouli.PageRitualPattern;
 import velrondevs.masterfulbotany.common.crafting.MjoellnirRuneOutput;
@@ -21,7 +22,7 @@ import velrondevs.masterfulbotany.registry.ModEntities;
 import velrondevs.masterfulbotany.registry.ModLootModifiers;
 import velrondevs.masterfulbotany.registry.ModWorldGen;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
@@ -67,9 +68,10 @@ public final class MasterfulBotany extends ModXRegistration {
         modBus.addListener(ModEntities::createSpawnPlacement);
         modBus.addListener(ModDefaultComponents::modifyDefaultComponents);
         modBus.addListener(ModCapabilities::register);
-        if (FMLEnvironment.dist == Dist.CLIENT) {
+        if (FMLEnvironment.getDist() == Dist.CLIENT) {
             modBus.addListener(ModCapabilities::registerClient);
             modBus.addListener(ModEntities::registerRenderers);
+            modBus.addListener(MasterfulBlockEntityItem::register);
             NeoForge.EVENT_BUS.addListener(EventPriority.HIGH, AlfheimPortalHandler::renderGameOverlay);
         }
 
@@ -116,8 +118,8 @@ public final class MasterfulBotany extends ModXRegistration {
     @Override
     protected void clientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
-            ClientBookRegistry.INSTANCE.pageTypes.put(ResourceLocation.fromNamespaceAndPath(this.modid, "ritual_pattern"), PageRitualPattern.class);
-            ClientBookRegistry.INSTANCE.pageTypes.put(ResourceLocation.fromNamespaceAndPath(this.modid, "ritual_info"), PageRitualInfo.class);
+            ClientBookRegistry.INSTANCE.pageTypes.put(Identifier.fromNamespaceAndPath(this.modid, "ritual_pattern"), PageRitualPattern.class);
+            ClientBookRegistry.INSTANCE.pageTypes.put(Identifier.fromNamespaceAndPath(this.modid, "ritual_info"), PageRitualInfo.class);
         });
     }
 }

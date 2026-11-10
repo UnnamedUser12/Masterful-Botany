@@ -4,16 +4,16 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import java.util.List;
 import javax.annotation.Nullable;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.moddingx.libx.datagen.provider.patchouli.content.RecipePage;
 
 public class TradePage extends RecipePage {
 
-    public TradePage(ResourceLocation... recipes) {
+    public TradePage(Identifier... recipes) {
         this(List.of(recipes), null);
     }
     
-    private TradePage(List<ResourceLocation> recipes, @Nullable String caption) {
+    private TradePage(List<Identifier> recipes, @Nullable String caption) {
         super("botania:elven_trade", recipes, caption);
     }
 
@@ -25,7 +25,7 @@ public class TradePage extends RecipePage {
     @Override
     protected void addRecipeKey(JsonObject json) {
         JsonArray array = new JsonArray();
-        for (ResourceLocation recipe : this.recipes) {
+        for (Identifier recipe : this.recipes) {
             array.add(recipe.toString());
         }
         json.add("recipes", array);

@@ -2,10 +2,13 @@ package velrondevs.masterfulbotany.client.patchouli;
 
 import com.google.gson.annotations.SerializedName;
 import velrondevs.masterfulbotany.common.crafting.RuneRitualRecipe;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import velrondevs.botania.registry.BotaniaRecipeTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 import vazkii.patchouli.client.book.BookContentsBuilder;
@@ -22,7 +25,7 @@ public abstract class PageRuneRitualBase extends BookPage {
     public String title;
     
     @SerializedName("recipe")
-    public ResourceLocation recipeId;
+    public Identifier recipeId;
     
     protected transient RuneRitualRecipe recipe;
 
@@ -33,7 +36,7 @@ public abstract class PageRuneRitualBase extends BookPage {
         if (this.recipeId == null) {
             this.recipe = null;
 		} else {
-            net.minecraft.world.item.crafting.RecipeHolder<?> foundRecipe = Minecraft.getInstance().level != null ? Minecraft.getInstance().level.getRecipeManager().byKey(this.recipeId).orElse(null) : null;
+            net.minecraft.world.item.crafting.RecipeHolder<?> foundRecipe = Minecraft.getInstance().level != null ? BotaniaRecipeTypes.recipeMap(Minecraft.getInstance().level).byKey(ResourceKey.create(Registries.RECIPE, this.recipeId)) : null;
             if (foundRecipe != null && foundRecipe.value() instanceof RuneRitualRecipe ritual) {
                 this.recipe = ritual;
             } else {
@@ -43,7 +46,7 @@ public abstract class PageRuneRitualBase extends BookPage {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
         if (!this.title.isEmpty()) {
             this.parent.drawCenteredStringNoShadow(graphics, this.parent.book.i18n ? I18n.get(this.title) : this.title, GuiBook.PAGE_WIDTH / 2, 0, 0x000000);
         }

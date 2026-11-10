@@ -4,14 +4,15 @@ import javax.annotation.Nonnull;
 import velrondevs.masterfulbotany.registry.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
+
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import velrondevs.masterfulbotany.common.helper.StackHandlers;
 import org.moddingx.libx.base.tile.TickingBlock;
 import org.moddingx.libx.inventory.BaseItemStackHandler;
 
@@ -38,14 +39,14 @@ public class TileYggdrasilBranch extends BlockEntityMana implements TickingBlock
 
     @Override
     public void tick() {
-        if (this.inventory.getStackInSlot(0).getItem() == ModItems.gjallarHornEmpty && this.inventory.getStackInSlot(0).getCount() == 1) {
+        ItemStack held = StackHandlers.get(this.inventory, 0);
+        if (held.getItem() == ModItems.gjallarHornEmpty && held.getCount() == 1) {
             if (this.mana >= 20) {
-                //noinspection ConstantConditions
-                if (!this.level.isClientSide) {
+                if (!this.level.isClientSide()) {
                     this.mana -= 10;
                     this.progress += 1;
                     if (this.progress >= 600) {
-                        this.inventory.setStackInSlot(0, new ItemStack(ModItems.gjallarHornFull));
+                        StackHandlers.set(this.inventory, 0, new ItemStack(ModItems.gjallarHornFull));
                         this.progress = 0;
                     }
                     this.setChanged();
@@ -74,40 +75,20 @@ public class TileYggdrasilBranch extends BlockEntityMana implements TickingBlock
     }
 
     @Override
-    public void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.loadAdditional(nbt, registries);
-        this.inventory.deserializeNBT(registries, nbt.getCompound("Inventory"));
-        this.progress = nbt.getInt("Progress");
+    protected void loadAdditional(@Nonnull ValueInput input) {
+        super.loadAdditional(input);
+        this.inventory.deserialize(input.childOrEmpty("Inventory"));
+        this.progress = input.getIntOr("Progress", 0);
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.saveAdditional(nbt, registries);
-        nbt.put("Inventory", this.inventory.serializeNBT(registries));
-        nbt.putInt("Progress", this.progress);
+    protected void saveAdditional(@Nonnull ValueOutput output) {
+        super.saveAdditional(output);
+        this.inventory.serialize(output.child("Inventory"));
+        output.putInt("Progress", this.progress);
     }
 
-    @Nonnull
-    @Override
-    public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
-        CompoundTag nbt = super.getUpdateTag(registries);
-        //noinspection ConstantConditions
-        if (!this.level.isClientSide) {
-            nbt.put("Inventory", this.inventory.serializeNBT(registries));
-        }
-        return nbt;
-    }
-
-    @Override
-    public void handleUpdateTag(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.handleUpdateTag(nbt, registries);
-        //noinspection ConstantConditions
-        if (this.level.isClientSide) {
-            this.inventory.deserializeNBT(registries, nbt.getCompound("Inventory"));
-        }
-    }
-
-    public IItemHandlerModifiable getInventory() {
+    public BaseItemStackHandler getInventory() {
         return this.inventory;
     }
 }

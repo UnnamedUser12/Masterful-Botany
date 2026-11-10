@@ -18,7 +18,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.TreeConfigurati
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacer;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacer;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacerType;
-import net.minecraft.world.level.LevelSimulatedReader;
+import net.minecraft.world.level.WorldGenLevel;
 
 public class ShatteredTrunkPlacer extends TrunkPlacer {
 
@@ -37,9 +37,9 @@ public class ShatteredTrunkPlacer extends TrunkPlacer {
 
     @Nonnull
     @Override
-    public List<FoliagePlacer.FoliageAttachment> placeTrunk(@Nonnull LevelSimulatedReader level, @Nonnull BiConsumer<BlockPos, BlockState> blockSetter, @Nonnull RandomSource random, int freeTreeHeight, BlockPos pos, @Nonnull TreeConfiguration config) {
+    public List<FoliagePlacer.FoliageAttachment> placeTrunk(@Nonnull WorldGenLevel level, @Nonnull BiConsumer<BlockPos, BlockState> blockSetter, @Nonnull RandomSource random, int freeTreeHeight, BlockPos pos, @Nonnull TreeConfiguration config) {
         List<FoliagePlacer.FoliageAttachment> list = new ArrayList<>();
-        setDirtAt(level, blockSetter, random, pos.below(), config);
+        placeBelowTrunkBlock(level, blockSetter, random, pos.below(), config);
         for (Direction dir : Direction.values()) {
             if (dir.getAxis() != Direction.Axis.Y && random.nextInt(3) == 0) {
                 BlockPos.MutableBlockPos mpos = pos.relative(Direction.UP).relative(dir).mutable();
@@ -50,7 +50,7 @@ public class ShatteredTrunkPlacer extends TrunkPlacer {
                     }
                 }
                 if (level.isStateAtPosition(pos, BlockBehaviour.BlockStateBase::canOcclude)) {
-                    setDirtAt(level, blockSetter, random, pos.below(), config);
+                    placeBelowTrunkBlock(level, blockSetter, random, pos.below(), config);
                 }
             }
         }
@@ -86,9 +86,9 @@ public class ShatteredTrunkPlacer extends TrunkPlacer {
         return list;
     }
 
-    private boolean placeLog(LevelSimulatedReader level, BiConsumer<BlockPos, BlockState> blockSetter, BlockPos pos, RandomSource rand, TreeConfiguration config) {
+    private boolean placeLog(WorldGenLevel level, BiConsumer<BlockPos, BlockState> blockSetter, BlockPos pos, RandomSource rand, TreeConfiguration config) {
         if (level.isStateAtPosition(pos, state -> state.isAir() || state.is(ModBlockTags.ALFHEIM_LEAVES) || state.is(BlockTags.REPLACEABLE_BY_TREES) || state.is(Blocks.WATER))) {
-            blockSetter.accept(pos, config.trunkProvider.getState(rand, pos));
+            blockSetter.accept(pos, config.trunkProvider.getState(level, rand, pos));
             return true;
         } else {
             return false;
