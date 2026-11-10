@@ -44,7 +44,7 @@ file = "META-INF/accesstransformer.cfg"
 [[dependencies.${mod_id}]]
     modId = "botania"
     type = "required"
-    versionRange = "[1.0.3,)"
+    versionRange = "[2.0.0,)"
     ordering = "AFTER"
     side = "BOTH"
 
