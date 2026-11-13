@@ -2,7 +2,6 @@ package velrondevs.masterfulbotany.network;
 
 import javax.annotation.Nonnull;
 import velrondevs.masterfulbotany.MasterfulBotany;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -65,7 +64,7 @@ public record ParticleMessage(Identifier particleId, double x, double y, double 
 
         @Override
         public void handle(ParticleMessage msg, IPayloadContext ctx) {
-            Level level = Minecraft.getInstance().level;
+            Level level = ctx.player().level();
             if (level == null) return;
             ParticleType<?> particle = BuiltInRegistries.PARTICLE_TYPE.getValue(msg.particleId());
             if (particle instanceof SimpleParticleType) {

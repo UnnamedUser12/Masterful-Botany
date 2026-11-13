@@ -1,9 +1,8 @@
 package velrondevs.masterfulbotany.common.block;
 
 import javax.annotation.Nonnull;
-import velrondevs.masterfulbotany.client.render.block_entity.RenderRuneHolder;
+import velrondevs.masterfulbotany.client.render.MasterfulClientSetup;
 import velrondevs.masterfulbotany.common.block.block_entity.TileRuneHolder;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
@@ -47,7 +46,7 @@ public class BlockRuneHolder<T extends TileRuneHolder> extends BlockBE<T> {
 
     @Override
     public void setupClient(SetupContext ctx) {
-        ctx.enqueue(() -> BlockEntityRenderers.register(this.getBlockEntityType(), mgr -> new RenderRuneHolder()));
+        ctx.enqueue(() -> MasterfulClientSetup.runeHolder(this.getBlockEntityType()));
     }
 
     @Nonnull

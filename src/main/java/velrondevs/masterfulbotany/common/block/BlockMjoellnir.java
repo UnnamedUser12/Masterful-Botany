@@ -2,7 +2,7 @@ package velrondevs.masterfulbotany.common.block;
 
 import java.util.List;
 import javax.annotation.Nonnull;
-import velrondevs.masterfulbotany.client.render.block_entity.RenderMjoellnir;
+import velrondevs.masterfulbotany.client.render.MasterfulClientSetup;
 import velrondevs.masterfulbotany.common.block.block_entity.TileMjoellnir;
 import velrondevs.masterfulbotany.common.entity.Mjoellnir;
 import velrondevs.masterfulbotany.common.item.ItemMjoellnir;
@@ -10,7 +10,6 @@ import velrondevs.masterfulbotany.config.MasterfulConfig;
 import velrondevs.masterfulbotany.MasterfulBotany;
 import velrondevs.masterfulbotany.registry.ModBlocks;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -72,7 +71,7 @@ public class BlockMjoellnir extends BlockBE<TileMjoellnir> implements Registerab
 
     @Override
     public void setupClient(SetupContext ctx) {
-        ctx.enqueue(() -> BlockEntityRenderers.register(this.getBlockEntityType(), mgr -> new RenderMjoellnir()));
+        ctx.enqueue(() -> MasterfulClientSetup.mjoellnir(this.getBlockEntityType()));
     }
 
     @Nonnull

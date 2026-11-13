@@ -2,7 +2,6 @@ package velrondevs.masterfulbotany.network;
 
 import javax.annotation.Nonnull;
 import velrondevs.masterfulbotany.MasterfulBotany;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.FriendlyByteBuf;
@@ -47,7 +46,7 @@ public record InfusionMessage(BlockPos pos, double progress, int fromColor, int 
 
         @Override
         public void handle(InfusionMessage msg, IPayloadContext ctx) {
-            Level level = Minecraft.getInstance().level;
+            Level level = ctx.player().level();
             if (level == null) return;
 
             int ticks = (int) (100.0 * msg.progress());

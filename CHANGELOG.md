@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.3
+- Fixed a crash when starting a dedicated server (`NoClassDefFoundError: net/minecraft/client/multiplayer/ClientLevel`). The network handlers, the Alfheim portal overlay and the block entity renderer registration no longer load client classes from common code.
+
 ## 1.0.2
 - The mod now requires Botania Revived 2.0.0 or newer, and is built and tested against Botania Revived 26.1.2 (2.0.0).
 

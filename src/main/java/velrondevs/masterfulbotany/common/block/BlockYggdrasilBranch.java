@@ -2,10 +2,9 @@ package velrondevs.masterfulbotany.common.block;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import velrondevs.masterfulbotany.client.render.block_entity.RenderYggdrasilBranch;
+import velrondevs.masterfulbotany.client.render.MasterfulClientSetup;
 import velrondevs.masterfulbotany.common.block.block_entity.TileYggdrasilBranch;
 import velrondevs.masterfulbotany.registry.ModItems;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
@@ -48,7 +47,7 @@ public class BlockYggdrasilBranch extends BlockBE<TileYggdrasilBranch> {
 
     @Override
     public void setupClient(SetupContext ctx) {
-        ctx.enqueue(() -> BlockEntityRenderers.register(this.getBlockEntityType(), mgr -> new RenderYggdrasilBranch()));
+        ctx.enqueue(() -> MasterfulClientSetup.yggdrasilBranch(this.getBlockEntityType()));
         ctx.enqueue(() -> ItemStackRenderer.addRenderBlock(this.getBlockEntityType(), false));
     }
 

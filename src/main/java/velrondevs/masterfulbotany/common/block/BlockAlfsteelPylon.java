@@ -1,11 +1,10 @@
 package velrondevs.masterfulbotany.common.block;
 
 import javax.annotation.Nonnull;
-import velrondevs.masterfulbotany.client.render.block_entity.RenderAlfsteelPylon;
+import velrondevs.masterfulbotany.client.render.MasterfulClientSetup;
 import velrondevs.masterfulbotany.common.block.block_entity.TileAlfsteelPylon;
 import velrondevs.masterfulbotany.common.pylon.PylonRepairable;
 import velrondevs.masterfulbotany.common.pylon.PylonRepairables;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -38,7 +37,7 @@ public class BlockAlfsteelPylon extends BlockBE<TileAlfsteelPylon> {
 
     @Override
     public void setupClient(SetupContext ctx) {
-        ctx.enqueue(() -> BlockEntityRenderers.register(this.getBlockEntityType(), RenderAlfsteelPylon::new));
+        ctx.enqueue(() -> MasterfulClientSetup.alfsteelPylon(this.getBlockEntityType()));
     }
 
     

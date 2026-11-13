@@ -1,9 +1,8 @@
 package velrondevs.masterfulbotany.common.block.flower;
 
 import javax.annotation.Nonnull;
-import velrondevs.masterfulbotany.client.render.block_entity.RenderFunctionalFlower;
+import velrondevs.masterfulbotany.client.render.MasterfulClientSetup;
 import velrondevs.masterfulbotany.common.block.block_entity.flower.FunctionalFlowerBase;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
@@ -37,7 +36,7 @@ public class BlockFloatingFunctionalFlower<T extends FunctionalFlowerBase> exten
 
     @Override
     public void setupClient(SetupContext ctx) {
-        ctx.enqueue(() -> BlockEntityRenderers.register(this.getBlockEntityType(), mgr -> new RenderFunctionalFlower<>()));
+        ctx.enqueue(() -> MasterfulClientSetup.functionalFlower(this.getBlockEntityType()));
     }
 
     public BlockFunctionalFlower<T> getNonFloatingBlock() {

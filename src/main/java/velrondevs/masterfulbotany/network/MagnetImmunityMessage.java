@@ -2,7 +2,6 @@ package velrondevs.masterfulbotany.network;
 
 import javax.annotation.Nonnull;
 import velrondevs.masterfulbotany.MasterfulBotany;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -48,7 +47,7 @@ public record MagnetImmunityMessage(int entityId, boolean immune, double x, doub
 
         @Override
         public void handle(MagnetImmunityMessage msg, IPayloadContext ctx) {
-            Level level = Minecraft.getInstance().level;
+            Level level = ctx.player().level();
             if (level != null) {
                 Entity entity = level.getEntity(msg.entityId());
                 if (entity != null) {

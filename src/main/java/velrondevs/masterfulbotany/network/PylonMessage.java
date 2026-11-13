@@ -2,7 +2,6 @@ package velrondevs.masterfulbotany.network;
 
 import javax.annotation.Nonnull;
 import velrondevs.masterfulbotany.MasterfulBotany;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.FriendlyByteBuf;
@@ -36,7 +35,7 @@ public record PylonMessage(BlockPos pos) implements CustomPacketPayload {
 
         @Override
         public void handle(PylonMessage msg, IPayloadContext ctx) {
-            Level level = Minecraft.getInstance().level;
+            Level level = ctx.player().level();
             if (level == null) return;
             WispParticleData data = WispParticleData.wisp(0.85f, 1f, 0.6f, 0f, 0.25f);
             level.addParticle(data, msg.pos().getX() + 0.25 + (level.getRandom().nextFloat() / 2), msg.pos().getY() + 0.75 + (level.getRandom().nextFloat() / 4), msg.pos().getZ() + 0.25 + (level.getRandom().nextFloat() / 2), 0, 0.3, 0);

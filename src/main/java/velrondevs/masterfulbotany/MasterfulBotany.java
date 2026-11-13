@@ -1,6 +1,7 @@
 package velrondevs.masterfulbotany;
 
 import javax.annotation.Nonnull;
+import velrondevs.masterfulbotany.client.render.AlfheimPortalOverlay;
 import velrondevs.masterfulbotany.client.render.MasterfulBlockEntityItem;
 import velrondevs.masterfulbotany.client.patchouli.PageRitualInfo;
 import velrondevs.masterfulbotany.client.patchouli.PageRitualPattern;
@@ -72,7 +73,7 @@ public final class MasterfulBotany extends ModXRegistration {
             modBus.addListener(ModCapabilities::registerClient);
             modBus.addListener(ModEntities::registerRenderers);
             modBus.addListener(MasterfulBlockEntityItem::register);
-            NeoForge.EVENT_BUS.addListener(EventPriority.HIGH, AlfheimPortalHandler::renderGameOverlay);
+            NeoForge.EVENT_BUS.addListener(EventPriority.HIGH, AlfheimPortalOverlay::renderGameOverlay);
         }
 
         NeoForge.EVENT_BUS.register(new EventListener());
