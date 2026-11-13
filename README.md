@@ -13,7 +13,7 @@ the list of changes and the licensing information. It is not affiliated with or 
 ## Requirements
 
 * NeoForge 21.1.240+ (Minecraft 1.21.1)
-* Botania Revived 1.0.3+
+* Botania Revived 2.0.2+
 * Patchouli, Curios (required by Botania Revived / this mod)
 * [LibX](https://github.com/ModdingX/LibX) `1.21.1-6.0.15`+
 * JEI (optional, recipe categories for the mana infuser and the rune rituals)
