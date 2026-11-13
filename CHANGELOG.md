@@ -1,10 +1,9 @@
 # Changelog
 
-## 1.0.4
+## 1.0.3
 
 Botania Revived 2.0.2 Required
 
-## 1.0.3
 - Fixed a crash when starting a dedicated server (`NoClassDefFoundError: net/minecraft/client/multiplayer/ClientLevel`). The network handlers, the Alfheim portal overlay and the block entity renderer registration no longer load client classes from common code.
 
 ## 1.0.2
